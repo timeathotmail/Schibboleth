@@ -156,7 +156,7 @@ identifizieren sein, hier und optimalerweise auf dem Titelblatt.}
 Version & Datum & Änderungen \\
 \hline
 1.0 & 21.05.2014 & Analyse ähnlicher Systeme. \\
-1.1 & TT.MM.JJJJ & .... 
+1.1 & 22.05.2014 & Anwendungsfälle . \\
 \end{tabular}
 
 
@@ -243,7 +243,7 @@ Version & Datum & Änderungen \\
 
 {\em Falls durchgeführt}
 
-\subsubsection{Analyse eines ähnlichem Systems}
+\subsubsection{Analyse eines ähnlichem Systems(Daniel Pupat)}
 
 Als System haben wir uns die App Quizduell ausgesucht. Die App ist im App-Store kostenlos zu erhalten. Wir benutzen hierzu nicht die Premium-Version, da die kostenlose unserem System am nächsten kommt. Wir haben nicht die Rechte eines Administrators, weshalb sich die Analyse nur auf die App bezieht. Die App kann nur verwendet werden, wenn man eine bestehende Internet Verbindung hat.\\
 
@@ -332,35 +332,30 @@ Fazit:\\
 Die Quizduell App ist ein gutes System mit welcher man unseres später Vergleichen kann. Es hat viele Funktion, wie gezeigt, welche unser System ebenfalls haben muss. Es gibt allerdings auch Unterschiede, in unsere App wird es nur 3 Runden pro Runde geben und es werden keine eigenen Fragen geschrieben, außerdem wird es keine Premium-Version geben. Zudem werden wir auch eine offline-Funktion einbauen, in welcher der Spieler alleine spielen kann.\\ 
 
 \subsection{Produktperspektive}
-\nurlangversion
   
 \subsubsection{Systemschnittstellen}
-\nurlangversion
-
   {\em Schnittstellen zu anderen Systemen, z.B.\ Datenimport/-export,
   Konfigurationsdateien, anzubindende externe Dienste und deren Schnittstelle,
   Anbieten der eigenen Funktionalität als API o.ä.}
   
+Als Grundlage dient ein neu aufzusetzendes oder bestehendes System, auf dem die Software installiert werden kann. Als externe Schnittstelle muss dieses mit dem Internet verbunden sein. Der Server der Quizapp kann an einem PC über HTTP mit einem HTML5-unterstützenden Browser angesprochen werden. Mobiler Zugriff erfolgt auf Android-Geräten zudem mit einer eigenen App.
 
 \subsubsection{Benutzerschnittstelle}
-\nurlangversion
 
   {\em GUI-Design-Richtlinien und Interaktionsmechanismen (nicht
   Screenshots aller Dialoge --- die werden in Kapitel 3 gezeigt --- aber
   evtl.\ ein Screenshot, der einen groben Überblick und Eindruck des
   GUI-Designs gibt).}
-
+Die GUI der Website weist je nachdem, ob sich ein normaler Nutzer oder ein Admin anmeldet, unterschiedliche Funktionalitäten auf. 
 
 \subsubsection{Hardwareschnittstellen}
-\nurlangversion
-
   {\em Schnittstellen zu vorgegebenen Hardwarekomponenten (Name,
   Version).}
- 
+
+Die HTML-Website ist plattform-unabhängig nutzbar. Smartphones mit kompatibler Android-Version (welche?) können die Quizapp nutzen.
+
 
 \subsubsection{Softwareschnittstellen}
-\nurlangversion
-
 {\em Softwarebibliotheken und --rahmenwerke (Frameworks), die benutzt
   werden sollen, mit Versionsnummer, Hersteller, Quelle etc. Dazu
   gehört auf jeden Fall Java.}
@@ -368,43 +363,82 @@ Die Quizduell App ist ein gutes System mit welcher man unseres später Vergleich
   \begin{tabular}{|l|l|l|l|}\hline
     \textbf{Name} & \textbf{Version} & \textbf{Hersteller} & \textbf{Quelle} \\\hline
     Java Runtime & 6 Update 37 & Oracle & \url{http://java.com} \\\hline
-    Hibernate & 4.3.0.Beta1 Release& JBoss Community &  
-   \url{http://www.hibernate.org/}\\\hline
+    JUnit & & & \\\hline
+    libGDX &  &  & \\\hline
+    Android & & & \\\hline
     \ldots & & & \\\hline
   \end{tabular}
 
 \subsubsection{Kommunikationsschnittstellen}
-\nurlangversion
-
 {\em Anforderungen an und Bandbreite von Kommunikationsnetzwerken, öffentliche
   oder auch private IP-Adressen?}
+  
+Das System muss mit einer öffentlichen IP-Adresse und Domain von außen ansprechbar sein. Die Bandbreite sollte groß genug sein um mehreren Nutzern parallel den Zugang zur Software zu gewähren, wobei jeder Nutzer einzeln nur eine sehr geringe Bandbreite benötigt.
 
 \subsubsection{Speicherbeschränkung}
-\nurlangversion
 
   {\em min./max.\ verfügbarer Hauptspeicher und Festplattenplatz, knappe Begründung wie Ihr zu
 der hier angegebenen Einschätzung gekommen seid}
 
-\subsubsection{Operationen (Betriebsmodi)}
-\nurlangversion
+Die App wird voraussichtlich bis zu 30mb Speicherplatz beziehen. (Arbeitsspeicher?)
+Das Softwaresystem 
 
+\subsubsection{Operationen (Betriebsmodi)}
   {\em Welche Betriebsmodi gibt es? Warum? Welche Benutzerklasse darf
   was in welchem Betriebsmodus (Rechte)? Was ist der Zusammenhang
   zwischen Betriebsmodus und Sicherung/Wiederherstellung von Daten?}
+  
+Wir unterscheiden zwischen dem normalen Betriebsmodus und einem Wartungsmodus, in dem z.B. Backups aufgespielt werden können. Während des Wartungsmodus ist kein öffentlicher Zugriff vorgesehen. Im normalen Betriebsmodus wird unterschieden zwischen Admins, registrierten Benutzern und Gästen. Jeder hat das Recht zu spielen, wobei registrierte Nutzer Vorteile wie Statistiken etc. genießen. Der Admin kann das System über die Website verwalten, z.B. Nutzernamen ändern. In der App ist kein Admin-Modus vorhanden.
 
 \subsubsection{Möglichkeiten der lokalen Anpassung}
-\nurlangversion
-
   {\em Was kann bei Auslieferung des Systems alles konfiguriert
   werden? Z.B. Pfade, Datenbankname, Server-IP usw. Hier ist nicht
   Internationalisierung gemeint!}
+Es handelt sich bei dem System um ein lauffähiges Gesamtpaket. Es muss keine Datenbank o.Ä. eingerichtet werden. Lediglich eine IP-Adresse muss eingerichtet werden. Somit ist keine lokale Anpassung nötig.
 
-
-\subsection{Anwendungsfälle}
-  {\em Auflistung und kurze Beschreibung aller relevanten
-  Anwendungsfälle. Dies soll einen Überblick über alle Anwendungsfälle
-  geben, die in 3.2 detailliert beschrieben werden.}
-
+\subsection{Anwendungsfälle(Daniel Pupat)}
+\begin{itemize}
+	\item \textbf{1. App starten}\\
+	Die App wird gestartet. 
+	\item \textbf{2. Offline-Modus starten}\\
+	Die App wird im Offline-Modus gestartet. Keine Anmeldung und Internet Verbindung notwendig.
+	\item \textbf{3. Benutzer registrieren}\\
+	Benutzer registriert sich mit Benutzernamen und Passwort
+	\item \textbf{4. Benutzer anmelden}\\
+	Der Benutzer meldet sich mit Benutzernamen und Passwort an. Die Daten werden gespeichert, sodass kein nochmaliges anmelden nötig ist.
+	\item \textbf{5. Benutzer abmelden}\\
+	Benutzer wird abgemeldet und muss sich beim nächsten Start wieder anmelden.
+	\item \textbf{6. Online Modus starten}\\
+	Der Online Modus wird gestartet. Einmaliges anmelden und Internet Verbindung erforderlich.
+	\item \textbf{7. Neues Spiel starten}\\
+	Eine Liste aller Spieler die online sind wird angezeigt.
+	\item \textbf{8. Gegner herausfordern}\\
+	Aus der Liste kann ein Spieler angeklickt und herausgefordert werden.
+	\item \textbf{9. Herausforderung annehmen}\\
+	Bei einer Herausforderung kann der Gegner annehmen oder ablehnen.
+	\item \textbf{10. Spielrunde starten}\\
+	Eine neue Spielrunde wird gestartet, die erste Frage erscheint.
+	\item \textbf{11. Frage beantworten}\\
+	Der Spieler hat 20 Sekunden Zeit zu antworten.
+	\item \textbf{12. Einstellungen ändern}\\
+	Unter Einstellungen kann der Benutzername und das Passwort geändert werden
+	\item \textbf{13. Punktzahl anzeigen}\\
+	Rangliste mit den Punktzahlen aller Mitspieler wird angezeigt
+	\item \textbf{14. Website wird aufgerufen}\\
+	Website wird angezeigt.
+	\item \textbf{15. Admin anmelden}\\
+	Benutzer meldet sich als Admin an. Die Website ist nur für Administratoren verwendbar.
+	\item \textbf{16. Admin abmelden}\\
+	Benutzer meldet sich als Admin ab.
+	\item \textbf{17. Frage hinzufügen}\\
+	Eine neue Frage wird hinzugefügt
+	\item \textbf{18. Frage bearbeiten}\\
+	Eine vorhandene Frage wird bearbeitet
+	\item \textbf{19. Frage löschen}\\
+	Eine vorhandene Frage wird gelöscht
+	\item \textbf{20. User löschen}\\
+	Bestimmter User wird gelöscht
+\end{itemize}
 
 \subsection{Charakteristika der Benutzer}
   {\em Beschreibt hier Eure typischen Benutzer. Benutzt dazu die in
