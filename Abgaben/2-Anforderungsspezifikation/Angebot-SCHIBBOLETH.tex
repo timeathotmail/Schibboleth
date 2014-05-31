@@ -1,0 +1,121 @@
+\documentclass[fontsize=12pt,paper=a4,twoside]{scrartcl}
+
+\newcommand{\grad}{\ensuremath{^{\circ}} }
+\renewcommand{\strut}{\vrule width 0pt height5mm depth2mm}
+
+\usepackage[utf8]{inputenc}
+\usepackage[final]{pdfpages}
+% obere Seitenränder gestalten können
+\usepackage{fancyhdr}
+\usepackage{moreverb}
+% Graphiken als jpg, png etc. einbinden können
+\usepackage{graphicx}
+\usepackage{stmaryrd}
+% Floats Objekte mit [H] festsetzen
+\usepackage{float}
+% setzt URLs schön mit \url{http://bla.laber.com/~mypage}
+\usepackage{url}
+% Externe PDF's einbinden können
+\usepackage{pdflscape}
+% Verweise innerhalb des Dokuments schick mit " ... auf Seite ... "
+% automatisch versehen. Dazu \vref{labelname} benutzen
+\usepackage[ngerman]{varioref}
+\usepackage[ngerman]{babel}
+\usepackage{ngerman}
+% Bibliographie
+\usepackage{bibgerm}
+% Tabellen
+\usepackage{tabularx}
+\usepackage{supertabular}
+\usepackage[colorlinks=true, pdfstartview=FitV, linkcolor=blue,
+            citecolor=blue, urlcolor=blue, hyperfigures=true,
+            pdftex=true]{hyperref}
+\usepackage{bookmark}
+
+\newboolean{langversion} %Deklaration
+\setboolean{langversion}{false} %Zuweisung ist 'false' für Blockkurs
+\newcommand{\highlight}[1]{\textcolor{blue}{\textbf{#1}}}
+\newcommand{\nurlangversion}[0]{%
+\ifthenelse{\boolean{langversion}}{\highlight{Muss in SWP-2 ausgefüllt werden}}{\highlight{Entfällt in SWP-1}}}
+
+\newcommand{\swp}[0]{\ifthenelse{\boolean{langversion}}%
+{Software--Projekt 2}{Software--Projekt 1}}
+\newcommand{\jahr}[0]{2013}
+\newcommand{\semester}[0]{\ifthenelse{\boolean{langversion}}{WiSe}{SoSe} \jahr}
+
+% Damit Latex nicht zu lange Zeilen produziert:
+\sloppy
+%Uneinheitlicher unterer Seitenrand:
+%\raggedbottom
+
+% Kein Erstzeileneinzug beim Absatzanfang
+% Sieht aber nur gut aus, wenn man zwischen Absätzen viel Platz einbaut
+\setlength{\parindent}{0ex}
+
+% Abstand zwischen zwei Absätzen
+\setlength{\parskip}{1ex}
+
+% Seitenränder für Korrekturen verändern
+\addtolength{\evensidemargin}{-1cm}
+\addtolength{\oddsidemargin}{1cm}
+
+\bibliographystyle{gerapali}
+
+
+
+%
+% Und jetzt geht das Dokument los....
+%
+
+\begin{document}
+\begin{center}
+\includegraphics[width=0.6\textwidth]{Bilder/Logo.png}
+\end{center}
+
+\section*{Angebot}\footnote{Das Angebot basiert zu großen Teilen auf dem Angebot der Gruppe \textit{IT\_R3V0LUTION} aus dem SWP2 des Wintersemesters 2013/14.}
+\textbf{Lieferant:}\\
+SCHIBBOLETH\\
+
+
+\textbf{Mitarbeiter:}\\
+Patrick Hollatz\\
+Tobias Dellert\\
+Olga Miloevich\\
+Tim Ellhoff\\
+Daniel Pupat\\
+Tim Wiechers
+
+\textbf{Empfänger:}\\
+Universität Bremen\\
+Auftraggeber:Frau Sprindt\\
+Rektorat der Universität Bremen
+(vertreten durch die Pressestelle)\\
+Bibliothekstraße 1\\
+28359 Bremen
+
+\textbf{Liefergegenstand:}\\
+Wir bieten eine Quiz-App an, die dazu dienen soll, dass die Spieler bzw. Nutzer der App die Universität Bremen näher kennen lernen sollen. Außerdem soll sie natürlich Spaß bringen, aber auch Neugier wecken und nicht zuletzt noch nicht vorhandenes Wissen vermitteln.\\
+Dabei setzen wir auf eine einfache, anschauliche, schnelle sowie benutzerfreundliche Software, damit alle Nutzer von Beginn an mit dieser problemlos umgehen können. Unsere Software baut sich auf die gestellten Mindestanforderungen auf\footnote{siehe Projektplan} und wir werden nur weitere Funktionen einbauen, wenn diese die Bedienung schneller und einfacher machen, jedoch keine Funktionen, welche die Software kompliziert machen würde.\\
+Wir werden die Software bis zum 10.08.2014 fertiggestellt haben und anschließend in der Universität installieren, sodass Sie die Software anschließend verwenden können. Wir bieten dazu an, ihren Mitarbeitern die Software hinreichend zu erklären, damit diese gleich nach der Installation in der Lage sind, damit umzugehen.\\
+Damit wir alles in die Wege leiten können, haben wir einen Kostenvorschlag von \textbf{68.000} Euro erechnet.\\
+Der Preis setzt sich aus der Anzahl der Mitarbeiter, dem Aufwand und dem Stundenlohn zusammen. Wir setzen einen Stundenlohn von 40 Euro für jeden Mitarbeiter an. Das Projekt geht über einen Zeitraum von 14 Wochen und für den Projektplan (27.04.2014-04.05.2014) haben wir 23,44 Stunden im Zeitraum von einer Woche pro Person gebraucht. \\
+Für die Anforderungsspezifikation etc. (05.05.2014-01.06.2014) haben wir ca. 9,44 Stunden pro Person gebraucht. \\
+Aus unseren Erfahrungen, die wir im Software-Projekt 1 gemacht haben, schätzen wir den Aufwand der Architekturbeschreibung etc.(02.06.2014-06.07.2014) auf ca. 15 Stunden und den der Implementierungsphase (07.07.2014-10.08.2014) auf 30 Stunden, da wir zwar schon einige Erfahrungen im Programmieren größerer Systeme gemacht haben, aber keine Profis sind. Dennoch muss berücksichtigt werden, dass die Implementierungsphase knapp bemessen ist und wir somit mehr Stunden pro Woche leisten müssen. Somit ergeben sich folgende Rechnungen für den Aufwand:\\
+
+\begin{table}[htbp]
+\begin{tabular}{|p{3cm}||p{2cm}|r|r|c|r|}
+\hline 
+\textbf{Phase} & \textbf{Dauer} & \textbf{Stunden(Woche)} & \textbf{Mitarbeiter} & \textbf{St.lohn} & \textbf{Betrag} \\ \hline \hline
+Projektplan & 1 Woche & 23,44 & 6 & 40 & 5625,60 Euro\\ \hline
+Anforderungs- & & & & & \\ 
+spezifikation & 3 Wochen & 9,44 & 6 & 40 & 6796,80 Euro\\ \hline
+Architektur & 5 Wochen & 15 & 6 & 40 & 18.000,00 Euro\\ \hline
+Implementierung & 5 Wochen& 30 & 6 & 40 & 36.000,00 Euro\\ \hline
+\textbf{Gesamt} & 14 Wochen &- &- &- & 66.422,40 Euro \\ \hline
+\end{tabular}
+\end{table}
+Somit kommen wir auf den Betrag von \textbf{66.422,40} Euro, hinzu kommt noch die Installation und Inbetriebnahme, weshalb sich ein Endbetrag von \textbf{68.000} Euro ergibt.\\
+Wir verwenden das Modell der Open-Source Lizenz, genauer das 'GNU General Public License' Modell\footnote{http://server02.is.uni-sb.de/courses/ident/highlights/opensource/lizenzen.php}.\\
+Wir gewährleisten, dass unsere Software nicht gegen deutsche Gesetze verstößt. Wir gewährleisten auch, dass die Software fehlerfrei funktioniert und alle Mindestanforderungen abdeckt.\\
+Im Preis sind nur Wartungen enthalten, wenn diese bis zu einer Woche nach Inbetriebnahme festgestellt werden. Dabei ist zu beachten, dass die Wartung keine neuen Funktionen enthält, sondern es wird nur bei technischen Problemen des Programms eine kostenfreie Wartung angeboten. Für die Wartung nehmen wir einen Stundenlohn von 40 Euro und der Preis wird sich dann daran messen. Bei schwerwiegenden Fehlern werden wir einen Mitarbeiter innerhalb von 3 Tagen zur Begutachtung schicken und dann darauf zeitnah reagieren. 
+\end{document}
