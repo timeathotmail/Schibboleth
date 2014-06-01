@@ -1,0 +1,67 @@
+*************FRAGEN zur Quiz-App**************Ergebnisse Kundengespräch 08.05.2014, 10-12 Uhr GW2 A2210 Tim Ellhoff*******
+
+Prototypvorstellung
+-22.05.14 9-13 Uhr (Papierprototyp, Powerpoint, alles möglich und uns überlassen (keine bessere Note wenn man suuuuper Prototypen vorstellt)
+
+Kontaktdaten des Kunden:
+-J. Sprindt, Tel. 21860154
+-Bei weiteren Fragen kontaktieren
+
+
+Registrierung
+-Passwort Selbstbestimmung?
+	- ja,
+-Gibt es eine Nutzernamen-Kontrolle?
+	- ja, Blacklist von Schipfwörtern/rassististischen Begriffen usw aufstellen und prüfen
+-Profilbild(eher unnötig, aber man kann ja fragen)
+	- unnötig, weglassen
+-Irgendwelche Nutzerdaten erwünscht?
+	- so wenig wie möglich, nur Benutzername + Kennwort 
+	- Spielen auch ohne Registrierung (mit PW) möglich, aber nur lokal auf einem Gerät, weiterspielen auf anderem Gerät dann nicht möglich
+-Soll es eine Profilansicht für sich selbst oder andere Spieler geben?
+	- nein
+
+Spielerlisten
+-gibt es Freundes-oder Rivalenlisten?
+	- nein
+
+
+Im Spiel
+-Fragen zufälliger Art nach Kategorie
+-keine Schwierigkeitsgraderhöhung/Stufen wie bei Wer wird Millionär, gemischte Fragen zufälliger Art
+-nur 1vs1?
+-auch alleine?
+	- auch alleine
+-wie viele Runden?
+	noch nicht geklärt, bleibt erstmal offen
+-welches Zeitlimit bei einer Frage?
+	- 10-20 Sekunden
+-Fragen kategorisiert?
+	- 3 Fragenkategorien, Campusleben, Forschung, Studium
+-Kategorien wählbar vor einer Runde?
+	- ja, Kat. kann ausgewählt werden
+-Fragen pro Runde: 3
+-Joker nicht von Beginn an freigeschaltet, muss man sich "erspielen" und verdienen: 50:50 Joker + Zeitverlängerung
+-Punktesystem wie in der Fußball Bundesliga: 3: gewonnen, 1: unentschieden, 0: verloren
+-Möglichkeit des Abbrechens des Spiels (Aufgeben, dann aber 1 Punkt Abzug als Strafe)
+-parallel laufende Spiele max 10 gleichzeitg, vom Admin editierbar
+
+
+Ranking
+-was soll alles im Ranking beachtet oder beschreiben werden?
+ 	- Spielhistorie, sinnvolle + aussagekräftige Statisktiken (bleibt aber uns überlassen was genau)
+
+Design
+- Corporate Design der Uni soll eingehalten werden (Uni-Logo), rot, weiß, grau, Wiedererkennungswert soll gewährleistet werden, siehe auch Uni Bremen Campus App
+- Sounds in der App erwünscht, Positive Sounds bei Abgabe richtiger Antwort usw.
+- Sprache ausschließlich Deutsch
+- Genderneutral, Nicht "Held" oder "Heldin", ggf. neutraler Begriff oder in dem Fall engl. Begriff wählen
+- Spieler sollen in der App geduzt werden
+- Link zur Uniwebseite, Verweis auf Social Media Anbindung der Uni (Facebook, Twitter....)
+
+Administration
+-Nutzernamen sollen vom Admin geändert oder unpassende/rassistische/beleidigende gelöschrt werden können
+-Übersicht des Rankings
+-Backuperstellung
+
+
