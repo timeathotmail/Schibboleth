@@ -122,7 +122,7 @@
   \\ ~
   \vspace{2cm}
   \\
-  \it Abgabe: 01.06.2014 --- Version 1.7\\ ~
+  \it Abgabe: 01.06.2014 --- Version 2.1\\ ~
   \end{center}
   \end{minipage}
 
@@ -162,6 +162,10 @@ Version & Datum & Änderungen \\
 1.6 & 30.05.2014 & Ausblick \\
 1.7 & 30.05.2014 & Charakteristika der Benutzer \\
 1.8 & 31.05.2014 & Softwaresystemattribute \\
+1.9 & 31.05.2014 & Datenmodell \\
+2.0 & 01.06.2014 & Anwendungsfälle \\
+2.1 & 01.06.2014 & Aktionen
+
 
 \end{tabular}
 
@@ -176,16 +180,15 @@ Diese Vereinbarung haben wir in der Kick-Off-Veranstaltung für RE SWP 2014 mit 
 
 \subsection{Zweck}
   
-Zweck dieser Anforderungsspezifikation ist es, die Funktionalität und für unser Produkt bestehende Rahmenbedingungen zu spezifizieren. Die Rahmenbedingungen sind in dem Kapitel 2.5 Einschränkungen detailliert beschrieben. Sinn dieser Spezifikation ist es, dass jeder Entwickler, der an dieser Software beteiligt ist, genau weiß wie die Software gestaltet werden, und was für Funktionen sie enthalten soll.
+Zweck dieser Anforderungsspezifikation ist es, die Funktionalität und die für unser Produkt bestehenden Rahmenbedingungen zu spezifizieren. Die Rahmenbedingungen sind in dem Kapitel \ref{einschraenkungen} Einschränkungen detailliert beschrieben. Sinn dieser Spezifikation ist es, dass jeder Entwickler, der an dieser Software beteiligt ist, genau weiß, wie die Software gestaltet werden und was für Funktionen sie enthalten soll.
 
-Dieses Dokument dient zusätzlich als Vertragsgegenstand, weil es alle mit dem Kunden besprochenen Leistungen schriftlich festhält, und gemeinsam mit dem Angebot auch alle Punkte betreffend der Kosten angibt. Bei Nicht-Erbringung der Leistung treten gesetzliche Regelungen in Kraft, wie z.B. eine Kostenreduktion oder die Nachlieferung der fehlenden
-bzw. nicht funktionsfähigen Bestandteile.
+Dieses Dokument dient zusätzlich als Vertragsgegenstand, weil es alle mit dem Kunden besprochenen Leistungen schriftlich festhält und gemeinsam mit dem Angebot auch alle Punkte betreffend der Kosten angibt. Bei Nicht-Erbringung der Leistung treten gesetzliche Regelungen in Kraft, wie z.B. eine Kostenreduktion oder die Nachlieferung der fehlenden bzw. nicht funktionsfähigen Bestandteile.
 
 \subsection{Rahmen}
   
-Es soll eine Quiz-Applikation für Android Geräte entwickelt werden, welche da Spielen gegen andere Menschen ermöglicht. Die interne Umsetzung dieser Funktionen obliegt unserer Entscheidung, allerdings soll die Software für nicht Entwickler intuitiv benutzbar sein.\\
+Es soll eine Quiz-Applikation für Android Geräte entwickelt werden, welche das Spielen gegen andere Menschen ermöglicht. Die interne Umsetzung dieser Funktionen obliegt unserer Entscheidung, allerdings soll die Software für Nich-Entwickler intuitiv benutzbar sein.\\
 
-Zum Produktumfang gehört neben der Software ein Handbuch, das die Verwendung der Software so erklärt, dass jeder diese verstehen kann. Außerdem wir eine Installationsanleitung für die Software mitgeliefert.
+Zum Produktumfang gehört neben der Software ein Handbuch, das die Verwendung der Software so erklärt, dass jeder diese verstehen kann. Außerdem haben wir eine Installationsanleitung für die Software mitgeliefert.
 
 \subsection{Definitionen, Akronyme und Abkürzungen}
 
@@ -202,11 +205,7 @@ den Rahmen des zu entwickelnden Produkts, sowie eine Kurzbeschreibung der auftau
 Der zweite Abschnitt beinhaltet eine allgemeine Beschreibung der Software, deren Inhalt folgender ist: Ist-Analyse, die Beschreibungen der Produktperspektive, Anwendungsfälle, Spielelemente, Regeln, Persona, Einschränkungen, Annahmen und
 Abhängigkeiten, Ausblick.\\
 
-Der dritte Abschnitt ist eine detaillierte Beschreibung, welche aus einem Datenmodell, einer detaillierte Beschreibung der Anwendungsfälle, den dazugehörigen Aktionen, einer Beschreibung der Entwurfseinschränkungen, der Softwaresystemattribute sowie weitere Anforderungen besteht.\\
-
-Im vierten und letzten Abschnitt befindet sich ein Anhang, der Dokumente enthält, die zur Entwicklung dieses
-Dokuments dienlich gewesen sind.
-
+Der dritte Abschnitt ist eine detaillierte Beschreibung, welche aus einem Datenmodell, einer detaillierten Beschreibung der Anwendungsfälle, den dazugehörigen Aktionen, einer Beschreibung der Entwurfseinschränkungen, der Softwaresystemattribute sowie weitere Anforderungen besteht.\\
 
 \section{Allgemeine Beschreibung}
 \label{ch:AllgemeineBeschreibung}
@@ -476,7 +475,7 @@ Es handelt sich bei dem System um ein lauffähiges Gesamtpaket. Es muss keine Da
     
     Text...
   
-  \subsection{Einschränkungen (Tim E.)}
+  \subsection{Einschränkungen (Tim E.)}\label{einschraenkungen}
 
 Im Folgenden listen wir die Mindestanforderungen des Produkts auf, die nur mithilfe eines Logins bei StudIP einzusehen sind\footnote{\url{https://elearning.uni-bremen.de/scm.php?cid=2b323f34b16a84e8dce31dcdfc0be6ad\&show\_scm=4c88951a202b2543c96de2c8a476d471}}.
 
