@@ -428,8 +428,8 @@ Es handelt sich bei dem System um ein lauffähiges Gesamtpaket. Es muss keine Da
 \end{itemize}
 
 \subsection{Charakteristika der Benutzer (Tim W.)}
-	\begin{tabular}{|r|l|}\hline
-       Name: & Armin Admin\\\hline
+	\begin{tabular}{|p{7,5cm}|p{7,5cm}|}\hline
+       \textbf{Name:} &  \textbf{Armin Admin}\\\hline
        Benutzertyp: & Administrator\\\hline
        Tätigkeit	& Redakteur\\\hline
        Wohnort & Uniallee, Bremen\\\hline
@@ -438,8 +438,8 @@ Es handelt sich bei dem System um ein lauffähiges Gesamtpaket. Es muss keine Da
        Aufgaben & Verwaltung und Systemwartung\\\hline
     \end{tabular}\\
         
-    	\begin{tabular}{|r|l|}\hline
-       Name: & Paul Neuling\\\hline
+    	\begin{tabular}{|p{7,5cm}|p{7,5cm}|}\hline
+        \textbf{Name:} &  \textbf{Paul Neuling}\\\hline
        Benutzertyp: & Gelegenheitsspieler \\\hline
        Tätigkeit	& Student\\\hline
        Wohnort & Uniallee, Bremen\\\hline
@@ -447,8 +447,8 @@ Es handelt sich bei dem System um ein lauffähiges Gesamtpaket. Es muss keine Da
        Motivation & Etwas über die Uni lernen und Spaß haben\\\hline
     \end{tabular}\\
     
-    	\begin{tabular}{|r|l|}\hline
-       Name: & Klaus Zocker\\\hline
+    	\begin{tabular}{|p{7,5cm}|p{7,5cm}|}\hline
+        \textbf{Name:} &  \textbf{Klaus Zocker}\\\hline
        Benutzertyp: & Häufiger Spieler \\\hline
        Tätigkeit	& Student\\\hline
        Wohnort & Uniallee, Bremen\\\hline
@@ -456,14 +456,30 @@ Es handelt sich bei dem System um ein lauffähiges Gesamtpaket. Es muss keine Da
        Motivation & Will die Rangliste anführen\\\hline
     \end{tabular}\\
     
-    \begin{tabular}{|r|l|}\hline
-       Name: & Sabine Ohnenetz\\\hline
+    \begin{tabular}{|p{7,5cm}|p{7,5cm}|}\hline
+        \textbf{Name:} &  \textbf{Sabine Ohnenetz}\\\hline
        Benutzertyp: & Gelegenheitsspielerin \\\hline
        Tätigkeit	& Student\\\hline
        Wohnort & Uniallee, Bremen\\\hline
        Alter	 & 19\\\hline
        Motivation & Offline etwas spielen \\\hline
     \end{tabular}\\
+    
+    \textbf{Armin Admin}
+    
+    Text...
+    
+    \textbf{Paul Neuling}
+    
+    Text...
+    
+    \textbf{Klaus Zocker}
+    
+    Text...
+    
+    \textbf{Sabine Ohnenetz}
+    
+    Text...
   
   \subsection{Einschränkungen (Tim E.)}
 
@@ -578,163 +594,37 @@ Des Weiteren wird davon ausgegangen, dass sich die Nutzer der Software zwar mit 
   vorgesehen).}
 
 \subsection{Datenmodell (Tobias)}
-  {\em Das Datenmodell im Kontext des Pflichtenhefts ist {\glqq}die
-  Darstellung von Informationen und deren Beziehungen in einem
-  fachlogischen Konzept{\grqq}. Es soll hier gezeigt werden, welche
-  Einheiten für das existierende System relevant sind und welche
-  Beziehungen zwischen diesen Einheiten gelten. Es handelt sich
-  hierbei noch nicht um ein Datenbankschema oder eine Spezifikation
-  von Klassen für die Implementierung (Entwurf), sondern um die
-  Modellierung der realen Welt. Das Datenmodell ist leitend für den
-  Entwurf (weil alles darin beschrieben sich auch in der Software 
-  wiederfinden wird), aber nimmt den Entwurf nicht schon vorweg.
-  
-  Das Datenmodell soll als UML-Klassendiagramm angegeben werden.
-  Wichtig ist hierbei die korrekte Verwendung der UML: Klassen,
-  Attribute, Generalisierung, Assoziation, Aggregation, Komposition,
-  Multiplizitäten. Außerdem sollte das Diagramm sinnvoll und gut
-  lesbar sein. Dazu gehört weiterhin eine kurze Beschreibung des
-  Modells mit ergänzenden Informationen, insbesondere wenn die
-  Relationen durch ihren Namen nicht selbsterklärend sind. Gebt
-  unbedingt ein Mengengerüst für die Daten an: Wie viele Instanzen der
-  wichtigsten Klassen werden erwartet? Erwartet Ihr Änderungen im
-  Datenvolumen in der Zukunft?}
 
 
 \subsection{Anwendungsfälle (Tobias und Daniel)}
-  {\em Dieser Teil enthält die \textbf{funktionalen Anforderungen} an
-  das System. Diese werden durch Anwendungsfälle beschrieben. Insofern
-  müssen die Anwendungsfälle die Funktionalität des Systems
-  vollständig abdecken. Daher müssen auch Varianten von
-  Standard\-ab\-läufen sowie das Verhalten im Fehlerfall behandelt werden.
   
-  In den Anwendungsfällen beschreibt Ihr, wie Eure Personas mit dem
-  System interagieren, wenn sie ein bestimmtes Ziel erreichen wollen.
-  Dabei sollte der Anwendungsfall zum Profil der Persona passen, also
-  eine typische Anwendung seiner Personengruppe sein. Ihr solltet die
-  Anwendungsfälle textuell beschreiben (im unten aufgeführten Schema)
-  und im Fall von komplexen Anwendungsfällen zusätzlich
-  Sequenzdiagramme verwenden, um durch graphische Darstellung das
-  Verständnis zu erleichtern.  Stellt sicher, dass die
-  Mindestanforderungen auf jeden Fall erfasst sind.  Weiterhin sollen
-  hier noch keine Implementierungsdetails festgelegt werden, um keine
-  Entwurfsentscheidungen vorwegzunehmen.
-
-  Verwendet die Screenshots oder digitalisierten Bilder Eures
-  Papierprototypen, um die Benutzungsführung in den Anwendungsfällen
-  zu illustrieren und die konkrete Benutzer\-oberfläche, die es zu
-  implementieren gilt, zu spezifizieren. Die Bilder sollten im Text an
-  der entsprechenden Stelle referenziert werden, um das Verständnis
-  für die Abläufe zu gewährleisten. Die Beschreibung muss so genau
-  sein, dass klar ist, wie welche Aktionen ausgelöst werden und was
-  das für Folgen hat (Beispiel: {\glqq}Benutzer startet die
-  Suche{\grqq} -- wie macht er das?  {\glqq}{\ldots}durch Drücken des
-  Buttons {\glq}Suche{\grq}{\grqq}). Die Spezifikation, die die
-  Navigation zwischen Screens und Dialogen beschreibt, nennt man
-  das Navigationsmodell. Es kann zum Beispiel in der Notation eines   
-  UML-Zustandsdiagrammes ausgedrückt werden, wobei jeder Screen/Dialog als
-  Zustand aufgefasst wird, Benutzerinteraktionen und sonstige Ereignisse
-  als Transitionen dargestellt werden.
-
-  Die Struktur der textuellen Beschreibung sollte sein:
-  \begin{enumerate}
-    \item eindeutiger Name des Anwendungsfalls mit eindeutiger Nummer
-    
-    \item Akteure: welche externen Instanzen interagieren mit
-    dem System in diesem Anwendungsfall?  
-    
-    \item Vorbedingungen: Ausgangszustand, der vor Beginn des
-    Anwendungsfalls gelten muss -- hier sollte auch das Ziel des Akteurs
-    genannt werden
-    
-    \item Regulärer Ablauf: Abfolge von Aktionen der Akteure und
-    Reaktionen des Systems
-    
-    \item Varianten: mögliche Abweichungen vom regulären Ablauf, z.B.\ 
-    Auslassen oder Wiederholen von Aktionen
-    
-    \item Nachbedingung: Endzustand und dann mögliche Folgeaktionen 
-  
-    \item Fehler-/Ausnahmefälle mit deren Nachbedingung; z.B.\ wie wird
-    auf ungültige Eingaben reagiert?
-  \end{enumerate}
-  }
 
 \subsection{Aktionen}
-  {\em Hier sollten die gleichen Aktionen wie in den Anwendungsfällen
-  genannt und genauer beschrieben werden. Mit anderen Worten: Die
-  Anwendungsfälle müssen vollständig durch Ausführung von Aktionen aus
-  dieser Liste durchführbar sein. Im Prinzip muss es z.B.\ für jeden
-  Button/Menüpunkt/Link eine Aktion geben. Dabei ist zu beachten:
-  \begin{itemize}
-    \item Die Namen sollten sinnvoll und eindeutig sein.
-
-    \item Die Parameter der Aktionen sollen angegeben werden. Hier
-    sollen sprechende Namen verwendet werden. Eventuell müssen die
-    Parameter auch genauer erläutert werden.
-
-    \item Es müssen maximale Ausführungszeiten für jede Operation
-    angegeben werden.
-    
-  \item Die Gruppierung und Sortierung sollte sinnvoll sein
-    (z.B. alphabetisch).
-  \end{itemize}
-
-  Wenn Ihr z.B.\ irgendwo in Eurer GUI ein Suchfeld habt, in das Ihr
-  den Namen eines Kunden eintragen könnt, und einen Button, welcher die
-  Suche startet, dann wird es vermutlich eine Aktion {\bf Kunde
-    suchen(name)} geben. Dies ist eine Funktion, die Euer System
-  bereitstellt und die durch Anklicken des Buttons ausgelöst wird. Der
-  Anwendungsfall {\bf Kunde suchen} verwendet dann diese Aktion,
-  enthält aber zusätzlich die Beschreibung der Interaktion mit dem
-  System.
   
-  Dieser Abschnitt ist im Standard im Prinzip vorgesehen, weil hierzu
-  grundsätzlich eine Aussage gemacht werden muss. Die Aktionen sind
-  letztlich die Produktfunktionen, während die Anwendungsfälle die
-  Interaktion zwischen Akteuren und System beschreiben. }
 
-  
-\subsection{Entwurfseinschränkungen}
-\nurlangversion
 
-{\em Wurde bereits in \ref{sec:Einschraenkungen} behandelt und muss
-  daher hier nicht wiederholt werden. Falls aber eine detailliertere
-  Beschreibung notwendig wäre, wäre hier der geeignete Ort.}
-  
 
 \subsection{Softwaresystemattribute}
 \label{sec:softwaresystemattribute}
 
-  {\em Hier werden die sogenannten „nichtfunktionalen Anforderungen“
-  spezifiziert. Dazu gehören beispielsweise:
-  \begin{itemize}
-    \item Performanz
-    \item Zuverlässigkeit (Korrektheit, Robustheit, Ausfallsicherheit)
-    \item Verfügbarkeit
-    \item Sicherheit
-    \item Wartbarkeit
-    \item Portabilität
-  \end{itemize}
-}
+  Hier werden die sogenannten „nichtfunktionalen Anforderungen“ spezifiziert. Dazu gehören beispielsweise: 
+\begin{itemize}
+	\item Performanz: Beim Entwickeln unserer Software wird Anspruch auf eine fließende Arbeitsweise gelegt, was bedeutet, dass Interaktionen mit dem System möglichst schnell zu bewältigen sind. Deshalb ist darauf zu achten, Berechnungsprozesse so wenig komplex wie möglich zu halten. Die Implementierung eines Ladezeichens bei aufkommenden Verbindungsschwierigkeiten ist selbstverständlich vorgesehen.
+	
+	\item Zuverlässigkeit (Korrektheit, Robustheit, Ausfallsicherheit): Die zu entwickelnde Software, insbesondere die Androidapplikation soll auf vielen verschiedenen Geräten funktionieren, weshalb trotz sorgfältig geplanten Testdurchläufe keine absolute Zuverlässigkeit garantiert werden kann. 
+	
+	\item Verfügbarkeit: Die Webapplikation soll wie gewohnt einfach über einen beliebigen Browser zugreifbar sein und die Androidappplikation soll auf jedem Gerät laufen, dass mit Android läuft und natürlich internetfähig ist. 
+	
+	\item Sicherheit: Sicherheit bezüglich der persönlichen Daten wird zum Teil durch den passwortgeschützten Login gewährleistet, wobei jeder Nutzer ein individuelles Passwort besitzt. Auf Profildaten haben nur der bestimmte eingeloggte Nutzer und der Admin Zugriff. Zusätzlich werden vor dem Versenden von Daten, diese via SSL verschlüsselt, was die Datensicherheit in unserem System garantiert.
+	
+	\item Wartbarkeit: Um eine gute Wartbarkeit zu gewährleisten, soll der Programmcode in Komponenten aufgeteilt werden, dessen Zuständigkeit klar definiert sein muss. Zusätzlich zu einer übersichtliche Programmstruktur, soll der Code sorgfältig und umfassend kommentiert werden.
+	
+	\item Portabilität: Da die Androidapplikation auf jedem androidfähigem Gerät laufen können soll, ist eine hohe Portabilität bereits gegeben. Durch Tests auf den verschiedensten Endgeräten kann die Applikation auf auf diesen absolut funktionstüchtig laufen. 
+\end{itemize}
 
-{\em Die spezifizierten Systemattribute müssen hinreichend konkret und
-  überprüfbar formuliert werden.}
 
 
 
-\subsection{Weitere Anforderungen}
-\nurlangversion
 
-{\em In diesem Abschnitt können weitere relevante Anforderungen
-  beschrieben werden, die in keine der oben genannten Abschnitte
-  passen.}
-
-\section{Anhang}
-\nurlangversion
-
-{\em Hier können weitere detailliertere Ergebnisse aus der Ist-Analyse
-  oder andere Informationen, die zur Erstellung der Spezifikation
-  gedient haben (z.B. Papierprototypen), angefügt werden.}
 
 \end{document}
