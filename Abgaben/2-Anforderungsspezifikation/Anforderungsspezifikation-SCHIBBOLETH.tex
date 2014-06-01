@@ -575,11 +575,11 @@ Die Implementierungssprache ist Java 6 oder höher (weitere zulässige Sprachen 
 
 \subsubsection{Sicherheitskritische Aspekte} \label{subsubsec:SicherheitsAspekte} Um das deutschen Datenschutzgesetz einzuhalten, muss der Kunde weitere Maßnahmen treffen. Diese sind nicht entscheidend für die Entwicklung der Software und liegen in der Verantwortung des Kunden.
 
-\subsection{Annahmen und Abhängigkeiten (Tim)} \label{subsec:Annahmen} Bis zur Auslieferung der Software wird sich der Kunde nicht ändern. Die Anforderungsspezifikation dient als eine Art Vertrag mit dem Kunden. Deshalb ist davon auszugehen, dass nach der Abgabe der Anforderungsspezifikation keine zusätzlichen Anforderungen hinzukommen. Abgabetermine haben Deadlines und sind somit strikt einzuhalten.\\
+\subsection{Annahmen und Abhängigkeiten (Tim E.)} \label{subsec:Annahmen} Bis zur Auslieferung der Software wird sich der Kunde nicht ändern. Die Anforderungsspezifikation dient als eine Art Vertrag mit dem Kunden. Deshalb ist davon auszugehen, dass nach der Abgabe der Anforderungsspezifikation keine zusätzlichen Anforderungen hinzukommen. Abgabetermine haben Deadlines und sind somit strikt einzuhalten.\\
 Des Weiteren wird davon ausgegangen, dass sich die Nutzer der Software zwar mit dem System eingehend auseinandersetzen. Es wird jedoch auch für den ungeübten Nutzer leicht möglich sein, dieses zu verwenden. Der jeweilige Nutzer sollte zumindest schon mal mit einem Computer bzw. Smartphone und dessen Bedienung vertraut sein.\\
 
 
-\subsection{Ausblick (Tim)} \label{subsec:Ausblick} Große Änderungen sind nach Auslieferung des Systems zwar nicht zu erwarten, aber es können sich dennoch immer wieder mit der Zeit Anpassungen ergeben, die zu diesem Zeitpunkt allerdings noch nicht feststehen.
+\subsection{Ausblick (Tim E.)} \label{subsec:Ausblick} Große Änderungen sind nach Auslieferung des Systems zwar nicht zu erwarten, aber es können sich dennoch immer wieder mit der Zeit Anpassungen ergeben, die zu diesem Zeitpunkt allerdings noch nicht feststehen.
 
 \section{Detaillierte Beschreibung}
 \label{ch:DetaillierteBeschreibung}
@@ -1112,6 +1112,85 @@ Am Ende eines Spiels wird der Gewinner in einem Boolean eingetragen
 \item \textbf{Fehlerbedingung}: Falls Nutzername oder Passwort nicht den Anforderungen entsprechen, wird der Nutzer an den entsprechenden Feldern darauf hingewiesen.
 \item \textbf{max. Reaktionszeit}: 5 sek.
 \end{itemize}
+
+
+\subsubsection{Website.Anmelden(nutzername, passwort)}
+\begin{itemize}
+\item Der Admin gibt seine Daten, mit denen er sich einloggen möchte, in zwei Eingabefelder ein und bestätigt die Eingabe per Button.
+\item \textbf{Vorbedingung}: Der Nutzer ist als Admin registriert.
+\item \textbf{Nachbedingung}: Der Admin ist eingeloggt.
+\item \textbf{Fehlerbedingung}: Falls Nutzername oder Passwort falsch sind, kann der Nutzer es nochmal probieren.
+\item \textbf{max. Reaktionszeit}: 3 sek.
+\end{itemize}
+
+\subsubsection{Website.Abmelden()}
+\begin{itemize}
+\item Der Admin kann sich über das Menü abmelden.
+\item \textbf{Vorbedingung}: Der Admin ist eingeloggt.
+\item \textbf{Nachbedingung}: Der Admin ist ausgeloggt.
+\item \textbf{max. Reaktionszeit}: 2 sek.
+\end{itemize}
+
+\subsubsection{Website.Frage bearbeiten(id, frage, antworten, kategorie)}
+\begin{itemize}
+\item Die Zellen der Fragenliste sind bearbeitbar. Der Admin kann an den nötigen Stellen einfach Änderungen vornehmen und mit einem Button bestätigen.
+\item \textbf{Vorbedingung}: Der Admin hat die Fragenliste aufgerufen.
+\item \textbf{Nachbedingung}: Die Änderungen wurden in der Datenbank eingetragen. Die Änderungen werden nun in der Liste angezeigt.
+\item \textbf{max. Reaktionszeit}: 5 sek.
+\end{itemize}
+
+\subsubsection{Website.Frage hinzufügen(frage, antworten, kategorie)}
+\begin{itemize}
+\item Der Admin kann über einen Button ein Formular zum Hinzufügen einer neuen Frage aufrufen. Frage, Antworten und Kategorie werden in Eingabefelder eingetragen und per Button abgespeichert.
+\item \textbf{Vorbedingung}: Der Admin hat die Fragenliste aufgerufen.
+\item \textbf{Nachbedingung}: Die Frage wurde in der Datenbank eingetragen. Die Frage wird nun in der Liste angezeigt.
+\item \textbf{Fehlerbedingung}: Falls etwas schief läuft, kann der Admin es nochmal probieren, die Daten im Formular gehen nicht verloren.
+\item \textbf{max. Reaktionszeit}: 5 sek.
+\end{itemize}
+
+\subsubsection{Website.Frage löschen(id)}
+\begin{itemize}
+\item Die Zeilen der Fragenliste können markiert werden. Mehrere markierte Fragen können mit einem Buttondruck gelöscht werden, wobei dies mit einem weiteren Klick bestätigt oder abgebrochen werden kann.
+\item \textbf{Vorbedingung}: Der Admin hat die Fragenliste aufgerufen.
+\item \textbf{Nachbedingung}: Die markierten Fragen wurden gelöscht. Die Änderungen werden nun in der Liste angezeigt.
+\item \textbf{Fehlerbedingung}: Falls etwas schief läuft, kann der Admin es nochmal probieren, die markierten Fragen bleiben weiterhin markiert.
+\item \textbf{max. Reaktionszeit}: 5 sek.
+\end{itemize}
+
+\subsubsection{Website.Fragenliste aufrufen()}
+\begin{itemize}
+\item Der Admin kann über das Menü die Liste aller Fragen einsehen.
+\item \textbf{Vorbedingung}: Der Admin ist eingeloggt.
+\item \textbf{Nachbedingung}: Dem Admin wird die Fragenliste angezeigt. 
+\item \textbf{max. Reaktionszeit}: 3 sek.
+\end{itemize}
+
+\subsubsection{Website.Nutzerliste aufrufen()}
+\begin{itemize}
+\item Der Admin kann über das Menü die Liste registrierter Nutzer einsehen.
+\item \textbf{Vorbedingung}: Der Admin ist eingeloggt.
+\item \textbf{Nachbedingung}: Dem Admin wird die Nutzerliste angezeigt. 
+\item \textbf{max. Reaktionszeit}: 3 sek.
+\end{itemize}
+
+\subsubsection{Website.Nutzer löschen(id)}
+\begin{itemize}
+\item Die Zeilen der Nutzerliste können markiert werden. Mehrere markierte Nutzer können mit einem Buttondruck gelöscht werden, wobei dies mit einem weiteren Klick bestätigt oder abgebrochen werden kann.
+\item \textbf{Vorbedingung}: Der Admin hat die Nutzerliste aufgerufen.
+\item \textbf{Nachbedingung}: Die markierten Nutzer wurden gelöscht. Die Änderungen werden nun in der Liste angezeigt.
+\item \textbf{Fehlerbedingung}: Falls etwas schief läuft, kann der Admin es nochmal probieren, die markierten Nutzer bleiben weiterhin markiert.
+\item \textbf{max. Reaktionszeit}: 5 sek.
+\end{itemize}
+
+\subsubsection{Website.Nutzernamen ändern()}
+\begin{itemize}
+\item Der Admin kann jeden Nutzernamen in der Liste bearbeiten und die Änderungen mit einem Button abspeichern.
+\item \textbf{Vorbedingung}: Der Admin hat die Nutzerliste aufgerufen.
+\item \textbf{Nachbedingung}: Die Nutzernamen werden in der Datenbank geändert. Die Nutzerliste ist weiterhin aufgerufen.
+\item \textbf{Fehlerbedingung}: Falls etwas schief läuft, kann der Admin es nochmal probieren, die aktuellen Änderungen bleiben in den Eingabefeldern erhalten.
+\item \textbf{max. Reaktionszeit}: 5 sek.
+\end{itemize}
+
 
 \subsection{Softwaresystemattribute Tim E.)}
 \label{sec:softwaresystemattribute}
