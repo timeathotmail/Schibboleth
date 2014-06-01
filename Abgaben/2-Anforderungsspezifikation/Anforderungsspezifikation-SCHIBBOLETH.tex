@@ -375,6 +375,7 @@ Wir unterscheiden zwischen dem normalen Betriebsmodus und einem Wartungsmodus, i
 Es handelt sich bei dem System um ein lauffähiges Gesamtpaket. Es muss keine Datenbank o.Ä. eingerichtet werden. Lediglich eine IP-Adresse muss eingerichtet werden. Somit ist keine lokale Anpassung nötig.
 
 \subsection{Anwendungsfälle (Daniel)}
+
 \begin{itemize}
 	\item \textbf{1. App starten}\\
 	Die App wird gestartet. 
@@ -386,22 +387,19 @@ Es handelt sich bei dem System um ein lauffähiges Gesamtpaket. Es muss keine Da
 	Der Benutzer meldet sich mit Benutzernamen und Passwort an. Die Daten werden gespeichert, sodass kein nochmaliges anmelden nötig ist.
 	\item \textbf{5. Benutzer abmelden}\\
 	Benutzer wird abgemeldet und muss sich beim nächsten Start wieder anmelden.
-	\item \textbf{6. Online Modus starten}\\
-	Der Online Modus wird gestartet. Einmaliges anmelden und Internet Verbindung erforderlich.
-	\item \textbf{7. Neues Spiel starten}\\
-	Eine Liste aller Spieler die online sind wird angezeigt.
-	\item \textbf{8. Gegner herausfordern}\\
+	\item \textbf{6. Spielen(Offline)}\\
+	Der Akteur spielt Offline.
+	\item \textbf{7. Spielen(Online)}\\
+	Es erscheint eine Auswahl zwischen Neues Spiel starten
+	und es werden alle offenen Spiele angezeigt
+	\item \textbf{8. Neues Spiel}\\
+	Es erscheint eine Liste aller Spieler die Online sind.
+	\item \textbf{9. Gegner herausfordern}\\
 	Aus der Liste kann ein Spieler angeklickt und herausgefordert werden.
-	\item \textbf{9. Herausforderung annehmen}\\
-	Bei einer Herausforderung kann der Gegner annehmen oder ablehnen.
-	\item \textbf{10. Spielrunde starten}\\
+	\item \textbf{10. Offenes Spiel spielen}\\
 	Eine neue Spielrunde wird gestartet, die erste Frage erscheint.
-	\item \textbf{11. Frage beantworten}\\
-	Der Spieler hat 20 Sekunden Zeit zu antworten.
-	\item \textbf{12. Einstellungen ändern}\\
+	\item \textbf{11. Einstellungen ändern}\\
 	Unter Einstellungen kann der Benutzername und das Passwort geändert werden
-	\item \textbf{13. Punktzahl anzeigen}\\
-	Rangliste mit den Punktzahlen aller Mitspieler wird angezeigt
 	\item \textbf{14. Website wird aufgerufen}\\
 	Website wird angezeigt.
 	\item \textbf{15. Admin anmelden}\\
@@ -585,141 +583,196 @@ Des Weiteren wird davon ausgegangen, dass sich die Nutzer der Software zwar mit 
 
 
 \subsection{Anwendungsfälle (Tobias und Daniel)}
-  
-  
-  \begin{table}
-  	[H] \label{1} 
-  	\begin{tabular}
-  		{|l|p{10cm}|} \hline \textbf{1} & \textbf{App starten} \\
-  		\hline \textbf{Akteure} & Paul Neuling, Klaus Zocker, Sabine Ohnenetz\\
-  		\hline \textbf{Ziel} & Der Akteur möchte die App starten \\
-  		\hline \textbf{Vorbedingungen} & App bereits heruntergeladen und installiert \\
-  		\hline \textbf{Regulärer Ablauf} & 1. Der Akteur startet die App, indem er auf den Startbutton drückt \\
-  		&2. Die App startet und zeigt die Startseite \\
-  		\hline \textbf{Varianten} & keine \\
-  		\hline \textbf{Nachbedingungen} & Die App ist gestartet und der Benutzer kann diese nun verwenden\\
-  		\hline \textbf{Fehler-/Ausnahmefälle} & keine \\
-  		\hline 
-  	\end{tabular}
-  \end{table}
-  
-  \begin{figure}
-  	[H] \caption{Startseite} 
-  	\includegraphics[width=1
-  	\textwidth]{QuizzLoginRegister.png} \label{pic:Startseite} 
-  \end{figure}
-  
-  \begin{table}
-  	[H] \label{2} 
-  	\begin{tabular}
-  		{|l|p{10cm}|} \hline \textbf{2} & \textbf{Offline-Modus starten} \\
-  		\hline \textbf{Akteure} & Paul Neuling, Sabine Ohnenetz\\
-  		\hline \textbf{Ziel} & Der Akteur möchte ohne Internet Verbindung und Anmeldung spielen \\
-  		\hline \textbf{Vorbedingungen} & App wurde bereits gestartet \\
-  		\hline \textbf{Regulärer Ablauf} & 1. Der Akteur drückt auf Jetzt Spielen \\
-  		\hline \textbf{Varianten} & keine \\
-  		\hline \textbf{Nachbedingungen} & Der Akteur kann nun ohne Anmeldung spielen\\
-  		\hline \textbf{Fehler-/Ausnahmefälle} & keine \\
-  		\hline 
-  	\end{tabular}
-  \end{table}
-  
-  \begin{table}
-  	[H] \label{3} 
-  	\begin{tabular}
-  		{|l|p{10cm}|} \hline \textbf{3} & \textbf{Benutzer registrieren} \\
-  		\hline \textbf{Akteure} & Paul Neuling, Klaus Zocker\\
-  		\hline \textbf{Ziel} & Der Akteur möchte sich registrieren um im Internet gegen andere zu spielen \\
-  		\hline \textbf{Vorbedingungen} & App wurde bereits gestartet \\
-  		\hline \textbf{Regulärer Ablauf} & 1. Der Akteur drückt auf registrieren \\
-  		&2 Der Akteur gibt seinen Benutzernamen und Passwort an\\
-  		&3 Der Akteur drückt auf registrieren\\
-  		\hline \textbf{Varianten} & keine \\
-  		\hline \textbf{Nachbedingungen} & Der Akteur ist nun registriert und kann sich anmelden\\
-  		\hline \textbf{Fehler-/Ausnahmefälle} & 1. Es ist keine Internet-Verbindung vorhanden \\
-  		&2. Benutzername ist bereits vergeben\\
-  		&3. Doppelte Passworteingabe stimmt nicht überein\\
-  		\hline 
-  	\end{tabular}
-  \end{table}
-  
-  \begin{table}
-  	[H] \label{4} 
-  	\begin{tabular}
-  		{|l|p{10cm}|} \hline \textbf{4} & \textbf{Benutzer anmelden} \\
-  		\hline \textbf{Akteure} & Paul Neuling, Klaus Zocker\\
-  		\hline \textbf{Ziel} & Der Akteur möchte sich anmelden und dann online spielen \\
-  		\hline \textbf{Vorbedingungen} & App wurde bereits gestartet \\
-  		\hline \textbf{Regulärer Ablauf} & 1. Der Akteur gibt seinen Benutzernamen und sein Passwort ein \\
-  		&2 Der Akteur drückt auf anmelden\\
-  		\hline \textbf{Varianten} & keine \\
-  		\hline \textbf{Nachbedingungen} & Der Akteur ist nun angemeldet und kann Online-Spielen\\
-  		\hline \textbf{Fehler-/Ausnahmefälle} & 1. Es ist keine Internet-Verbindung vorhanden \\
-  		&2. Benutzername existiert nicht\\
-  		&3. Passwort ist falsch\\
-  		\hline 
-  	\end{tabular}
-  \end{table}
-  
-  \begin{table}
-  	[H] \label{5} 
-  	\begin{tabular}
-  		{|l|p{10cm}|} \hline \textbf{5} & \textbf{Benutzer abmelden} \\
-  		\hline \textbf{Akteure} & Paul Neuling, Klaus Zocker\\
-  		\hline \textbf{Ziel} & Der Akteur möchte sich abmelden\\
-  		\hline \textbf{Vorbedingungen} & Der Akteur war bereits angemeldet \\
-  		\hline \textbf{Regulärer Ablauf} & 1. Der Akteur drückt auf abmelden \\
-  		\hline \textbf{Varianten} & 1. Der Akteur ist bereits angemeldet, hat aber keine Internet-Verbindung und wird automatisch abgemeldet \\
-  		\hline \textbf{Nachbedingungen} & Der Akteur ist nun abgemeldet und ist wieder auf dem Startbildschirm\\
-  		\hline \textbf{Fehler-/Ausnahmefälle} & keine \\
-  		\hline 
-  	\end{tabular}
-  \end{table}
-  
-  \begin{table}
-  	[H] \label{6} 
-  	\begin{tabular}
-  		{|l|p{10cm}|} \hline \textbf{6} & \textbf{Spielen(Offline)} \\
-  		\hline \textbf{Akteure} & Sabine Ohnenetz\\
-  		\hline \textbf{Ziel} & Der Akteur möchte spielen\\
-  		\hline \textbf{Vorbedingungen} & Der Akteur hat den Anwendungsfall 2 ausgeführt \\
-  		\hline \textbf{Regulärer Ablauf} & 1. Der Akteur drückt auf spielen \\
-  		\hline \textbf{Varianten} & keine \\
-  		\hline \textbf{Nachbedingungen} & Die Spielrunde wird gestartet\\
-  		\hline \textbf{Fehler-/Ausnahmefälle} & keine \\
-  		\hline 
-  	\end{tabular}
-  \end{table}
-  
-  \begin{table}
-  	[H] \label{7} 
-  	\begin{tabular}
-  		{|l|p{10cm}|} \hline \textbf{7} & \textbf{Neues Spiel} \\
-  		\hline \textbf{Akteure} & Paul Neuling, Klaus Zocker\\
-  		\hline \textbf{Ziel} & Der Akteur möchte ein neues Spiel starten\\
-  		\hline \textbf{Vorbedingungen} & Der Akteur ist bereits Online angemeldet \\
-  		\hline \textbf{Regulärer Ablauf} & 1. Der Akteur drückt auf neues Spiel \\
-  		\hline \textbf{Varianten} & keine \\
-  		\hline \textbf{Nachbedingungen} & Es wird eine Liste aller Spieler die Online sind angezeigt\\
-  		\hline \textbf{Fehler-/Ausnahmefälle} & Leere Liste, wenn keine Spieler online sind \\
-  		\hline 
-  	\end{tabular}
-  \end{table}
-  
-  \begin{table}
-  	[H] \label{8} 
-  	\begin{tabular}
-  		{|l|p{10cm}|} \hline \textbf{8} & \textbf{Gegner herausfordern} \\
-  		\hline \textbf{Akteure} & Paul Neuling, Klaus Zocker\\
-  		\hline \textbf{Ziel} & Der Akteur möchte einen anderen Spieler herausfordern\\
-  		\hline \textbf{Vorbedingungen} & Der Akteur hat bereits ein neues Spiel gestartet und eine Liste ist erschien(Anwendungsfall 7) \\
-  		\hline \textbf{Regulärer Ablauf} & 1. Der Akteur drückt in der Liste auf einen Spieler und fordert ihn heraus\\
-  		\hline \textbf{Varianten} & keine \\
-  		\hline \textbf{Nachbedingungen} & Es wird eine Anfrage an den Spieler gesendet\\
-  		\hline \textbf{Fehler-/Ausnahmefälle} & Leere Liste, wenn keine Spieler online sind \\
-  		\hline 
-  	\end{tabular}
-  \end{table}
+
+\begin{table}
+	[H] \label{1} 
+	\begin{tabular}
+		{|l|p{10cm}|} \hline \textbf{1} & \textbf{App starten} \\
+		\hline \textbf{Akteure} & Paul Neuling, Klaus Zocker, Sabine Ohnenetz\\
+		\hline \textbf{Ziel} & Der Akteur möchte die App starten \\
+		\hline \textbf{Vorbedingungen} & App bereits heruntergeladen und installiert \\
+		\hline \textbf{Regulärer Ablauf} & 1. Der Akteur startet die App, indem er auf den Startbutton drückt \\
+		&2. Die App startet und zeigt die Startseite \\
+		\hline \textbf{Varianten} & keine \\
+		\hline \textbf{Nachbedingungen} & Die App ist gestartet und der Benutzer kann diese nun verwenden\\
+		\hline \textbf{Fehler-/Ausnahmefälle} & keine \\
+		\hline 
+	\end{tabular}
+\end{table}
+
+\begin{figure}
+	[H] \caption{Startseite} 
+	\includegraphics[width=0.5
+	\textwidth]{Bilder/QuizzLoginRegister.png} \label{pic:Startseite} 
+\end{figure}
+
+\begin{table}
+	[H] \label{2} 
+	\begin{tabular}
+		{|l|p{10cm}|} \hline \textbf{2} & \textbf{Offline-Modus starten} \\
+		\hline \textbf{Akteure} & Paul Neuling, Sabine Ohnenetz\\
+		\hline \textbf{Ziel} & Der Akteur möchte ohne Internet Verbindung und Anmeldung spielen \\
+		\hline \textbf{Vorbedingungen} & App wurde bereits gestartet \\
+		\hline \textbf{Regulärer Ablauf} & 1. Der Akteur drückt auf Jetzt Spielen \\
+		\hline \textbf{Varianten} & keine \\
+		\hline \textbf{Nachbedingungen} & Der Akteur kann nun ohne Anmeldung spielen\\
+		\hline \textbf{Fehler-/Ausnahmefälle} & keine \\
+		\hline 
+	\end{tabular}
+\end{table}
+
+\begin{table}
+	[H] \label{3} 
+	\begin{tabular}
+		{|l|p{10cm}|} \hline \textbf{3} & \textbf{Benutzer registrieren} \\
+		\hline \textbf{Akteure} & Paul Neuling, Klaus Zocker\\
+		\hline \textbf{Ziel} & Der Akteur möchte sich registrieren um im Internet gegen andere zu spielen \\
+		\hline \textbf{Vorbedingungen} & App wurde bereits gestartet \\
+		\hline \textbf{Regulärer Ablauf} & 1. Der Akteur drückt auf registrieren \\
+		&2 Der Akteur gibt seinen Benutzernamen und Passwort an\\
+		&3 Der Akteur drückt auf registrieren\\
+		\hline \textbf{Varianten} & keine \\
+		\hline \textbf{Nachbedingungen} & Der Akteur ist nun registriert und kann sich anmelden\\
+		\hline \textbf{Fehler-/Ausnahmefälle} & 1. Es ist keine Internet-Verbindung vorhanden \\
+		&2. Benutzername ist bereits vergeben\\
+		&3. Doppelte Passworteingabe stimmt nicht überein\\
+		\hline 
+	\end{tabular}
+\end{table}
+
+\begin{table}
+	[H] \label{4} 
+	\begin{tabular}
+		{|l|p{10cm}|} \hline \textbf{4} & \textbf{Benutzer anmelden} \\
+		\hline \textbf{Akteure} & Paul Neuling, Klaus Zocker\\
+		\hline \textbf{Ziel} & Der Akteur möchte sich anmelden und dann online spielen \\
+		\hline \textbf{Vorbedingungen} & App wurde bereits gestartet \\
+		\hline \textbf{Regulärer Ablauf} & 1. Der Akteur gibt seinen Benutzernamen und sein Passwort ein \\
+		&2 Der Akteur drückt auf anmelden\\
+		\hline \textbf{Varianten} & keine \\
+		\hline \textbf{Nachbedingungen} & Der Akteur ist nun angemeldet und kann Online-Spielen\\
+		\hline \textbf{Fehler-/Ausnahmefälle} & 1. Es ist keine Internet-Verbindung vorhanden \\
+		&2. Benutzername existiert nicht\\
+		&3. Passwort ist falsch\\
+		\hline 
+	\end{tabular}
+\end{table}
+
+\begin{table}
+	[H] \label{5} 
+	\begin{tabular}
+		{|l|p{10cm}|} \hline \textbf{5} & \textbf{Benutzer abmelden} \\
+		\hline \textbf{Akteure} & Paul Neuling, Klaus Zocker\\
+		\hline \textbf{Ziel} & Der Akteur möchte sich abmelden\\
+		\hline \textbf{Vorbedingungen} & Der Akteur war bereits angemeldet \\
+		\hline \textbf{Regulärer Ablauf} & 1. Der Akteur drückt auf abmelden \\
+		\hline \textbf{Varianten} & 1. Der Akteur ist bereits angemeldet, hat aber keine Internet-Verbindung und wird automatisch abgemeldet \\
+		\hline \textbf{Nachbedingungen} & Der Akteur ist nun abgemeldet und ist wieder auf dem Startbildschirm\\
+		\hline \textbf{Fehler-/Ausnahmefälle} & keine \\
+		\hline 
+	\end{tabular}
+\end{table}
+
+\begin{table}
+	[H] \label{6} 
+	\begin{tabular}
+		{|l|p{10cm}|} \hline \textbf{6} & \textbf{Spielen(Offline)} \\
+		\hline \textbf{Akteure} & Sabine Ohnenetz\\
+		\hline \textbf{Ziel} & Der Akteur möchte spielen\\
+		\hline \textbf{Vorbedingungen} & Der Akteur hat den Anwendungsfall 2 ausgeführt \\
+		\hline \textbf{Regulärer Ablauf} & 1. Der Akteur drückt auf spielen \\
+		\hline \textbf{Varianten} & keine \\
+		\hline \textbf{Nachbedingungen} & Die Spielrunde wird gestartet\\
+		\hline \textbf{Fehler-/Ausnahmefälle} & keine \\
+		\hline 
+	\end{tabular}
+\end{table}
+
+
+\begin{table}
+	[H] \label{7} 
+	\begin{tabular}
+		{|l|p{10cm}|} \hline \textbf{7} & \textbf{Spielen(Online)} \\
+		\hline \textbf{Akteure} & Paul Neuling, Klaus Zocker\\
+		\hline \textbf{Ziel} & Der Akteur möchte spielen\\
+		\hline \textbf{Vorbedingungen} & Der Akteur ist bereits Online angemeldet \\
+		\hline \textbf{Regulärer Ablauf} & 1. Der Akteur drückt auf Spielen\\
+		\hline \textbf{Varianten} & keine \\
+		\hline \textbf{Nachbedingungen} & Es erscheint eine Auswahl zwischen Neues Spiel starten und es werden alle offenen Spiele angezeigt\\
+		\hline \textbf{Fehler-/Ausnahmefälle} & keine \\
+		\hline 
+	\end{tabular}
+\end{table}
+
+
+\begin{table}
+	[H] \label{8} 
+	\begin{tabular}
+		{|l|p{10cm}|} \hline \textbf{8} & \textbf{Neues Spiel} \\
+		\hline \textbf{Akteure} & Paul Neuling, Klaus Zocker\\
+		\hline \textbf{Ziel} & Der Akteur möchte ein neues Spiel starten\\
+		\hline \textbf{Vorbedingungen} & Der Akteur hat bereits Anwendungsfall 7 ausgeführt \\
+		\hline \textbf{Regulärer Ablauf} & 1. Der Akteur drückt auf neues Spiel \\
+		\hline \textbf{Varianten} & keine \\
+		\hline \textbf{Nachbedingungen} & Es wird eine Liste aller Spieler die Online sind angezeigt\\
+		\hline \textbf{Fehler-/Ausnahmefälle} & Leere Liste, wenn keine Spieler online sind \\
+		\hline 
+	\end{tabular}
+\end{table}
+
+\begin{table}
+	[H] \label{9} 
+	\begin{tabular}
+		{|l|p{10cm}|} \hline \textbf{9} & \textbf{Gegner herausfordern} \\
+		\hline \textbf{Akteure} & Paul Neuling, Klaus Zocker\\
+		\hline \textbf{Ziel} & Der Akteur möchte einen anderen Spieler herausfordern\\
+		\hline \textbf{Vorbedingungen} & Der Akteur hat bereits ein neues Spiel gestartet und eine Liste ist erschien(Anwendungsfall 8) \\
+		\hline \textbf{Regulärer Ablauf} & 1. Der Akteur drückt in der Liste auf einen Spieler und fordert ihn heraus\\
+		\hline \textbf{Varianten} & keine \\
+		\hline \textbf{Nachbedingungen} & Es wird eine Anfrage an den Spieler gesendet und der Akteur kann bereits die erste Fragerunde beginnen\\
+		\hline \textbf{Fehler-/Ausnahmefälle} & Leere Liste, wenn keine Spieler online sind \\
+		\hline 
+	\end{tabular}
+\end{table}
+
+\begin{table}
+	[H] \label{10} 
+	\begin{tabular}
+		{|l|p{10cm}|} \hline \textbf{10} & \textbf{Offenes Spiel spielen} \\
+		\hline \textbf{Akteure} & Paul Neuling, Klaus Zocker, Sabine Ohnenetz\\
+		\hline \textbf{Ziel} & Der Akteur möchte anfangen die Fragen zu beantworten\\
+		\hline \textbf{Vorbedingungen} & Der Akteur hat noch ein Spiel offen\\
+		\hline \textbf{Regulärer Ablauf} & 1. Die erste Frage erscheint\\
+		&2. Der Spieler hat 20sek Zeit die Frage zu beantworten\\
+		&3. Nachdem der Spieler 3 Fragen weiter ist als der Gegner muss er warten\\
+		\hline \textbf{Varianten} & Im Offline-Modus kann der Spieler so viele Fragen beantworten wie er will \\
+		\hline \textbf{Nachbedingungen} & Der Akteur hat alle Fragen beantwortet und wartet nun auf den Gegner\\
+		\hline \textbf{Fehler-/Ausnahmefälle} & keine \\
+		\hline 
+	\end{tabular}
+\end{table}
+
+\begin{figure}
+	[H] \caption{Frage} 
+	\includegraphics[width=0.5
+	\textwidth]{Bilder/QuizzQuestion.png} \label{pic:ques} 
+\end{figure}
+
+\begin{table}
+	[H] \label{11} 
+	\begin{tabular}
+		{|l|p{10cm}|} \hline \textbf{11} & \textbf{Einstellungen ändern} \\
+		\hline \textbf{Akteure} & Paul Neuling, Klaus Zocker\\
+		\hline \textbf{Ziel} & Der Akteur möchte seine Einstellungen ändern\\
+		\hline \textbf{Vorbedingungen} & Der Akteur ist bereits angemeldet\\
+		\hline \textbf{Regulärer Ablauf} & 1. Der Akteur gibt seinen neuen Nutzernamen an\\
+		&2. Der Akteur gibt sein neues Passwort an\\
+		\hline \textbf{Varianten} & keine \\
+		\hline \textbf{Nachbedingungen} & Das Passwort und der Nutzername wurden geändert\\
+		\hline \textbf{Fehler-/Ausnahmefälle} & Nutzername ist bereits vergeben \\
+		\hline 
+	\end{tabular}
+\end{table}
 
 \subsection{Aktionen (Tim W.)}
 \subsubsection{Offline-Modus starten()}
