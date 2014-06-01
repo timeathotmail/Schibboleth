@@ -30,5 +30,5 @@
 \contentsline {section}{\numberline {3}Detaillierte Beschreibung}{24}{section.3}
 \contentsline {subsection}{\numberline {3.1}Datenmodell (Tobias)}{24}{subsection.3.1}
 \contentsline {subsection}{\numberline {3.2}Anwendungsf\IeC {\"a}lle (Tobias und Daniel)}{24}{subsection.3.2}
-\contentsline {subsection}{\numberline {3.3}Aktionen}{24}{subsection.3.3}
-\contentsline {subsection}{\numberline {3.4}Softwaresystemattribute}{24}{subsection.3.4}
+\contentsline {subsection}{\numberline {3.3}Aktionen (Tim W.)}{24}{subsection.3.3}
+\contentsline {subsection}{\numberline {3.4}Softwaresystemattribute Tim E.)}{24}{subsection.3.4}
