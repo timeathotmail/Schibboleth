@@ -611,23 +611,23 @@ Des Weiteren wird davon ausgegangen, dass sich die Nutzer der Software zwar mit 
 Im Folgenden werden die einzelnen Klassen ergänzend beschrieben:
 
 \textbf{Nutzer:}\\
-Diese Einheit steht für den Appnutzung, die über verschiedene Aktionen
+Diese Einheit steht für die Appnutzung, die über verschiedene Aktionen
 mit dem Serversystem in Verbindung steht. Die Einheit Nutzer hat sowohl 
-alle Fragen als Stringliste, um auch offline spielen zu können,als auch 
+alle Fragen als Stringliste, um auch offline spielen zu können, als auch 
 den Usernamen gespeichert. 
 Der Nutzer kann sich über das System einloggen, ausloggen oder auch erst noch 
 registrieren.
 Sobald sich der Nutzer angemeldet oder registriert hat, prüft das System automatisch,
 ob die App auf dem neuesten Stand ist. Der Nutzer kann sowohl offline, als auch online 
-über das System Spielen.
+über das System spielen.
 
 \textbf{Server:}\\
 Die Klasse stellt die bereitgestellten Server und Datenbanken dar, indem alle 
-nootwendigen Daten wie auch Quizfragen und Nutzerlisten gespeichert sind. Diese Einheit
-steht abgesehen vom Offline-Spiel mit allen Aktionen der App oder Webseite in Verbindung.
+notwendigen Daten, wie auch Quizfragen und Nutzerlisten gespeichert sind. Diese Einheit
+steht, abgesehen vom Offline-Spiel mit allen Aktionen der App oder Webseite in Verbindung.
 
 \textbf{Admin:}\\
-Der Admin verwaltet das System oder die Server über eine bereitgestellte Webseite in der
+Der Admin verwaltet das System oder die Server über eine bereitgestellte Webseite, indem er
 sich einloggt oder wieder ausloggt. Er bearbeitet/löscht oder fügt Fragen hinzu, oder 
 benennt gewisse Nutzer mit einem unangemessenen Nutzernamen um. Er kann einen Nutzer auch
 löschen.
@@ -639,18 +639,18 @@ oder bearbeiten.
 
 \textbf{Update:}\\
 Das Update prüft mithilfe des Boolean isUpToDate, ob der eingeloggte Nutzer auf dem neusten Stand ist.
-Dieser Boolean bekommt seinen Wert wiederrum mithilfe eines Vergleiches des letzten Einloggdatums des
+Dieser Boolean bekommt seinen Wert wiederum mithilfe eines Vergleichs des letzten Einloggdatums des
 Nutzers.
 
 \textbf{Einloggen/Ausloggen/Registrieren:}\\
-Der Einlogg- und der Registriervorgang ist sehr ähnlich, weshalb diese zusammengefasst wurden. 
+Der Einlog- und der Registriervorgang ist sehr ähnlich, weshalb diese zusammengefasst wurden. 
 Über diesen Vorgang wird die Gültigkeit des eingegebenen Passworts über den Nutzernamen verifiziert.
-Sollte der Nutzer nach dem Verlassen der App nicht abgemeldet haben, so bleibt der Nutzer auch angemeldet
-Daher wird in dieser Klasse nach dem Starten des OnlineModus der Boolean alreadyLoggedIn abgefragt.
+Sollte sich der Nutzer nach dem Verlassen der App nicht abgemeldet haben, so bleibt der Nutzer auch angemeldet.
+Daher wird in dieser Klasse nach dem Starten des Onlinemodus der Boolean alreadyLoggedIn abgefragt.
 
 \textbf{Spielen:}\\
 Der Nutzer kann sowohl online, als auch offline spielen. Diese Einheit hat die/den Spieler
-als Objekte und die Punkte der jeweiligen Spieler gespeichert. Es weiß auch,, welcher Spieler am Zug ist.
+als Objekte und die Punkte der jeweiligen Spieler gespeichert. Es weiß auch, welcher Spieler am Zug ist.
 Am Ende eines Spiels wird der Gewinner in einem Boolean eingetragen.
 
 
