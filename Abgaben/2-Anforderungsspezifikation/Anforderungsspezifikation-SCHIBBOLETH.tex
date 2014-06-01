@@ -40,7 +40,7 @@
 
 \newcommand{\swp}[0]{\ifthenelse{\boolean{langversion}}%
 {Software--Projekt 2}{Software--Projekt 1}}
-\newcommand{\jahr}[0]{2014}
+\newcommand{\jahr}[0]{2014 (RE SWP)}
 \newcommand{\semester}[0]{\ifthenelse{\boolean{langversion}}{SoSe}{SoSe} \jahr}
 
 % Damit Latex nicht zu lange Zeilen produziert:
@@ -122,7 +122,7 @@
   \\ ~
   \vspace{2cm}
   \\
-  \it Abgabe: TT. Monat JJJJ --- Version 1.1\\ ~
+  \it Abgabe: 01.06.2014 --- Version 1.7\\ ~
   \end{center}
   \end{minipage}
 
@@ -149,103 +149,103 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section*{Version und Änderungsgeschichte}
 
-{\em Die aktuelle Versionsnummer des Dokumentes sollte eindeutig und gut zu
-identifizieren sein, hier und optimalerweise auf dem Titelblatt.}
 
 \begin{tabular}{ccl}
 Version & Datum & Änderungen \\
 \hline
 1.0 & 21.05.2014 & Analyse ähnlicher Systeme. \\
-1.1 & 22.05.2014 & Anwendungsfälle . \\
+1.1 & 22.05.2014 & Anwendungsfälle  \\
+1.2 & 27.05.2014 & Ist-Analyse \\
+1.3 & 28.05.2014 & Produktperspektiven \\
+1.4 & 29.05.2014 & Einschränkungen \\
+1.5 & 30.05.2014 & Annahmen und Abhängigkeiten \\
+1.6 & 30.05.2014 & Ausblick \\
+1.7 & 30.05.2014 & Charakteristika der Benutzer \\
+1.8 & 31.05.2014 & Softwaresystemattribute \\
+
 \end{tabular}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\paragraph{Wichtiger Hinweis:} Diese Anforderungsspezifikation wurde zu einem Teil aus verschiedenen Dokumententeilen der Anforderungsspezifikation unserer Gruppenmitglieder aus dem Wintersemester 2013/14 erstellt (Gruppe \textit{IT\_R3V0LUTION}). Einige Teile wurden komplett übernommen, andere überarbeitet bzw. angepasst. \\
+Diese Vereinbarung haben wir in der Kick-Off-Veranstaltung für RE SWP 2014 mit dem Veranstalter Dr. Karsten Hölscher getroffen. \\
 \section{Einleitung (Patrick)}
 \nurlangversion
 
-{\em Dieses Dokument dient als Vorlage für Eure
-  Anforderungsspezifikation. Die Gliederung dieses
-  Dokuments ist an die Struktur des IEEE-Standards 830.1998 angelehnt,
-  weicht jedoch an einigen Stellen davon ab. Die Abweichungen sind
-  im weiteren Verlauf dieses Dokuments dokumentiert. Weitere detaillierte
-  Hinweise finden sich im IEEE-Standard 830.1998, der in Stud.IP      
-  beziehungsweise über die Uni-Bibliothek in digitaler Form verfügbar ist
-  \footnote{Bei \url{http://ieeexplore.ieee.org} im Suchfeld 'IEEE std    
-   830-1998' eingeben. Funktioniert nur innerhalb des Uni-Netzes.}.}
 
 \subsection{Zweck}
-\nurlangversion
+  
+Zweck dieser Anforderungsspezifikation ist es, die Funktionalität und für unser Produkt bestehende Rahmenbedingungen zu spezifizieren. Die Rahmenbedingungen sind in dem Kapitel 2.5 Einschränkungen detailliert beschrieben. Sinn dieser Spezifikation ist es, dass jeder Entwickler, der an dieser Software beteiligt ist, genau weiß wie die Software gestaltet werden, und was für Funktionen sie enthalten soll.
 
-  {\em Was ist der Zweck dieser Anforderungsspezifikation? Wer sind
-  die LeserInnen?}
+Dieses Dokument dient zusätzlich als Vertragsgegenstand, weil es alle mit dem Kunden besprochenen Leistungen schriftlich festhält, und gemeinsam mit dem Angebot auch alle Punkte betreffend der Kosten angibt. Bei Nicht-Erbringung der Leistung treten gesetzliche Regelungen in Kraft, wie z.B. eine Kostenreduktion oder die Nachlieferung der fehlenden
+bzw. nicht funktionsfähigen Bestandteile.
 
 \subsection{Rahmen}
-\nurlangversion
+  
+Es soll eine Quiz-Applikation für Android Geräte entwickelt werden, welche da Spielen gegen andere Menschen ermöglicht. Die interne Umsetzung dieser Funktionen obliegt unserer Entscheidung, allerdings soll die Software für nicht Entwickler intuitiv benutzbar sein.\\
 
-  {\em Dieser Abschnitt soll einen groben Überblick über die zu
-  erstellende Software geben: Welche Produkte sind zu erstellen (mit
-  Namen)? Was tut die Software? Auch: Was tut sie nicht? Wozu soll die
-  Software verwendet werden?  (Ziele etc.)}
+Zum Produktumfang gehört neben der Software ein Handbuch, das die Verwendung der Software so erklärt, dass jeder diese verstehen kann. Außerdem wir eine Installationsanleitung für die Software mitgeliefert.
 
 \subsection{Definitionen, Akronyme und Abkürzungen}
-\nurlangversion
-
-  {\em Hier geht es vor allem um Begriffe aus der Anwendungsdomäne,
-  d.h.\ aus der Welt des Kunden. Aber auch Begriffe, die dem Kunden
-  evtl.\ fremd oder unklar sind, sollten erläutert werden.}
 
 
 \subsection{Referenzen}
-  {\em Neben sonstigen Quellen, die Ihr verwendet habt, können dies
-  z.B.\ das Skript, dieses Beispieldokument, der zugrunde
-  liegende IEEE-Standard und anderes sein}
-  
+ 
 
 \subsection{Übersicht über das Dokument}
-\nurlangversion
 
-  {\em Was enthält die Anforderungsspezifikation? Wie ist das Dokument
-  organisiert?}
+  
+Das Dokument beinhaltet im ersten Abschnitt eine Einleitung, die den Zweck des Dokuments beschreibt,
+den Rahmen des zu entwickelnden Produkts, sowie eine Kurzbeschreibung der auftauchenden Begrifflichkeiten, Referenzen und zuletzt diesen Abschnitt, der eine Übersicht über das Dokument liefert.\\
+
+Der zweite Abschnitt beinhaltet eine allgemeine Beschreibung der Software, deren Inhalt folgender ist: Ist-Analyse, die Beschreibungen der Produktperspektive, Anwendungsfälle, Spielelemente, Regeln, Persona, Einschränkungen, Annahmen und
+Abhängigkeiten, Ausblick.\\
+
+Der dritte Abschnitt ist eine detaillierte Beschreibung, welche aus einem Datenmodell, einer detaillierte Beschreibung der Anwendungsfälle, den dazugehörigen Aktionen, einer Beschreibung der Entwurfseinschränkungen, der Softwaresystemattribute sowie weitere Anforderungen besteht.\\
+
+Im vierten und letzten Abschnitt befindet sich ein Anhang, der Dokumente enthält, die zur Entwicklung dieses
+Dokuments dienlich gewesen sind.
 
 
 \section{Allgemeine Beschreibung}
 \label{ch:AllgemeineBeschreibung}
 
 \subsection{Ergebnisse der Ist-Analyse (Tim E.)}
-\nurlangversion
-
-  {\em Hier sollten die Ergebnisse Eurer Ist-Analyse kurz
-  zusammengefasst werden. Diese Beschreibung ist hilfreich, um die
-  Motivation für die Anforderungen zu verstehen und um sie später
-  nachzuvollziehen (z.B.\ dann wenn Anforderungen überarbeitet werden
-  sollen, weil sich ihre Rahmenbedingungen geändert haben).
   
-  Mögliche Inhalte: 
-  \begin{itemize}
-    \item Interview/Beobachtung des Kunden oder der Benutzer
-    \item Analyse des bisherigen Systems und dessen Probleme 
-    \item Analyse ähnlicher Systeme
-    \item Auswertung der Benutzerbefragung
-    \item Wie sollen die identifizierten Probleme vom neuen System adressiert werden?
-  \end{itemize}
-  
-  N.B.: Dieser Abschnitt ist im IEEE-Standard nicht vorgesehen, aber dennoch
-  sinnvoll.}
-  
+Das Rektorat der Universität Bremen möchte aus Eigeninteresse und auch als Werbung Menschen und insbesondere Studieninteressierte, aber auch Studierende und Mitarbeitern die Uni in drei Bereichen näher bringen: Campusleben, Studium und Forschung. Dabei soll insbesondere der Bezug zum Studienort hergestellt werden.\\
+Um dies zu erreichen, möchte die Universität gerne eine Quiz-App veröffentlichen und bereitstellen, die von den oben stehenden Interessengruppen gespielt werden kann und Fragen aus den drei Kernbereichen zur Verfügung stellt.\\
+Bisher gibt es zwar eine Campus App der Universität, die aber andere Ziele verfolgt und in erster Linie nur für Studierende gedacht ist. Eine spezielle Quiz-App, zugeschnitten auf die Belange der Uni, gibt es allerdings noch nicht. \\
+Unser Ziel ist es, genau eine solche App zu entwickeln, die benutzerfreundlich, leicht zu bedienen ist und durch ihr ansprechendes GUI-Design auch noch Spaß machen soll. Darüber hinaus wird es eine Administrationswebseite geben, auf der grundlegende Einstellungen konfiguriert werden können und auch eine redaktionelle Bearbeitung der Fragen und Antworten stattfinden kann.\\
+Dabei werden die Fragen aus den drei Kategorien von der Pressestelle der Universität zur Verfügung gestellt. \\
+Um die genauen Anforderungen und Kundenwünsche an das System über die vom Veranstalter des Software-Projekts 2 erhobenen Mindestanforderungen hinaus zu erfassen, haben wie ein Kundengespräch durchgeführt.
+
+\subsubsection{Erstes Kundengespräch vom 08.05.2014}
+
+Am Donnerstag, den 08.05.2014, um 10:00 Uhr begann unser erstes Kundengespräch mit der Vertreterin des Kunden, Frau Sprindt von der Pressestelle der Universität. In den Tagen zuvor hat die Gruppe Ideen zu einem Fragenkatalog gesammelt, der dann am Vortag der Besprechung fertiggestellt wurde. Er beinhaltete eine Auflistung aller Mindestanforderungen, zu denen Unklarheiten bezüglich des Realisierungsvorgangs notiert wurden. 
+
+Das offizielle Gespräch begann pünktlich um 10:00 Uhr. Leider gab es keine wirkliche Ordnung bei den gestellten Fragen, was es etwas schwer machte, die einzelnen Vorgänge strukturiert zu durchdenken.\\
+Grundsätzlich soll sich die App an die bekannte Quiz-App \textit{Quizduell} anlehnen bzw. als eine Art Vorbild genommen werden. Genaueres dazu findet man im Abschnitt \ref{quizduell}, wo die Analyse eines bestehenden Systems vorgenommen wird.
+
+\subsubsection{Auswertung des Kundengesprächs}
+
+Es haben sich im Kundengespräch jedoch keine großen Überraschungen oder unerwartete Kundenwünsche oder -änderungen ergeben, die über die Mindestanforderungen besonders hinaus gehen. Einige Besonderheiten sollen aber im Folgenden näher beschrieben werden.\\
+
+Man soll die App auch ohne Registrierung spielen können, allerdings nur lokal auf einem Gerät. Man hat dann nicht die Möglichkeit, später woanders weiterzuspielen. Das soll nur funktionieren, wenn man sich als Nutzer mit Benutzernamen und Passwort registriert hat, wobei es eine Benutzernamenkontrolle geben soll, die unpassende Namen verbietet. Auch soll der Admin jederzeit unpassende Benutzer über den Admin-Zugang löschen oder ändern können.\\
+Es soll bis zu 10 parallel laufende Spiele geben können, wobei dieser Wert vom Admin editiert werden kann. Ebenso sollen die Spiele zeitversetzt gespielt werden können. Drei Fragen pro Runde sind vorgesehen, wobei ein Zeitlimit von 10-30 Sekunden eingeplant ist (die tatsächliche Antwortzeit sollte man in einem Praxistest genauer ermitteln).\\
+Es wurde besonderen Wert darauf gelegt, dass in der GUI-Gestaltung das Corporate Design der Universität Bremen mit einbezogen wird, sodass z.B. durch Einfügen des Uni-Logos ein Wiedererkennungswert und ein direkter Bezug zur Uni bei den Nutzern hergestellt wird. Auch ein Verweis auf die Universität-Webseite sowie ggf. eine Social-Media-Anbindung sind erwünscht, wenn auch eher optionaler Art.\\
+Die Spieler sollen geduzt werden und möglichst gender-neutral, sofern sinnvoll und möglich, angesprochen werden.\\
+Auch die Einbindung von wohlklingenden und passenden Sounds soll den Spaß am Spiel wecken.\\
+Des Weiteren sollen im Spiel selbst zu jeder Frage vier Antwortmöglichkeiten gegeben werden und Joker in Form eines 50:50-Jokers oder einer Zeitverlängerung eingebaut werden, die man sich jedoch erst erspielen muss und nicht von Beginn an zur Verfügung stehen.\\
+Der Schwierigkeitsgrad steigt nicht mit jeder Frage, sondern die Fragen werden nach Kategorie, die die Spieler zu Beginn bestimmen können, zufällig ausgewählt. \\
+Wenn ein Spieler aufgibt bzw. das laufende Spiel abbricht, soll er in Form eines Punktabzugs bestraft werden. \\
+Es soll allerdings keine Freundes- oder Rivalenlisten geben. 
 
 
-\subsubsection{Erstes Kundengespräch vom TT.MM.JJJJ}
-\nurlangversion
 
-\subsubsection{Interview mit einem Mitarbeiter der ...}
-\nurlangversion
+\subsubsection{Analyse eines ähnlichem Systems (Daniel Pupat)}\label{quizduell}
 
-{\em Falls durchgeführt}
-
-\subsubsection{Analyse eines ähnlichem Systems (Daniel Pupat)}
-
-Als System haben wir uns die App Quizduell ausgesucht. Die App ist im App-Store kostenlos zu erhalten. Wir benutzen hierzu nicht die Premium-Version, da die kostenlose unserem System am nächsten kommt. Wir haben nicht die Rechte eines Administrators, weshalb sich die Analyse nur auf die App bezieht. Die App kann nur verwendet werden, wenn man eine bestehende Internet Verbindung hat.\\
+Als System haben wir uns die App \textit{Quizduell} ausgesucht. Die App ist im App-Store kostenlos zu erhalten. Wir benutzen hierzu nicht die Premium-Version, da die kostenlose unserem System am nächsten kommt. Wir haben nicht die Rechte eines Administrators, weshalb sich die Analyse nur auf die App bezieht. Die App kann nur verwendet werden, wenn man eine bestehende Internetverbindung hat.\\
 
 \begin{figure}[H]
 \centering
@@ -261,7 +261,7 @@ Dies ist der Ladebildschirm, sobald die App gestartet wird.
 \caption{Startbildschirm}
 \end{figure}
 
-Hier ist der Startbildschirm, nachdem man eingeloggt ist. Oben hat man die Funktionen Aktualisieren, Statistiken und Einstellungen. Beim aktualisieren wird die Seite aktualisiert. \\
+Hier ist der Startbildschirm, nachdem man eingeloggt ist. Oben hat man die Funktionen Aktualisieren, Statistiken und Einstellungen. Beim Aktualisieren wird die Seite aktualisiert. \\
 
 \begin{figure}[H]
 \centering
@@ -285,7 +285,7 @@ Unter Einstellungen kann man seine Kontoeinstellungen bearbeiten, wo man den Ben
 \caption{Startbildschirm}
 \end{figure}
 
-Weiter Funktionen beim Startbildschirm sind Neues Spiel starten oder ein bereits angefangenes Spiel weiterspielen.\\
+Weitere Funktionen beim Startbildschirm sind Neues Spiel starten oder ein bereits angefangenes Spiel weiterspielen.\\
 
 \begin{figure}[H]
 \centering
@@ -302,7 +302,7 @@ Wenn man ein neues Spiel starten möchte, kann man einen neuen Spieler suchen, u
 \caption{Bildschirm beim neuen oder laufenden Spiel}
 \end{figure}
 
-Hier wird der bisherige Spielstand angezeigt. Insgesamt gibt es 6 Fragen, welche jeder beantworten muss. Die Spieler erhalten jeweils die gleichen Fragen. Es werden immer 2 Fragen abwechselnd gestellt, wobei der Spieler einmal eine Kategorie auswählen darf und einmal die Fragen der Kategorie des Gegners beantworten muss. Die Spieler haben 48 Stunden Zeit die Fragen zu beantworten bis das Spiel automatisch, mit einer Niederlage des Spielers der nicht geantwortet hat, endet. 
+Hier wird der bisherige Spielstand angezeigt. Insgesamt gibt es 6 Fragen, welche jeder beantworten muss. Die Spieler erhalten jeweils die gleichen Fragen. Es werden immer 2 Fragen abwechselnd gestellt, wobei der Spieler einmal eine Kategorie auswählen darf und einmal die Fragen der Kategorie des Gegners beantworten muss. Die Spieler haben 48 Stunden Zeit, die Fragen zu beantworten, bis das Spiel automatisch mit einer Niederlage des Spielers, der nicht geantwortet hat, endet. 
 
 \begin{figure}[H]
 \centering
@@ -318,7 +318,7 @@ Beim Starten einer Frage erscheint erst nur eine Karte mit der Kategorie, bei ei
 \caption{Anzeigen der Frage}
 \end{figure}
 
-Nun wird die Frage angezeigt, man hat 20 Sekunden Zeit um die Frage zu beantworten, sonst wird diese als Falsch gewertet.\\
+Nun wird die Frage angezeigt, man hat 20 Sekunden Zeit, um die Frage zu beantworten, sonst wird diese als falsch gewertet.\\
 
 \begin{figure}[H]
 \centering
@@ -326,39 +326,27 @@ Nun wird die Frage angezeigt, man hat 20 Sekunden Zeit um die Frage zu beantwort
 \caption{Reaktion bei richtiger Antwort}
 \end{figure}
 
-Bei einer richtigen Antwort wird diese mit Grün unterlegt und Zeitgleich wird der Name des Gegners auf seiner Antort angezeigt, wenn er diese bereits beantwortet hat. Bei einer falschen wird die Antwort mit Rot unterlegt.\\
+Bei einer richtigen Antwort wird diese mit Grün unterlegt und zeitgleich wird der Name des Gegners auf seiner Antwort angezeigt, wenn er diese bereits beantwortet hat. Bei einer falschen wird die Antwort mit rot unterlegt.\\
 
-Fazit:\\
-Die Quizduell App ist ein gutes System mit welcher man unseres später Vergleichen kann. Es hat viele Funktion, wie gezeigt, welche unser System ebenfalls haben muss. Es gibt allerdings auch Unterschiede, in unsere App wird es nur 3 Runden pro Runde geben und es werden keine eigenen Fragen geschrieben, außerdem wird es keine Premium-Version geben. Zudem werden wir auch eine offline-Funktion einbauen, in welcher der Spieler alleine spielen kann.\\ 
+\textbf{Fazit:}\\
+Die \textit{Quizduell} App ist ein gutes System, mit welcher man unseres später vergleichen kann. Es hat viele Funktion, wie gezeigt, welche unser System ebenfalls haben muss. Es gibt allerdings auch Unterschiede. In unserer App wird es nur 3 Fragen pro Runde geben und es werden keine eigenen Fragen geschrieben, außerdem wird es keine Premium-Version geben. Zudem werden wir auch Offline-Funktion einbauen, in welcher der Spieler alleine spielen kann.\\ 
 
 \subsection{Produktperspektive (Tim W. und Tim E.)}
   
 \subsubsection{Systemschnittstellen}
-  {\em Schnittstellen zu anderen Systemen, z.B.\ Datenimport/-export,
-  Konfigurationsdateien, anzubindende externe Dienste und deren Schnittstelle,
-  Anbieten der eigenen Funktionalität als API o.ä.}
   
 Als Grundlage dient ein neu aufzusetzendes oder bestehendes System, auf dem die Software installiert werden kann. Als externe Schnittstelle muss dieses mit dem Internet verbunden sein. Der Server der Quizapp kann an einem PC über HTTP mit einem HTML5-unterstützenden Browser angesprochen werden. Mobiler Zugriff erfolgt auf Android-Geräten zudem mit einer eigenen App.
 
 \subsubsection{Benutzerschnittstelle}
 
-  {\em GUI-Design-Richtlinien und Interaktionsmechanismen (nicht
-  Screenshots aller Dialoge --- die werden in Kapitel 3 gezeigt --- aber
-  evtl.\ ein Screenshot, der einen groben Überblick und Eindruck des
-  GUI-Designs gibt).}
 Die GUI der Website weist je nachdem, ob sich ein normaler Nutzer oder ein Admin anmeldet, unterschiedliche Funktionalitäten auf. 
 
 \subsubsection{Hardwareschnittstellen}
-  {\em Schnittstellen zu vorgegebenen Hardwarekomponenten (Name,
-  Version).}
 
 Die HTML-Website ist plattform-unabhängig nutzbar. Smartphones mit kompatibler Android-Version (welche?) können die Quizapp nutzen.
 
 
 \subsubsection{Softwareschnittstellen}
-{\em Softwarebibliotheken und --rahmenwerke (Frameworks), die benutzt
-  werden sollen, mit Versionsnummer, Hersteller, Quelle etc. Dazu
-  gehört auf jeden Fall Java.}
 
   \begin{tabular}{|l|l|l|l|}\hline
     \textbf{Name} & \textbf{Version} & \textbf{Hersteller} & \textbf{Quelle} \\\hline
@@ -366,37 +354,28 @@ Die HTML-Website ist plattform-unabhängig nutzbar. Smartphones mit kompatibler 
     JUnit & & & \\\hline
     libGDX &  &  & \\\hline
     Android & & & \\\hline
-    \ldots & & & \\\hline
   \end{tabular}
 
 \subsubsection{Kommunikationsschnittstellen}
-{\em Anforderungen an und Bandbreite von Kommunikationsnetzwerken, öffentliche
-  oder auch private IP-Adressen?}
   
-Das System muss mit einer öffentlichen IP-Adresse und Domain von außen ansprechbar sein. Die Bandbreite sollte groß genug sein um mehreren Nutzern parallel den Zugang zur Software zu gewähren, wobei jeder Nutzer einzeln nur eine sehr geringe Bandbreite benötigt.
+Das System muss mit einer öffentlichen IP-Adresse und Domain von außen ansprechbar sein. Die Bandbreite sollte groß genug sein, um mehreren Nutzern parallel den Zugang zur Software zu gewähren, wobei jeder Nutzer einzeln nur eine sehr geringe Bandbreite benötigt.
 
 \subsubsection{Speicherbeschränkung}
 
-  {\em min./max.\ verfügbarer Hauptspeicher und Festplattenplatz, knappe Begründung wie Ihr zu
-der hier angegebenen Einschätzung gekommen seid}
 
-Die App wird voraussichtlich bis zu 30mb Speicherplatz beziehen. (Arbeitsspeicher?)
-Das Softwaresystem 
+Die App wird voraussichtlich bis zu 30 MB Speicherplatz beziehen. (Arbeitsspeicher?)
+
 
 \subsubsection{Operationen (Betriebsmodi)}
-  {\em Welche Betriebsmodi gibt es? Warum? Welche Benutzerklasse darf
-  was in welchem Betriebsmodus (Rechte)? Was ist der Zusammenhang
-  zwischen Betriebsmodus und Sicherung/Wiederherstellung von Daten?}
-  
+
 Wir unterscheiden zwischen dem normalen Betriebsmodus und einem Wartungsmodus, in dem z.B. Backups aufgespielt werden können. Während des Wartungsmodus ist kein öffentlicher Zugriff vorgesehen. Im normalen Betriebsmodus wird unterschieden zwischen Admins, registrierten Benutzern und Gästen. Jeder hat das Recht zu spielen, wobei registrierte Nutzer Vorteile wie Statistiken etc. genießen. Der Admin kann das System über die Website verwalten, z.B. Nutzernamen ändern. In der App ist kein Admin-Modus vorhanden.
 
 \subsubsection{Möglichkeiten der lokalen Anpassung}
-  {\em Was kann bei Auslieferung des Systems alles konfiguriert
-  werden? Z.B. Pfade, Datenbankname, Server-IP usw. Hier ist nicht
-  Internationalisierung gemeint!}
+  
 Es handelt sich bei dem System um ein lauffähiges Gesamtpaket. Es muss keine Datenbank o.Ä. eingerichtet werden. Lediglich eine IP-Adresse muss eingerichtet werden. Somit ist keine lokale Anpassung nötig.
 
 \subsection{Anwendungsfälle (Daniel)}
+
 \begin{itemize}
 	\item \textbf{1. App starten}\\
 	Die App wird gestartet. 
@@ -408,22 +387,19 @@ Es handelt sich bei dem System um ein lauffähiges Gesamtpaket. Es muss keine Da
 	Der Benutzer meldet sich mit Benutzernamen und Passwort an. Die Daten werden gespeichert, sodass kein nochmaliges anmelden nötig ist.
 	\item \textbf{5. Benutzer abmelden}\\
 	Benutzer wird abgemeldet und muss sich beim nächsten Start wieder anmelden.
-	\item \textbf{6. Online Modus starten}\\
-	Der Online Modus wird gestartet. Einmaliges anmelden und Internet Verbindung erforderlich.
-	\item \textbf{7. Neues Spiel starten}\\
-	Eine Liste aller Spieler die online sind wird angezeigt.
-	\item \textbf{8. Gegner herausfordern}\\
+	\item \textbf{6. Spielen(Offline)}\\
+	Der Akteur spielt Offline.
+	\item \textbf{7. Spielen(Online)}\\
+	Es erscheint eine Auswahl zwischen Neues Spiel starten
+	und es werden alle offenen Spiele angezeigt
+	\item \textbf{8. Neues Spiel}\\
+	Es erscheint eine Liste aller Spieler die Online sind.
+	\item \textbf{9. Gegner herausfordern}\\
 	Aus der Liste kann ein Spieler angeklickt und herausgefordert werden.
-	\item \textbf{9. Herausforderung annehmen}\\
-	Bei einer Herausforderung kann der Gegner annehmen oder ablehnen.
-	\item \textbf{10. Spielrunde starten}\\
+	\item \textbf{10. Offenes Spiel spielen}\\
 	Eine neue Spielrunde wird gestartet, die erste Frage erscheint.
-	\item \textbf{11. Frage beantworten}\\
-	Der Spieler hat 20 Sekunden Zeit zu antworten.
-	\item \textbf{12. Einstellungen ändern}\\
+	\item \textbf{11. Einstellungen ändern}\\
 	Unter Einstellungen kann der Benutzername und das Passwort geändert werden
-	\item \textbf{13. Punktzahl anzeigen}\\
-	Rangliste mit den Punktzahlen aller Mitspieler wird angezeigt
 	\item \textbf{14. Website wird aufgerufen}\\
 	Website wird angezeigt.
 	\item \textbf{15. Admin anmelden}\\
@@ -440,258 +416,505 @@ Es handelt sich bei dem System um ein lauffähiges Gesamtpaket. Es muss keine Da
 	Bestimmter User wird gelöscht
 \end{itemize}
 
-\subsection{Charakteristika der Benutzer}
-  {\em Beschreibt hier Eure typischen Benutzer. Benutzt dazu die in
-  der Vorlesung vorgestellten Personas. Zur Erinnerung: Ihr beschreibt
-  konkrete Personen, die Repräsentanten der verschiedenen
-  Benutzertypen sind (mit Name, evtl. Wohnort, Tätigkeit, Alter, Bild,
-  \ldots). Diese sollten eine gewisse Motivation haben, bestimmte
-  Anwendungsfälle durchzuführen (und dort auch eingesetzt werden!).}
-
-
-\subsection{Einschränkungen (Tim W. und Tim E.)}
-\label{sec:Einschraenkungen}
-{\em Dieser Abschnitt gibt einen groben Überblick über alles, was den
-  Entwurf einschränken könnte. Details folgen dann in
-  Abschnitt~\ref{ch:DetaillierteBeschreibung} (\glqq Detaillierte
-  Beschreibung\grqq). Allgemeine Sicherheitsanforderungen könnten also
-  hier kurz beschrieben werden, Details dann im
-  Abschnitt~\ref{sec:softwaresystemattribute} zu Systemattributen.
-
-  Beispiele für mögliche Einschränkungen könnten sein (die Liste ist
-  nicht vollständig und nicht alle dieser Punkte sind in jedem
-  möglichen Projekt relevant):
-
-  \begin{itemize}
-   \item feste Vorgaben (z.B. Policies)
-   \item gesetzliche Rahmenbedingungen (z.B. Datenschutzaspekte)
-   \item Hardwarebeschränkungen
-   \item festgelegte Schnittstellen zu anderen Anwendungen
-   \item parallele Operationen (z.B. Multithreading)
-   \item zu unterstützende Prüffunktionen (auch: Audit-Funktionen;
-     z.B. \glqq alle Buchungen im System müssen protokolliert und von
-     einem Wirtschaftsprüfer nachvollziehbar sein\grqq)
-   \item Steuerungsfunktionen (z.B. \glqq Das System kann von einem
-     Techniker von Ferne gewartet werden\grqq)
-   \item Anforderungen an die zu verwendende Programmiersprache
-   \item Verlässlichkeit; die Verfügbarkeit eines technischen Systems 
-       ist die Wahrscheinlichkeit oder das Maß, dass das System 
-       bestimmte Anforderungen innerhalb eines vereinbarten
-       Zeitrahmens erfüllt. Eine Beispielanforderung könnte sein, dass
-       das System an jedem Tag der Woche 24 h lang in Betrieb sein 
-       muss und im Jahr höchstens 2 Tage nicht verfügbar sein darf.
-   \item Zuverlässigkeit; Software-Zuverlässigkeit wird definiert 
-      als die Wahrscheinlichkeit einer fehlerfreien Software-Anwendung 
-      über eine spezifizierte Zeitdauer und unter spezifizierten
-      Umgebungsbedingungen. Hier könnte zum Beispiel eine zu
-      erreichende Testabdeckung in Bezug auf ein Abdeckungsmaß
-      gefordert werden: \glqq 90\,\% Anweisungsabdeckung bei den
-      Komponententests\grqq.
-   \item Kritikalität (Gefährlichkeit eines Versagens) der Anwendung
-   \item Sicherheit
-  \end{itemize}
-
-}
-
-\subsubsection{Rahmenbedingungen}
-\nurlangversion
-
-\subsubsection{Gesetzliche Rahmenbedingungen}
-\nurlangversion
- 
-\subsubsection{Sicherheitskritische Aspekte}
-\nurlangversion
-
-\subsection{Annahmen und Abhängigkeiten (Tim E.)}
-\nurlangversion
-
-  {\em Faktoren, deren Änderung zwangsläufig zu Änderungen an der
-  Anforderungsspezifikation führen würde.}
-
-
-
-\subsection{Ausblick (Tim E.)}
-\nurlangversion
-
-  {\em Beschreibt hier knapp, welche Änderungen und Erweiterungen
-  zukünftig (d.h.\ nach Auslieferung des Systems) zu erwarten sind.
-  Diese Information ist wichtig für den Entwurf, um mögliche
-  Änderungen frühzeitig im ersten Entwurf berücksichtigen zu können.
-  Der Entwurf kann dann so gestaltet werden, dass die zukünftigen
-  Anforderungen leicht realisierbar sind. Die zukünftigen
-  Anforderungen sollten realistisch sein, ansonsten könnte ein unnötig
-  allgemeiner und damit zu komplizierter Entwurf die Folge sein.  Auch
-  dieser Abschnitt ist im IEEE-Standard nicht vorgesehen -- zumindest
-  nicht explizit in Form eines eigenständigen Abschnitts. Dennoch
-  handelt es sich um wertvolle Information, von der der Entwurf
-  profitieren kann.}
+\subsection{Charakteristika der Benutzer (Tim W.)}
+	\begin{tabular}{|p{7,5cm}|p{7,5cm}|}\hline
+       \textbf{Name:} &  \textbf{Armin Admin}\\\hline
+       Benutzertyp: & Administrator\\\hline
+       Tätigkeit	& Redakteur\\\hline
+       Wohnort & Uniallee, Bremen\\\hline
+       Alter	 & 42\\\hline
+       Motivation & System aufrecht erhalten\\\hline
+       Aufgaben & Verwaltung und Systemwartung\\\hline
+    \end{tabular}\\
+        
+    	\begin{tabular}{|p{7,5cm}|p{7,5cm}|}\hline
+        \textbf{Name:} &  \textbf{Paul Neuling}\\\hline
+       Benutzertyp: & Gelegenheitsspieler \\\hline
+       Tätigkeit	& Student\\\hline
+       Wohnort & Uniallee, Bremen\\\hline
+       Alter	 & 19\\\hline
+       Motivation & Etwas über die Uni lernen und Spaß haben\\\hline
+    \end{tabular}\\
+    
+    	\begin{tabular}{|p{7,5cm}|p{7,5cm}|}\hline
+        \textbf{Name:} &  \textbf{Klaus Zocker}\\\hline
+       Benutzertyp: & Häufiger Spieler \\\hline
+       Tätigkeit	& Student\\\hline
+       Wohnort & Uniallee, Bremen\\\hline
+       Alter	 & 23\\\hline
+       Motivation & Will die Rangliste anführen\\\hline
+    \end{tabular}\\
+    
+    \begin{tabular}{|p{7,5cm}|p{7,5cm}|}\hline
+        \textbf{Name:} &  \textbf{Sabine Ohnenetz}\\\hline
+       Benutzertyp: & Gelegenheitsspielerin \\\hline
+       Tätigkeit	& Student\\\hline
+       Wohnort & Uniallee, Bremen\\\hline
+       Alter	 & 19\\\hline
+       Motivation & Offline etwas spielen \\\hline
+    \end{tabular}\\
+    
+    \textbf{Armin Admin}
+    
+    Text...
+    
+    \textbf{Paul Neuling}
+    
+    Text...
+    
+    \textbf{Klaus Zocker}
+    
+    Text...
+    
+    \textbf{Sabine Ohnenetz}
+    
+    Text...
   
+  \subsection{Einschränkungen (Tim E.)}
+
+Im Folgenden listen wir die Mindestanforderungen des Produkts auf, die nur mithilfe eines Logins bei StudIP einzusehen sind\footnote{\url{https://elearning.uni-bremen.de/scm.php?cid=2b323f34b16a84e8dce31dcdfc0be6ad\&show\_scm=4c88951a202b2543c96de2c8a476d471}}.
+
+\textbf{Server:}
+\begin{itemize}
+\item SpielerInnen können sich beim Server registrieren
+\item verwaltet eine Liste aller SpielerInnen
+\item verwaltet die Fragekategorien, die Fragen und die Antworten sowie Belohnungen
+\item SpielerInnen können sich beim Server als gerade spielbereit setzen und wieder entfernen
+\item auf Anfrage wird aus der Liste der gerade spielbereiten SpielerInnen zufällig eine konkrete GegnerIn ermittelt
+\item verwaltet laufende Spiele und archiviert diese
+\begin{itemize}
+\item TeilnehmerInnen
+\item aktueller Punktestand
+\item gestellte Fragen
+\item gegebene Antworten
+\end{itemize}
+\end{itemize}
+\begin{itemize}
+\item verwaltet die Konfiguration der Spiele
+\begin{itemize}
+\item Anzahl Fragerunden
+\item Anzahl Fragen pro Runde
+\item Zeitspanne zur Auswahl einer Antwort
+\item Punkte pro richtiger Antwort
+\item Punkte für gewonnenes und unentschiedenes Spiel
+\end{itemize}
+\end{itemize}
+\begin{itemize}
+\item realisiert ein Belohnungssystem für SpielerInnen
+\begin{itemize}
+\item Erwerb eines Titels bei bestimmten Punktzahlen
+\item Joker (z.B. Zeitverlängerung oder Anzeige der richtigen Antwort auf eine Frage)
+\end{itemize}
+\end{itemize}
+\begin{itemize}
+\item verwaltet eine Rangliste aller SpielerInnen
+\item ein Spiel wird komplett vom Server geleitet, d.h. die Fragen und möglichen Antworten werden an die jeweiligen Clients gesendet und die korrekte Antwort wird vom Server geprüft (dies beinhaltet auch evtl. Spielregeln wie z.B. der Einsatz von Jokern oder das Einhalten der Zeitvorgaben)
+\end{itemize}
+
+\begin{itemize}
+\item Administrationszugang über eine Webseite
+\begin{itemize}
+\item redaktionelle Bearbeitung der Fragen und Antworten
+\begin{itemize}
+\item Kategorien hinzufügen, Zuordnung der Fragen zu Kategorien ändern
+\item Fragen und Antworten bearbeiten
+\item Fragen und Antworten hinzufügen
+\item Fragen und Antworten löschen
+\end{itemize}
+\item Import/Export der Fragen und Antworten in/aus geeignetem Format
+\item Konfiguration der Spiele
+\begin{itemize}
+\item Anzahl Fragerunden
+\item Anzahl Fragen pro Runde
+\item Zeitspanne zur Auswahl einer Antwort
+\item Punkte pro richtiger Antwort
+\item Punkte für gewonnenes und unentschiedenes Spiel
+\end{itemize}
+\end{itemize}
+\end{itemize}
+
+\textbf{Client:}
+
+\begin{itemize}
+\item lauffähig auf Android-Systemen
+\item unterstützt Registrierung und Anmeldung beim Server
+\item neues Spiel starten
+\item zufällige GegnerIn (siehe Server)
+\item Auswahl einer GegnerIn aus Liste der spielbereiten SpielerInnen
+\item Eingabe einer bekannten GegnerIn
+\item eine Spielanfrage annehmen, d.h. an einem Spiel teilnehmen
+\item Anzeige einer Frage mit möglichen Antworten
+\item Auswahl einer Antwort in vorgegebener Zeitspanne
+\item Anzeige einer Rangliste
+\end{itemize}
+
+
+
+\subsubsection{Technische Rahmenbedingungen} \label{subsubsec:TechRahmen} 
+\begin{itemize}
+
+\item Softwareergonomische Prinzipien werden umgesetzt
+\item Der Server soll unter Linux, Windows und MacOS laufen (als Referenz gelten die Rechner in den Praktikumsräumen im MZH)
+\item Es muss eine relationale Datenbank für die serverseitige Persistenz benutzt werden
+\item Persistenz-Frameworks sind erlaubt (z.B. JPA)
+\item Verwendung leichtgewichtiger DBMS (z.B. Derby, SQLite) ohne echte Serverinstallation ist vorgeschrieben
+\item Verwendung und Abgabe eines Build-/Installationsskriptes, damit die Anwendung einfach installiert und aus den Quellen gebaut werden kann. Alle notwendigen Installations- und Konfigurationsschritte sind dokumentiert
+\item Eventuell benutzte Fremdbibliotheken dürfen für den Einsatz in Forschung und Lehre keine Beschränkungen (Geld, Benutzung, ...) aufweisen
+\item Quelltext in Deutsch oder Englisch dokumentiert. Gleiches gilt für Variablen- und Klassennamen. Alle anderen Dokumente in Deutsch
+Die Implementierungssprache ist Java 6 oder höher (weitere zulässige Sprachen in geringem Umfang sind: HTML, XML und JavaScript)
+\end{itemize}
+	
+
+\subsubsection{Gesetzliche Rahmenbedingungen} \label{subsubsec:GesetzlRahmen} Hier gilt in erster Linie das deutsche Recht. Um genau zu sein, kommen hier das Datenschutzgesetz\footnote{\url{http://www.gesetze-im-internet.de/bdsg_1990/}} und das Urheberrecht\footnote{\url{http://www.gesetze-im-internet.de/urhg/}} zum Tragen. Verfahrensrechtliche Vorkehrungen, um die Datensicherheit\footnote{\url{http://www.gesetze-im-internet.de/bdsg_1990/__9.html}} zu gewährleisten, sind von dem Kunden zu treffen. Der Kunde wird von der Software hinsichtlich der technischen Vorkehrungen insofern unterstützt, dass der Zugriff auf die Daten und der Zugang auf das Administrationstool passwortgeschützt ist. Hinsichtlich des Urheberrechts ist besonders auf die Regelung für Computerprogramme\footnote{\url{http://www.gesetze-im-internet.de/urhg/BJNR012730965.htm\#BJNR012730965BJNG004201377}} zu achten.
+
+\subsubsection{Sicherheitskritische Aspekte} \label{subsubsec:SicherheitsAspekte} Um das deutschen Datenschutzgesetz einzuhalten, muss der Kunde weitere Maßnahmen treffen. Diese sind nicht entscheidend für die Entwicklung der Software und liegen in der Verantwortung des Kunden.
+
+\subsection{Annahmen und Abhängigkeiten (Tim)} \label{subsec:Annahmen} Bis zur Auslieferung der Software wird sich der Kunde nicht ändern. Die Anforderungsspezifikation dient als eine Art Vertrag mit dem Kunden. Deshalb ist davon auszugehen, dass nach der Abgabe der Anforderungsspezifikation keine zusätzlichen Anforderungen hinzukommen. Abgabetermine haben Deadlines und sind somit strikt einzuhalten.\\
+Des Weiteren wird davon ausgegangen, dass sich die Nutzer der Software zwar mit dem System eingehend auseinandersetzen. Es wird jedoch auch für den ungeübten Nutzer leicht möglich sein, dieses zu verwenden. Der jeweilige Nutzer sollte zumindest schon mal mit einem Computer bzw. Smartphone und dessen Bedienung vertraut sein.\\
+
+
+\subsection{Ausblick (Tim)} \label{subsec:Ausblick} Große Änderungen sind nach Auslieferung des Systems zwar nicht zu erwarten, aber es können sich dennoch immer wieder mit der Zeit Anpassungen ergeben, die zu diesem Zeitpunkt allerdings noch nicht feststehen.
 
 \section{Detaillierte Beschreibung}
 \label{ch:DetaillierteBeschreibung}
-{\em Die externen Schnittstellen werden grob in Abschnitt 2
-  beschrieben.  Wenn die grobe Beschreibung dort nicht genügt, kann
-  sie hier detaillierter ausgeführt werden (wie vom IEEE-Standard
-  vorgesehen).}
+
 
 \subsection{Datenmodell (Tobias)}
-  {\em Das Datenmodell im Kontext des Pflichtenhefts ist {\glqq}die
-  Darstellung von Informationen und deren Beziehungen in einem
-  fachlogischen Konzept{\grqq}. Es soll hier gezeigt werden, welche
-  Einheiten für das existierende System relevant sind und welche
-  Beziehungen zwischen diesen Einheiten gelten. Es handelt sich
-  hierbei noch nicht um ein Datenbankschema oder eine Spezifikation
-  von Klassen für die Implementierung (Entwurf), sondern um die
-  Modellierung der realen Welt. Das Datenmodell ist leitend für den
-  Entwurf (weil alles darin beschrieben sich auch in der Software 
-  wiederfinden wird), aber nimmt den Entwurf nicht schon vorweg.
-  
-  Das Datenmodell soll als UML-Klassendiagramm angegeben werden.
-  Wichtig ist hierbei die korrekte Verwendung der UML: Klassen,
-  Attribute, Generalisierung, Assoziation, Aggregation, Komposition,
-  Multiplizitäten. Außerdem sollte das Diagramm sinnvoll und gut
-  lesbar sein. Dazu gehört weiterhin eine kurze Beschreibung des
-  Modells mit ergänzenden Informationen, insbesondere wenn die
-  Relationen durch ihren Namen nicht selbsterklärend sind. Gebt
-  unbedingt ein Mengengerüst für die Daten an: Wie viele Instanzen der
-  wichtigsten Klassen werden erwartet? Erwartet Ihr Änderungen im
-  Datenvolumen in der Zukunft?}
 
 
 \subsection{Anwendungsfälle (Tobias und Daniel)}
-  {\em Dieser Teil enthält die \textbf{funktionalen Anforderungen} an
-  das System. Diese werden durch Anwendungsfälle beschrieben. Insofern
-  müssen die Anwendungsfälle die Funktionalität des Systems
-  vollständig abdecken. Daher müssen auch Varianten von
-  Standard\-ab\-läufen sowie das Verhalten im Fehlerfall behandelt werden.
-  
-  In den Anwendungsfällen beschreibt Ihr, wie Eure Personas mit dem
-  System interagieren, wenn sie ein bestimmtes Ziel erreichen wollen.
-  Dabei sollte der Anwendungsfall zum Profil der Persona passen, also
-  eine typische Anwendung seiner Personengruppe sein. Ihr solltet die
-  Anwendungsfälle textuell beschreiben (im unten aufgeführten Schema)
-  und im Fall von komplexen Anwendungsfällen zusätzlich
-  Sequenzdiagramme verwenden, um durch graphische Darstellung das
-  Verständnis zu erleichtern.  Stellt sicher, dass die
-  Mindestanforderungen auf jeden Fall erfasst sind.  Weiterhin sollen
-  hier noch keine Implementierungsdetails festgelegt werden, um keine
-  Entwurfsentscheidungen vorwegzunehmen.
 
-  Verwendet die Screenshots oder digitalisierten Bilder Eures
-  Papierprototypen, um die Benutzungsführung in den Anwendungsfällen
-  zu illustrieren und die konkrete Benutzer\-oberfläche, die es zu
-  implementieren gilt, zu spezifizieren. Die Bilder sollten im Text an
-  der entsprechenden Stelle referenziert werden, um das Verständnis
-  für die Abläufe zu gewährleisten. Die Beschreibung muss so genau
-  sein, dass klar ist, wie welche Aktionen ausgelöst werden und was
-  das für Folgen hat (Beispiel: {\glqq}Benutzer startet die
-  Suche{\grqq} -- wie macht er das?  {\glqq}{\ldots}durch Drücken des
-  Buttons {\glq}Suche{\grq}{\grqq}). Die Spezifikation, die die
-  Navigation zwischen Screens und Dialogen beschreibt, nennt man
-  das Navigationsmodell. Es kann zum Beispiel in der Notation eines   
-  UML-Zustandsdiagrammes ausgedrückt werden, wobei jeder Screen/Dialog als
-  Zustand aufgefasst wird, Benutzerinteraktionen und sonstige Ereignisse
-  als Transitionen dargestellt werden.
+\begin{table}
+	[H] \label{1} 
+	\begin{tabular}
+		{|l|p{10cm}|} \hline \textbf{1} & \textbf{App starten} \\
+		\hline \textbf{Akteure} & Paul Neuling, Klaus Zocker, Sabine Ohnenetz\\
+		\hline \textbf{Ziel} & Der Akteur möchte die App starten \\
+		\hline \textbf{Vorbedingungen} & App bereits heruntergeladen und installiert \\
+		\hline \textbf{Regulärer Ablauf} & 1. Der Akteur startet die App, indem er auf den Startbutton drückt \\
+		&2. Die App startet und zeigt die Startseite \\
+		\hline \textbf{Varianten} & keine \\
+		\hline \textbf{Nachbedingungen} & Die App ist gestartet und der Benutzer kann diese nun verwenden\\
+		\hline \textbf{Fehler-/Ausnahmefälle} & keine \\
+		\hline 
+	\end{tabular}
+\end{table}
 
-  Die Struktur der textuellen Beschreibung sollte sein:
-  \begin{enumerate}
-    \item eindeutiger Name des Anwendungsfalls mit eindeutiger Nummer
-    
-    \item Akteure: welche externen Instanzen interagieren mit
-    dem System in diesem Anwendungsfall?  
-    
-    \item Vorbedingungen: Ausgangszustand, der vor Beginn des
-    Anwendungsfalls gelten muss -- hier sollte auch das Ziel des Akteurs
-    genannt werden
-    
-    \item Regulärer Ablauf: Abfolge von Aktionen der Akteure und
-    Reaktionen des Systems
-    
-    \item Varianten: mögliche Abweichungen vom regulären Ablauf, z.B.\ 
-    Auslassen oder Wiederholen von Aktionen
-    
-    \item Nachbedingung: Endzustand und dann mögliche Folgeaktionen 
-  
-    \item Fehler-/Ausnahmefälle mit deren Nachbedingung; z.B.\ wie wird
-    auf ungültige Eingaben reagiert?
-  \end{enumerate}
-  }
+\begin{figure}
+	[H] \caption{Startseite} 
+	\includegraphics[width=0.5
+	\textwidth]{Bilder/QuizzLoginRegister.png} \label{pic:Startseite} 
+\end{figure}
 
-\subsection{Aktionen}
-  {\em Hier sollten die gleichen Aktionen wie in den Anwendungsfällen
-  genannt und genauer beschrieben werden. Mit anderen Worten: Die
-  Anwendungsfälle müssen vollständig durch Ausführung von Aktionen aus
-  dieser Liste durchführbar sein. Im Prinzip muss es z.B.\ für jeden
-  Button/Menüpunkt/Link eine Aktion geben. Dabei ist zu beachten:
-  \begin{itemize}
-    \item Die Namen sollten sinnvoll und eindeutig sein.
+\begin{table}
+	[H] \label{2} 
+	\begin{tabular}
+		{|l|p{10cm}|} \hline \textbf{2} & \textbf{Offline-Modus starten} \\
+		\hline \textbf{Akteure} & Paul Neuling, Sabine Ohnenetz\\
+		\hline \textbf{Ziel} & Der Akteur möchte ohne Internet Verbindung und Anmeldung spielen \\
+		\hline \textbf{Vorbedingungen} & App wurde bereits gestartet \\
+		\hline \textbf{Regulärer Ablauf} & 1. Der Akteur drückt auf Jetzt Spielen \\
+		\hline \textbf{Varianten} & keine \\
+		\hline \textbf{Nachbedingungen} & Der Akteur kann nun ohne Anmeldung spielen\\
+		\hline \textbf{Fehler-/Ausnahmefälle} & keine \\
+		\hline 
+	\end{tabular}
+\end{table}
 
-    \item Die Parameter der Aktionen sollen angegeben werden. Hier
-    sollen sprechende Namen verwendet werden. Eventuell müssen die
-    Parameter auch genauer erläutert werden.
+\begin{table}
+	[H] \label{3} 
+	\begin{tabular}
+		{|l|p{10cm}|} \hline \textbf{3} & \textbf{Benutzer registrieren} \\
+		\hline \textbf{Akteure} & Paul Neuling, Klaus Zocker\\
+		\hline \textbf{Ziel} & Der Akteur möchte sich registrieren um im Internet gegen andere zu spielen \\
+		\hline \textbf{Vorbedingungen} & App wurde bereits gestartet \\
+		\hline \textbf{Regulärer Ablauf} & 1. Der Akteur drückt auf registrieren \\
+		&2 Der Akteur gibt seinen Benutzernamen und Passwort an\\
+		&3 Der Akteur drückt auf registrieren\\
+		\hline \textbf{Varianten} & keine \\
+		\hline \textbf{Nachbedingungen} & Der Akteur ist nun registriert und kann sich anmelden\\
+		\hline \textbf{Fehler-/Ausnahmefälle} & 1. Es ist keine Internet-Verbindung vorhanden \\
+		&2. Benutzername ist bereits vergeben\\
+		&3. Doppelte Passworteingabe stimmt nicht überein\\
+		\hline 
+	\end{tabular}
+\end{table}
 
-    \item Es müssen maximale Ausführungszeiten für jede Operation
-    angegeben werden.
-    
-  \item Die Gruppierung und Sortierung sollte sinnvoll sein
-    (z.B. alphabetisch).
-  \end{itemize}
+\begin{table}
+	[H] \label{4} 
+	\begin{tabular}
+		{|l|p{10cm}|} \hline \textbf{4} & \textbf{Benutzer anmelden} \\
+		\hline \textbf{Akteure} & Paul Neuling, Klaus Zocker\\
+		\hline \textbf{Ziel} & Der Akteur möchte sich anmelden und dann online spielen \\
+		\hline \textbf{Vorbedingungen} & App wurde bereits gestartet \\
+		\hline \textbf{Regulärer Ablauf} & 1. Der Akteur gibt seinen Benutzernamen und sein Passwort ein \\
+		&2 Der Akteur drückt auf anmelden\\
+		\hline \textbf{Varianten} & keine \\
+		\hline \textbf{Nachbedingungen} & Der Akteur ist nun angemeldet und kann Online-Spielen\\
+		\hline \textbf{Fehler-/Ausnahmefälle} & 1. Es ist keine Internet-Verbindung vorhanden \\
+		&2. Benutzername existiert nicht\\
+		&3. Passwort ist falsch\\
+		\hline 
+	\end{tabular}
+\end{table}
 
-  Wenn Ihr z.B.\ irgendwo in Eurer GUI ein Suchfeld habt, in das Ihr
-  den Namen eines Kunden eintragen könnt, und einen Button, welcher die
-  Suche startet, dann wird es vermutlich eine Aktion {\bf Kunde
-    suchen(name)} geben. Dies ist eine Funktion, die Euer System
-  bereitstellt und die durch Anklicken des Buttons ausgelöst wird. Der
-  Anwendungsfall {\bf Kunde suchen} verwendet dann diese Aktion,
-  enthält aber zusätzlich die Beschreibung der Interaktion mit dem
-  System.
-  
-  Dieser Abschnitt ist im Standard im Prinzip vorgesehen, weil hierzu
-  grundsätzlich eine Aussage gemacht werden muss. Die Aktionen sind
-  letztlich die Produktfunktionen, während die Anwendungsfälle die
-  Interaktion zwischen Akteuren und System beschreiben. }
+\begin{table}
+	[H] \label{5} 
+	\begin{tabular}
+		{|l|p{10cm}|} \hline \textbf{5} & \textbf{Benutzer abmelden} \\
+		\hline \textbf{Akteure} & Paul Neuling, Klaus Zocker\\
+		\hline \textbf{Ziel} & Der Akteur möchte sich abmelden\\
+		\hline \textbf{Vorbedingungen} & Der Akteur war bereits angemeldet \\
+		\hline \textbf{Regulärer Ablauf} & 1. Der Akteur drückt auf abmelden \\
+		\hline \textbf{Varianten} & 1. Der Akteur ist bereits angemeldet, hat aber keine Internet-Verbindung und wird automatisch abgemeldet \\
+		\hline \textbf{Nachbedingungen} & Der Akteur ist nun abgemeldet und ist wieder auf dem Startbildschirm\\
+		\hline \textbf{Fehler-/Ausnahmefälle} & keine \\
+		\hline 
+	\end{tabular}
+\end{table}
 
-  
-\subsection{Entwurfseinschränkungen}
-\nurlangversion
+\begin{table}
+	[H] \label{6} 
+	\begin{tabular}
+		{|l|p{10cm}|} \hline \textbf{6} & \textbf{Spielen(Offline)} \\
+		\hline \textbf{Akteure} & Sabine Ohnenetz\\
+		\hline \textbf{Ziel} & Der Akteur möchte spielen\\
+		\hline \textbf{Vorbedingungen} & Der Akteur hat den Anwendungsfall 2 ausgeführt \\
+		\hline \textbf{Regulärer Ablauf} & 1. Der Akteur drückt auf spielen \\
+		\hline \textbf{Varianten} & keine \\
+		\hline \textbf{Nachbedingungen} & Die Spielrunde wird gestartet\\
+		\hline \textbf{Fehler-/Ausnahmefälle} & keine \\
+		\hline 
+	\end{tabular}
+\end{table}
 
-{\em Wurde bereits in \ref{sec:Einschraenkungen} behandelt und muss
-  daher hier nicht wiederholt werden. Falls aber eine detailliertere
-  Beschreibung notwendig wäre, wäre hier der geeignete Ort.}
-  
 
-\subsection{Softwaresystemattribute}
+\begin{table}
+	[H] \label{7} 
+	\begin{tabular}
+		{|l|p{10cm}|} \hline \textbf{7} & \textbf{Spielen(Online)} \\
+		\hline \textbf{Akteure} & Paul Neuling, Klaus Zocker\\
+		\hline \textbf{Ziel} & Der Akteur möchte spielen\\
+		\hline \textbf{Vorbedingungen} & Der Akteur ist bereits Online angemeldet \\
+		\hline \textbf{Regulärer Ablauf} & 1. Der Akteur drückt auf Spielen\\
+		\hline \textbf{Varianten} & keine \\
+		\hline \textbf{Nachbedingungen} & Es erscheint eine Auswahl zwischen Neues Spiel starten und es werden alle offenen Spiele angezeigt\\
+		\hline \textbf{Fehler-/Ausnahmefälle} & keine \\
+		\hline 
+	\end{tabular}
+\end{table}
+
+
+\begin{table}
+	[H] \label{8} 
+	\begin{tabular}
+		{|l|p{10cm}|} \hline \textbf{8} & \textbf{Neues Spiel} \\
+		\hline \textbf{Akteure} & Paul Neuling, Klaus Zocker\\
+		\hline \textbf{Ziel} & Der Akteur möchte ein neues Spiel starten\\
+		\hline \textbf{Vorbedingungen} & Der Akteur hat bereits Anwendungsfall 7 ausgeführt \\
+		\hline \textbf{Regulärer Ablauf} & 1. Der Akteur drückt auf neues Spiel \\
+		\hline \textbf{Varianten} & keine \\
+		\hline \textbf{Nachbedingungen} & Es wird eine Liste aller Spieler die Online sind angezeigt\\
+		\hline \textbf{Fehler-/Ausnahmefälle} & Leere Liste, wenn keine Spieler online sind \\
+		\hline 
+	\end{tabular}
+\end{table}
+
+\begin{table}
+	[H] \label{9} 
+	\begin{tabular}
+		{|l|p{10cm}|} \hline \textbf{9} & \textbf{Gegner herausfordern} \\
+		\hline \textbf{Akteure} & Paul Neuling, Klaus Zocker\\
+		\hline \textbf{Ziel} & Der Akteur möchte einen anderen Spieler herausfordern\\
+		\hline \textbf{Vorbedingungen} & Der Akteur hat bereits ein neues Spiel gestartet und eine Liste ist erschien(Anwendungsfall 8) \\
+		\hline \textbf{Regulärer Ablauf} & 1. Der Akteur drückt in der Liste auf einen Spieler und fordert ihn heraus\\
+		\hline \textbf{Varianten} & keine \\
+		\hline \textbf{Nachbedingungen} & Es wird eine Anfrage an den Spieler gesendet und der Akteur kann bereits die erste Fragerunde beginnen\\
+		\hline \textbf{Fehler-/Ausnahmefälle} & Leere Liste, wenn keine Spieler online sind \\
+		\hline 
+	\end{tabular}
+\end{table}
+
+\begin{table}
+	[H] \label{10} 
+	\begin{tabular}
+		{|l|p{10cm}|} \hline \textbf{10} & \textbf{Offenes Spiel spielen} \\
+		\hline \textbf{Akteure} & Paul Neuling, Klaus Zocker, Sabine Ohnenetz\\
+		\hline \textbf{Ziel} & Der Akteur möchte anfangen die Fragen zu beantworten\\
+		\hline \textbf{Vorbedingungen} & Der Akteur hat noch ein Spiel offen\\
+		\hline \textbf{Regulärer Ablauf} & 1. Die erste Frage erscheint\\
+		&2. Der Spieler hat 20sek Zeit die Frage zu beantworten\\
+		&3. Nachdem der Spieler 3 Fragen weiter ist als der Gegner muss er warten\\
+		\hline \textbf{Varianten} & Im Offline-Modus kann der Spieler so viele Fragen beantworten wie er will \\
+		\hline \textbf{Nachbedingungen} & Der Akteur hat alle Fragen beantwortet und wartet nun auf den Gegner\\
+		\hline \textbf{Fehler-/Ausnahmefälle} & keine \\
+		\hline 
+	\end{tabular}
+\end{table}
+
+\begin{figure}
+	[H] \caption{Frage} 
+	\includegraphics[width=0.5
+	\textwidth]{Bilder/QuizzQuestion.png} \label{pic:ques} 
+\end{figure}
+
+\begin{table}
+	[H] \label{11} 
+	\begin{tabular}
+		{|l|p{10cm}|} \hline \textbf{11} & \textbf{Einstellungen ändern} \\
+		\hline \textbf{Akteure} & Paul Neuling, Klaus Zocker\\
+		\hline \textbf{Ziel} & Der Akteur möchte seine Einstellungen ändern\\
+		\hline \textbf{Vorbedingungen} & Der Akteur ist bereits angemeldet\\
+		\hline \textbf{Regulärer Ablauf} & 1. Der Akteur gibt seinen neuen Nutzernamen an\\
+		&2. Der Akteur gibt sein neues Passwort an\\
+		\hline \textbf{Varianten} & keine \\
+		\hline \textbf{Nachbedingungen} & Das Passwort und der Nutzername wurden geändert\\
+		\hline \textbf{Fehler-/Ausnahmefälle} & Nutzername ist bereits vergeben \\
+		\hline 
+	\end{tabular}
+\end{table}
+
+\subsection{Aktionen (Tim W.)}
+\subsubsection{App.Abmelden()}
+\begin{itemize}
+\item Der Nutzer meldet sich per Button ab.
+\item \textbf{Vorbedingung}: Der Nutzer befindet sich im Online-Modus.
+\item \textbf{Nachbedingung}: Der Nutzer kann zwischen Online- und Offline-Modus wählen. Beim nächsten Start wird der Nutzer nicht automatisch eingeloggt.
+\item \textbf{max. Reaktionszeit}: 2 sek.
+\end{itemize}
+
+\subsubsection{App.Anmelden(nutzername, passwort)}
+\begin{itemize}
+\item Der Nutzer gibt seine Daten, mit denen er sich registriert hat, in zwei Eingabefelder ein und bestätigt die Eingabe mit einem Buttondruck.
+\item \textbf{Vorbedingung}: Der Nutzer ist registriert und möchte den Onlinemodus starten. 
+\item \textbf{Nachbedingung}: Der Nutzer ist eingeloggt und die Daten sind für den nächsten Start gespeichert.
+\item \textbf{Fehlerbedingung}: Falls Nutzername oder Passwort nicht korrekt sind, wird der Nutzer aufgefordert, die Daten erneut einzugeben.
+\item \textbf{max. Reaktionszeit}: 5 sek.
+\end{itemize}
+
+\subsubsection{App.Einstellungen ändern(neuerNutzername, neuesPasswort)}
+\begin{itemize}
+\item Der Nutzer kann im Einstellungsmenü einen neuen Nutzernamen und/oder ein neues Passwort bestimmen. Das neue Passwort muss durch eine zweite Eingabe in ein weiteres Eingabefeld bestätigt werden. Die Eingaben werden mit einem Buttondruck gespeichert.
+\item \textbf{Vorbedingung}: Der Nutzer befindet sich im Einstellungsmenü.
+\item \textbf{Nachbedingung}: Der Nutzer kehrt ins Menü zurück. Die Änderungen sind im Clienten und auf dem Server gespeichert.
+\item \textbf{max. Reaktionszeit}: 3 sek.
+\end{itemize}
+
+\subsubsection{App.Einstellungen aufrufen()}
+\begin{itemize}
+\item Der Nutzer kann im Online-Modus per Button die Einstellungen aufrufen, um Nutzernamen oder Passwort zu ändern.
+\item \textbf{Vorbedingung}: Der Nutzer befindet sich im Online-Modus.
+\item \textbf{Nachbedingung}: Der Nutzer befindet sich im Einstellungsmenü. 
+\item \textbf{max. Reaktionszeit}: 1 sek.
+\end{itemize}
+
+\subsubsection{App.Endergebnis bestätigen()}
+\begin{itemize}
+\item Nach einer Partie werden den Nutzern das Endresultat angezeigt. Um zum Menü zurückzukehren, drücken sie einen Button zur Bestätigung.
+\item \textbf{Vorbedingung}: Eine Runde wurde beendet.
+\item \textbf{Nachbedingung}: Der Nutzer kehrt ins Menü zurück. 
+\item \textbf{max. Reaktionszeit}: 1 sek.
+\end{itemize}
+
+\subsubsection{App.Frage beantworten(antwort)}
+\begin{itemize}
+\item Der Nutzer beantwortet eine offene Frage, in dem er auf eine der vier Antwortmöglichkeiten drückt.
+\item \textbf{Vorbedingung}: Eine Runde wurde gestartet.
+\item \textbf{Nachbedingung}: Das System wertet die Antwort aus. Den Nutzern wird mitgeteilt, ob die Antwort stimmte. Die nächste Runde wird eingeleitet.
+\item \textbf{max. Reaktionszeit}: 1 sek.
+\end{itemize}
+
+\subsubsection{App.Gegner herausfordern(nutzer)}
+\begin{itemize}
+\item Der Nutzer fordert einen Nutzer heraus, indem er auf einen der Namen in der Liste drückt. 
+\item \textbf{Vorbedingung}: Der Nutzer startet ein Online-Match.
+\item \textbf{Nachbedingung}: Die Herausforderung wurde versandt.
+\item \textbf{Fehlerbedingung}: Falls die Übertragung fehlschlägt, wird dem Nutzer dies mitgeteilt.
+\item \textbf{max. Reaktionszeit}: 3 sek.
+\end{itemize}
+
+\subsubsection{App.Herausforderung annehmen(herausforderung)}
+\begin{itemize}
+\item Der Nutzer lässt sich über einen Button offene Herausforderungen anzeigen und kann diese mit einem weiteren Druck annehmen. 
+\item \textbf{Vorbedingung}: Der Nutzer ist im Online-Modus.
+\item \textbf{Nachbedingung}: Die Herausforderung wurde angenommen und das Spiel wird gestartet.
+\item \textbf{Fehlerbedingung}: Falls die Übertragung fehlschlägt, wird dem Nutzer dies mitgeteilt.
+\item \textbf{max. Reaktionszeit}: 5 sek.
+\end{itemize}
+
+\subsubsection{App.Joker nutzen(art)}
+\begin{itemize}
+\item Der Nutzer nutzt einen Button, um während einer Fragerunde einen Joker zu nutzen.
+\item \textbf{Vorbedingung}: Eine Runde wurde gestartet. Der Nutzer hat sich den Joker in einem früheren Spiel Joker erspielt.
+\item \textbf{Nachbedingung}: Je nach Art des Jokers wird die Zeit verlängert oder zwei Antworten werden entnommen. 
+\item \textbf{Fehlerbedingung}: Falls der Spieler bereits einen Joker gespielt hat, wird ihm mitgeteilt, dass er nicht noch einen spielen kann.
+\item \textbf{max. Reaktionszeit}: 1 sek.
+\end{itemize}
+
+\subsubsection{App.Neues Spiel starten(modus)}
+\begin{itemize}
+\item Der Nutzer startet eine neue Partie per Button.
+\item \textbf{Vorbedingung}: Der Nutzer befindet sich im Offline- oder Online-Modus.
+\item \textbf{Nachbedingung}: Falls der Nutzer sich im Offline-Modus befindet, wird eine Einzelspieler Partie gestartet. Ist er online, wird ihm eine Liste von anderen Spielern angezeigt.
+\item \textbf{Fehlerbedingung}: Falls keine weiteren Spieler online sind, wird dem Nutzer dies mitgeteilt und er kann es später noch einmal versuchen.
+\item \textbf{max. Reaktionszeit}: 3 sek.
+\end{itemize}
+
+\subsubsection{App.Offline-Modus starten()}
+\begin{itemize}
+\item Der Nutzer wählt den Offline-Modus über einen Button aus.
+\item \textbf{Vorbedingung}: Die App wurde gestartet.
+\item \textbf{Nachbedingung}: Der Nutzer ist im Offline-Modus.
+\item \textbf{max. Reaktionszeit}: 2 sek.
+\end{itemize}
+
+\subsubsection{App.Online-Modus starten()}
+\begin{itemize}
+\item Der Nutzer wählt den Online-Modus über einen Button aus.
+\item \textbf{Vorbedingung}: Die App wurde gestartet.
+\item \textbf{Nachbedingung}: Der Nutzer wird aufgefordert sich einzuloggen.
+\item \textbf{Fehlerbedingung}: Falls der Server nicht angesprochen werden kann, wird dem Nutzer dies durch eine Fehlermeldung mitgeteilt.
+\item \textbf{max. Reaktionszeit}: 1 sek.
+\end{itemize}
+
+\subsubsection{App.Rangliste aufrufen()}
+\begin{itemize}
+\item Der Nutzer kann im Online-Modus per Button die Rangliste aufrufen.
+\item \textbf{Vorbedingung}: Der Nutzer befindet sich im Online-Modus.
+\item \textbf{Nachbedingung}: Der Nutzer befindet sich im Ranglistenmenü. 
+\item \textbf{max. Reaktionszeit}: 3 sek.
+\end{itemize}
+
+\subsubsection{App.Registrieren(nutzername, passwort)}
+\begin{itemize}
+\item Der Nutzer gibt seine Daten, mit denen er sich registrieren möchte, in zwei Eingabefelder ein und bestätigt die Eingabe per Button.
+\item \textbf{Vorbedingung}: Die App ist gestartet.
+\item \textbf{Nachbedingung}: Der Nutzer ist registriert.
+\item \textbf{Fehlerbedingung}: Falls Nutzername oder Passwort nicht den Anforderungen entsprechen, wird der Nutzer an den entsprechenden Feldern darauf hingewiesen.
+\item \textbf{max. Reaktionszeit}: 5 sek.
+\end{itemize}
+
+\subsection{Softwaresystemattribute Tim E.)}
 \label{sec:softwaresystemattribute}
 
-  {\em Hier werden die sogenannten „nichtfunktionalen Anforderungen“
-  spezifiziert. Dazu gehören beispielsweise:
-  \begin{itemize}
-    \item Performanz
-    \item Zuverlässigkeit (Korrektheit, Robustheit, Ausfallsicherheit)
-    \item Verfügbarkeit
-    \item Sicherheit
-    \item Wartbarkeit
-    \item Portabilität
-  \end{itemize}
-}
+  Hier werden die sogenannten „nichtfunktionalen Anforderungen“ spezifiziert. Dazu gehören beispielsweise: 
+\begin{itemize}
+	\item Performanz: Beim Entwickeln unserer Software wird Anspruch auf eine fließende Arbeitsweise gelegt, was bedeutet, dass Interaktionen mit dem System möglichst schnell zu bewältigen sind. Deshalb ist darauf zu achten, Berechnungsprozesse so wenig komplex wie möglich zu halten. Die Implementierung eines Ladezeichens bei aufkommenden Verbindungsschwierigkeiten ist selbstverständlich vorgesehen.
+	
+	\item Zuverlässigkeit (Korrektheit, Robustheit, Ausfallsicherheit): Die zu entwickelnde Software, insbesondere die Androidapplikation soll auf vielen verschiedenen Geräten funktionieren, weshalb trotz sorgfältig geplanten Testdurchläufe keine absolute Zuverlässigkeit garantiert werden kann. 
+	
+	\item Verfügbarkeit: Die Webapplikation soll wie gewohnt einfach über einen beliebigen Browser zugreifbar sein und die Androidappplikation soll auf jedem Gerät laufen, dass mit Android läuft und natürlich internetfähig ist. 
+	
+	\item Sicherheit: Sicherheit bezüglich der persönlichen Daten wird zum Teil durch den passwortgeschützten Login gewährleistet, wobei jeder Nutzer ein individuelles Passwort besitzt. Auf Profildaten haben nur der bestimmte eingeloggte Nutzer und der Admin Zugriff. Zusätzlich werden vor dem Versenden von Daten, diese via SSL verschlüsselt, was die Datensicherheit in unserem System garantiert.
+	
+	\item Wartbarkeit: Um eine gute Wartbarkeit zu gewährleisten, soll der Programmcode in Komponenten aufgeteilt werden, dessen Zuständigkeit klar definiert sein muss. Zusätzlich zu einer übersichtliche Programmstruktur, soll der Code sorgfältig und umfassend kommentiert werden.
+	
+	\item Portabilität: Da die Androidapplikation auf jedem androidfähigem Gerät laufen können soll, ist eine hohe Portabilität bereits gegeben. Durch Tests auf den verschiedensten Endgeräten kann die Applikation auf auf diesen absolut funktionstüchtig laufen. 
+\end{itemize}
 
-{\em Die spezifizierten Systemattribute müssen hinreichend konkret und
-  überprüfbar formuliert werden.}
 
 
 
-\subsection{Weitere Anforderungen}
-\nurlangversion
 
-{\em In diesem Abschnitt können weitere relevante Anforderungen
-  beschrieben werden, die in keine der oben genannten Abschnitte
-  passen.}
-
-\section{Anhang}
-\nurlangversion
-
-{\em Hier können weitere detailliertere Ergebnisse aus der Ist-Analyse
-  oder andere Informationen, die zur Erstellung der Spezifikation
-  gedient haben (z.B. Papierprototypen), angefügt werden.}
 
 \end{document}
