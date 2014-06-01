@@ -122,7 +122,7 @@
   \\ ~
   \vspace{2cm}
   \\
-  \it Abgabe: 01.06.2014 --- Version 1.1\\ ~
+  \it Abgabe: 01.06.2014 --- Version 1.7\\ ~
   \end{center}
   \end{minipage}
 
@@ -149,18 +149,26 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section*{Version und Änderungsgeschichte}
 
-{\em Die aktuelle Versionsnummer des Dokumentes sollte eindeutig und gut zu
-identifizieren sein, hier und optimalerweise auf dem Titelblatt.}
 
 \begin{tabular}{ccl}
 Version & Datum & Änderungen \\
 \hline
 1.0 & 21.05.2014 & Analyse ähnlicher Systeme. \\
-1.1 & 22.05.2014 & Anwendungsfälle . \\
+1.1 & 22.05.2014 & Anwendungsfälle  \\
+1.2 & 27.05.2014 & Ist-Analyse \\
+1.3 & 28.05.2014 & Produktperspektiven \\
+1.4 & 29.05.2014 & Einschränkungen \\
+1.5 & 30.05.2014 & Annahmen und Abhängigkeiten \\
+1.6 & 30.05.2014 & Ausblick \\
+1.7 & 30.05.2014 & Charakteristika der Benutzer \\
+
 \end{tabular}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\paragraph{Wichtiger Hinweis:} Diese Anforderungsspezifikation wurde zu einem Teil aus verschiedenen Dokumententeilen der Anforderungsspezifikation unserer Gruppenmitglieder aus dem Wintersemester 2013/14 erstellt (Gruppe \textit{IT\_R3V0LUTION}). Einige Teile wurden komplett übernommen, andere überarbeitet bzw. angepasst. \\
+Diese Vereinbarung haben wir in der Kick-Off-Veranstaltung für RE SWP 2014 mit dem Veranstalter Dr. Karsten Hölscher getroffen. \\
 \section{Einleitung (Patrick)}
 \nurlangversion
 
@@ -223,29 +231,30 @@ Um die genauen Anforderungen und Kundenwünsche an das System über die vom Vera
 
 \subsubsection{Erstes Kundengespräch vom 08.05.2014}
 
-Am Donnerstag, den 08.05.2014, um 10:00 Uhr begann unser erstes Kundengespräch. In den Tagen zuvor hat die Gruppe Ideen zu einem Fragenkatalog gesammelt, der dann am Vortag der Besprechung fertiggestellt wurde. Er beinhaltete eine Auflistung aller Mindestanforderungen, zu denen Unklarheiten bezüglich des Realisierungsvorgangs notiert wurden. 
+Am Donnerstag, den 08.05.2014, um 10:00 Uhr begann unser erstes Kundengespräch mit der Vertreterin des Kunden, Frau Sprindt von der Pressestelle der Universität. In den Tagen zuvor hat die Gruppe Ideen zu einem Fragenkatalog gesammelt, der dann am Vortag der Besprechung fertiggestellt wurde. Er beinhaltete eine Auflistung aller Mindestanforderungen, zu denen Unklarheiten bezüglich des Realisierungsvorgangs notiert wurden. 
 
-Das offizielle Gespräch begann pünktlich um 10:00 Uhr. Leider gab es keine wirkliche Ordnung bei den gestellten Fragen, was es etwas schwer machte, die einzelnen Vorgänge strukturiert zu durchdenken.
+Das offizielle Gespräch begann pünktlich um 10:00 Uhr. Leider gab es keine wirkliche Ordnung bei den gestellten Fragen, was es etwas schwer machte, die einzelnen Vorgänge strukturiert zu durchdenken.\\
+Grundsätzlich soll sich die App an die bekannte Quiz-App \textit{Quizduell} anlehnen bzw. als eine Art Vorbild genommen werden. Genaueres dazu findet man im Abschnitt \ref{quizduell}, wo die Analyse eines bestehenden Systems vorgenommen wird.
 
 \subsubsection{Auswertung des Kundengesprächs}
 
-Es haben sich im Kundengespräch keine großen Überraschungen oder unerwartete Kundenwünsche ergeben, die über die Mindestanforderungen besonders hinaus gehen. Einige Besonderheiten sollen aber im Folgenden näher beschrieben werden.\\
+Es haben sich im Kundengespräch jedoch keine großen Überraschungen oder unerwartete Kundenwünsche oder -änderungen ergeben, die über die Mindestanforderungen besonders hinaus gehen. Einige Besonderheiten sollen aber im Folgenden näher beschrieben werden.\\
 
 Man soll die App auch ohne Registrierung spielen können, allerdings nur lokal auf einem Gerät. Man hat dann nicht die Möglichkeit, später woanders weiterzuspielen. Das soll nur funktionieren, wenn man sich als Nutzer mit Benutzernamen und Passwort registriert hat, wobei es eine Benutzernamenkontrolle geben soll, die unpassende Namen verbietet. Auch soll der Admin jederzeit unpassende Benutzer über den Admin-Zugang löschen oder ändern können.\\
 Es soll bis zu 10 parallel laufende Spiele geben können, wobei dieser Wert vom Admin editiert werden kann. Ebenso sollen die Spiele zeitversetzt gespielt werden können. Drei Fragen pro Runde sind vorgesehen, wobei ein Zeitlimit von 10-30 Sekunden eingeplant ist (die tatsächliche Antwortzeit sollte man in einem Praxistest genauer ermitteln).\\
 Es wurde besonderen Wert darauf gelegt, dass in der GUI-Gestaltung das Corporate Design der Universität Bremen mit einbezogen wird, sodass z.B. durch Einfügen des Uni-Logos ein Wiedererkennungswert und ein direkter Bezug zur Uni bei den Nutzern hergestellt wird. Auch ein Verweis auf die Universität-Webseite sowie ggf. eine Social-Media-Anbindung sind erwünscht, wenn auch eher optionaler Art.\\
 Die Spieler sollen geduzt werden und möglichst gender-neutral, sofern sinnvoll und möglich, angesprochen werden.\\
 Auch die Einbindung von wohlklingenden und passenden Sounds soll den Spaß am Spiel wecken.\\
-Des Weiteren sollen im Spiel selbst zu jeder Frage vier Antwortmöglichkeiten gegeben werden und Joker in Form eines 50:50-Jokers oder einer Zeitverlängerung eingebaut werden.\\
+Des Weiteren sollen im Spiel selbst zu jeder Frage vier Antwortmöglichkeiten gegeben werden und Joker in Form eines 50:50-Jokers oder einer Zeitverlängerung eingebaut werden, die man sich jedoch erst erspielen muss und nicht von Beginn an zur Verfügung stehen.\\
 Der Schwierigkeitsgrad steigt nicht mit jeder Frage, sondern die Fragen werden nach Kategorie, die die Spieler zu Beginn bestimmen können, zufällig ausgewählt. \\
 Wenn ein Spieler aufgibt bzw. das laufende Spiel abbricht, soll er in Form eines Punktabzugs bestraft werden. \\
 Es soll allerdings keine Freundes- oder Rivalenlisten geben. 
 
 
 
-\subsubsection{Analyse eines ähnlichem Systems (Daniel Pupat)}
+\subsubsection{Analyse eines ähnlichem Systems (Daniel Pupat)}\label{quizduell}
 
-Als System haben wir uns die App Quizduell ausgesucht. Die App ist im App-Store kostenlos zu erhalten. Wir benutzen hierzu nicht die Premium-Version, da die kostenlose unserem System am nächsten kommt. Wir haben nicht die Rechte eines Administrators, weshalb sich die Analyse nur auf die App bezieht. Die App kann nur verwendet werden, wenn man eine bestehende Internet Verbindung hat.\\
+Als System haben wir uns die App \textit{Quizduell} ausgesucht. Die App ist im App-Store kostenlos zu erhalten. Wir benutzen hierzu nicht die Premium-Version, da die kostenlose unserem System am nächsten kommt. Wir haben nicht die Rechte eines Administrators, weshalb sich die Analyse nur auf die App bezieht. Die App kann nur verwendet werden, wenn man eine bestehende Internetverbindung hat.\\
 
 \begin{figure}[H]
 \centering
@@ -261,7 +270,7 @@ Dies ist der Ladebildschirm, sobald die App gestartet wird.
 \caption{Startbildschirm}
 \end{figure}
 
-Hier ist der Startbildschirm, nachdem man eingeloggt ist. Oben hat man die Funktionen Aktualisieren, Statistiken und Einstellungen. Beim aktualisieren wird die Seite aktualisiert. \\
+Hier ist der Startbildschirm, nachdem man eingeloggt ist. Oben hat man die Funktionen Aktualisieren, Statistiken und Einstellungen. Beim Aktualisieren wird die Seite aktualisiert. \\
 
 \begin{figure}[H]
 \centering
@@ -285,7 +294,7 @@ Unter Einstellungen kann man seine Kontoeinstellungen bearbeiten, wo man den Ben
 \caption{Startbildschirm}
 \end{figure}
 
-Weiter Funktionen beim Startbildschirm sind Neues Spiel starten oder ein bereits angefangenes Spiel weiterspielen.\\
+Weitere Funktionen beim Startbildschirm sind Neues Spiel starten oder ein bereits angefangenes Spiel weiterspielen.\\
 
 \begin{figure}[H]
 \centering
@@ -302,7 +311,7 @@ Wenn man ein neues Spiel starten möchte, kann man einen neuen Spieler suchen, u
 \caption{Bildschirm beim neuen oder laufenden Spiel}
 \end{figure}
 
-Hier wird der bisherige Spielstand angezeigt. Insgesamt gibt es 6 Fragen, welche jeder beantworten muss. Die Spieler erhalten jeweils die gleichen Fragen. Es werden immer 2 Fragen abwechselnd gestellt, wobei der Spieler einmal eine Kategorie auswählen darf und einmal die Fragen der Kategorie des Gegners beantworten muss. Die Spieler haben 48 Stunden Zeit die Fragen zu beantworten bis das Spiel automatisch, mit einer Niederlage des Spielers der nicht geantwortet hat, endet. 
+Hier wird der bisherige Spielstand angezeigt. Insgesamt gibt es 6 Fragen, welche jeder beantworten muss. Die Spieler erhalten jeweils die gleichen Fragen. Es werden immer 2 Fragen abwechselnd gestellt, wobei der Spieler einmal eine Kategorie auswählen darf und einmal die Fragen der Kategorie des Gegners beantworten muss. Die Spieler haben 48 Stunden Zeit, die Fragen zu beantworten, bis das Spiel automatisch mit einer Niederlage des Spielers, der nicht geantwortet hat, endet. 
 
 \begin{figure}[H]
 \centering
@@ -318,7 +327,7 @@ Beim Starten einer Frage erscheint erst nur eine Karte mit der Kategorie, bei ei
 \caption{Anzeigen der Frage}
 \end{figure}
 
-Nun wird die Frage angezeigt, man hat 20 Sekunden Zeit um die Frage zu beantworten, sonst wird diese als Falsch gewertet.\\
+Nun wird die Frage angezeigt, man hat 20 Sekunden Zeit, um die Frage zu beantworten, sonst wird diese als falsch gewertet.\\
 
 \begin{figure}[H]
 \centering
@@ -326,39 +335,27 @@ Nun wird die Frage angezeigt, man hat 20 Sekunden Zeit um die Frage zu beantwort
 \caption{Reaktion bei richtiger Antwort}
 \end{figure}
 
-Bei einer richtigen Antwort wird diese mit Grün unterlegt und Zeitgleich wird der Name des Gegners auf seiner Antort angezeigt, wenn er diese bereits beantwortet hat. Bei einer falschen wird die Antwort mit Rot unterlegt.\\
+Bei einer richtigen Antwort wird diese mit Grün unterlegt und zeitgleich wird der Name des Gegners auf seiner Antwort angezeigt, wenn er diese bereits beantwortet hat. Bei einer falschen wird die Antwort mit rot unterlegt.\\
 
-Fazit:\\
-Die Quizduell App ist ein gutes System mit welcher man unseres später Vergleichen kann. Es hat viele Funktion, wie gezeigt, welche unser System ebenfalls haben muss. Es gibt allerdings auch Unterschiede, in unsere App wird es nur 3 Runden pro Runde geben und es werden keine eigenen Fragen geschrieben, außerdem wird es keine Premium-Version geben. Zudem werden wir auch eine offline-Funktion einbauen, in welcher der Spieler alleine spielen kann.\\ 
+\textbf{Fazit:}\\
+Die \textit{Quizduell} App ist ein gutes System, mit welcher man unseres später vergleichen kann. Es hat viele Funktion, wie gezeigt, welche unser System ebenfalls haben muss. Es gibt allerdings auch Unterschiede. In unserer App wird es nur 3 Fragen pro Runde geben und es werden keine eigenen Fragen geschrieben, außerdem wird es keine Premium-Version geben. Zudem werden wir auch Offline-Funktion einbauen, in welcher der Spieler alleine spielen kann.\\ 
 
 \subsection{Produktperspektive (Tim W. und Tim E.)}
   
 \subsubsection{Systemschnittstellen}
-  {\em Schnittstellen zu anderen Systemen, z.B.\ Datenimport/-export,
-  Konfigurationsdateien, anzubindende externe Dienste und deren Schnittstelle,
-  Anbieten der eigenen Funktionalität als API o.ä.}
   
 Als Grundlage dient ein neu aufzusetzendes oder bestehendes System, auf dem die Software installiert werden kann. Als externe Schnittstelle muss dieses mit dem Internet verbunden sein. Der Server der Quizapp kann an einem PC über HTTP mit einem HTML5-unterstützenden Browser angesprochen werden. Mobiler Zugriff erfolgt auf Android-Geräten zudem mit einer eigenen App.
 
 \subsubsection{Benutzerschnittstelle}
 
-  {\em GUI-Design-Richtlinien und Interaktionsmechanismen (nicht
-  Screenshots aller Dialoge --- die werden in Kapitel 3 gezeigt --- aber
-  evtl.\ ein Screenshot, der einen groben Überblick und Eindruck des
-  GUI-Designs gibt).}
 Die GUI der Website weist je nachdem, ob sich ein normaler Nutzer oder ein Admin anmeldet, unterschiedliche Funktionalitäten auf. 
 
 \subsubsection{Hardwareschnittstellen}
-  {\em Schnittstellen zu vorgegebenen Hardwarekomponenten (Name,
-  Version).}
 
 Die HTML-Website ist plattform-unabhängig nutzbar. Smartphones mit kompatibler Android-Version (welche?) können die Quizapp nutzen.
 
 
 \subsubsection{Softwareschnittstellen}
-{\em Softwarebibliotheken und --rahmenwerke (Frameworks), die benutzt
-  werden sollen, mit Versionsnummer, Hersteller, Quelle etc. Dazu
-  gehört auf jeden Fall Java.}
 
   \begin{tabular}{|l|l|l|l|}\hline
     \textbf{Name} & \textbf{Version} & \textbf{Hersteller} & \textbf{Quelle} \\\hline
@@ -366,34 +363,24 @@ Die HTML-Website ist plattform-unabhängig nutzbar. Smartphones mit kompatibler 
     JUnit & & & \\\hline
     libGDX &  &  & \\\hline
     Android & & & \\\hline
-    \ldots & & & \\\hline
   \end{tabular}
 
 \subsubsection{Kommunikationsschnittstellen}
-{\em Anforderungen an und Bandbreite von Kommunikationsnetzwerken, öffentliche
-  oder auch private IP-Adressen?}
   
-Das System muss mit einer öffentlichen IP-Adresse und Domain von außen ansprechbar sein. Die Bandbreite sollte groß genug sein um mehreren Nutzern parallel den Zugang zur Software zu gewähren, wobei jeder Nutzer einzeln nur eine sehr geringe Bandbreite benötigt.
+Das System muss mit einer öffentlichen IP-Adresse und Domain von außen ansprechbar sein. Die Bandbreite sollte groß genug sein, um mehreren Nutzern parallel den Zugang zur Software zu gewähren, wobei jeder Nutzer einzeln nur eine sehr geringe Bandbreite benötigt.
 
 \subsubsection{Speicherbeschränkung}
 
-  {\em min./max.\ verfügbarer Hauptspeicher und Festplattenplatz, knappe Begründung wie Ihr zu
-der hier angegebenen Einschätzung gekommen seid}
 
-Die App wird voraussichtlich bis zu 30mb Speicherplatz beziehen. (Arbeitsspeicher?)
-Das Softwaresystem 
+Die App wird voraussichtlich bis zu 30 MB Speicherplatz beziehen. (Arbeitsspeicher?)
+
 
 \subsubsection{Operationen (Betriebsmodi)}
-  {\em Welche Betriebsmodi gibt es? Warum? Welche Benutzerklasse darf
-  was in welchem Betriebsmodus (Rechte)? Was ist der Zusammenhang
-  zwischen Betriebsmodus und Sicherung/Wiederherstellung von Daten?}
-  
+
 Wir unterscheiden zwischen dem normalen Betriebsmodus und einem Wartungsmodus, in dem z.B. Backups aufgespielt werden können. Während des Wartungsmodus ist kein öffentlicher Zugriff vorgesehen. Im normalen Betriebsmodus wird unterschieden zwischen Admins, registrierten Benutzern und Gästen. Jeder hat das Recht zu spielen, wobei registrierte Nutzer Vorteile wie Statistiken etc. genießen. Der Admin kann das System über die Website verwalten, z.B. Nutzernamen ändern. In der App ist kein Admin-Modus vorhanden.
 
 \subsubsection{Möglichkeiten der lokalen Anpassung}
-  {\em Was kann bei Auslieferung des Systems alles konfiguriert
-  werden? Z.B. Pfade, Datenbankname, Server-IP usw. Hier ist nicht
-  Internationalisierung gemeint!}
+  
 Es handelt sich bei dem System um ein lauffähiges Gesamtpaket. Es muss keine Datenbank o.Ä. eingerichtet werden. Lediglich eine IP-Adresse muss eingerichtet werden. Somit ist keine lokale Anpassung nötig.
 
 \subsection{Anwendungsfälle (Daniel)}
@@ -440,92 +427,118 @@ Es handelt sich bei dem System um ein lauffähiges Gesamtpaket. Es muss keine Da
 	Bestimmter User wird gelöscht
 \end{itemize}
 
-\subsection{Charakteristika der Benutzer}
+\subsection{Charakteristika der Benutzer (Tim W.)}
   {\em Beschreibt hier Eure typischen Benutzer. Benutzt dazu die in
   der Vorlesung vorgestellten Personas. Zur Erinnerung: Ihr beschreibt
   konkrete Personen, die Repräsentanten der verschiedenen
   Benutzertypen sind (mit Name, evtl. Wohnort, Tätigkeit, Alter, Bild,
   \ldots). Diese sollten eine gewisse Motivation haben, bestimmte
   Anwendungsfälle durchzuführen (und dort auch eingesetzt werden!).}
-
-
-\subsection{Einschränkungen (Tim W. und Tim E.)}
-\label{sec:Einschraenkungen}
-{\em Dieser Abschnitt gibt einen groben Überblick über alles, was den
-  Entwurf einschränken könnte. Details folgen dann in
-  Abschnitt~\ref{ch:DetaillierteBeschreibung} (\glqq Detaillierte
-  Beschreibung\grqq). Allgemeine Sicherheitsanforderungen könnten also
-  hier kurz beschrieben werden, Details dann im
-  Abschnitt~\ref{sec:softwaresystemattribute} zu Systemattributen.
-
-  Beispiele für mögliche Einschränkungen könnten sein (die Liste ist
-  nicht vollständig und nicht alle dieser Punkte sind in jedem
-  möglichen Projekt relevant):
-
-  \begin{itemize}
-   \item feste Vorgaben (z.B. Policies)
-   \item gesetzliche Rahmenbedingungen (z.B. Datenschutzaspekte)
-   \item Hardwarebeschränkungen
-   \item festgelegte Schnittstellen zu anderen Anwendungen
-   \item parallele Operationen (z.B. Multithreading)
-   \item zu unterstützende Prüffunktionen (auch: Audit-Funktionen;
-     z.B. \glqq alle Buchungen im System müssen protokolliert und von
-     einem Wirtschaftsprüfer nachvollziehbar sein\grqq)
-   \item Steuerungsfunktionen (z.B. \glqq Das System kann von einem
-     Techniker von Ferne gewartet werden\grqq)
-   \item Anforderungen an die zu verwendende Programmiersprache
-   \item Verlässlichkeit; die Verfügbarkeit eines technischen Systems 
-       ist die Wahrscheinlichkeit oder das Maß, dass das System 
-       bestimmte Anforderungen innerhalb eines vereinbarten
-       Zeitrahmens erfüllt. Eine Beispielanforderung könnte sein, dass
-       das System an jedem Tag der Woche 24 h lang in Betrieb sein 
-       muss und im Jahr höchstens 2 Tage nicht verfügbar sein darf.
-   \item Zuverlässigkeit; Software-Zuverlässigkeit wird definiert 
-      als die Wahrscheinlichkeit einer fehlerfreien Software-Anwendung 
-      über eine spezifizierte Zeitdauer und unter spezifizierten
-      Umgebungsbedingungen. Hier könnte zum Beispiel eine zu
-      erreichende Testabdeckung in Bezug auf ein Abdeckungsmaß
-      gefordert werden: \glqq 90\,\% Anweisungsabdeckung bei den
-      Komponententests\grqq.
-   \item Kritikalität (Gefährlichkeit eines Versagens) der Anwendung
-   \item Sicherheit
-  \end{itemize}
-
-}
-
-\subsubsection{Rahmenbedingungen}
-\nurlangversion
-
-\subsubsection{Gesetzliche Rahmenbedingungen}
-\nurlangversion
- 
-\subsubsection{Sicherheitskritische Aspekte}
-\nurlangversion
-
-\subsection{Annahmen und Abhängigkeiten (Tim E.)}
-\nurlangversion
-
-  {\em Faktoren, deren Änderung zwangsläufig zu Änderungen an der
-  Anforderungsspezifikation führen würde.}
-
-
-
-\subsection{Ausblick (Tim E.)}
-\nurlangversion
-
-  {\em Beschreibt hier knapp, welche Änderungen und Erweiterungen
-  zukünftig (d.h.\ nach Auslieferung des Systems) zu erwarten sind.
-  Diese Information ist wichtig für den Entwurf, um mögliche
-  Änderungen frühzeitig im ersten Entwurf berücksichtigen zu können.
-  Der Entwurf kann dann so gestaltet werden, dass die zukünftigen
-  Anforderungen leicht realisierbar sind. Die zukünftigen
-  Anforderungen sollten realistisch sein, ansonsten könnte ein unnötig
-  allgemeiner und damit zu komplizierter Entwurf die Folge sein.  Auch
-  dieser Abschnitt ist im IEEE-Standard nicht vorgesehen -- zumindest
-  nicht explizit in Form eines eigenständigen Abschnitts. Dennoch
-  handelt es sich um wertvolle Information, von der der Entwurf
-  profitieren kann.}
   
+  \subsection{Einschränkungen (Tim E.)}
+
+Im Folgenden listen wir die Mindestanforderungen des Produkts auf, die nur mithilfe eines Logins bei StudIP einzusehen sind\footnote{\url{https://elearning.uni-bremen.de/scm.php?cid=2b323f34b16a84e8dce31dcdfc0be6ad\&show\_scm=4c88951a202b2543c96de2c8a476d471}}.
+
+\textbf{Server:}
+\begin{itemize}
+\item SpielerInnen können sich beim Server registrieren
+\item verwaltet eine Liste aller SpielerInnen
+\item verwaltet die Fragekategorien, die Fragen und die Antworten sowie Belohnungen
+\item SpielerInnen können sich beim Server als gerade spielbereit setzen und wieder entfernen
+\item auf Anfrage wird aus der Liste der gerade spielbereiten SpielerInnen zufällig eine konkrete GegnerIn ermittelt
+\item verwaltet laufende Spiele und archiviert diese
+\begin{itemize}
+\item TeilnehmerInnen
+\item aktueller Punktestand
+\item gestellte Fragen
+\item gegebene Antworten
+\end{itemize}
+\end{itemize}
+\begin{itemize}
+\item verwaltet die Konfiguration der Spiele
+\begin{itemize}
+\item Anzahl Fragerunden
+\item Anzahl Fragen pro Runde
+\item Zeitspanne zur Auswahl einer Antwort
+\item Punkte pro richtiger Antwort
+\item Punkte für gewonnenes und unentschiedenes Spiel
+\end{itemize}
+\end{itemize}
+\begin{itemize}
+\item realisiert ein Belohnungssystem für SpielerInnen
+\begin{itemize}
+\item Erwerb eines Titels bei bestimmten Punktzahlen
+\item Joker (z.B. Zeitverlängerung oder Anzeige der richtigen Antwort auf eine Frage)
+\end{itemize}
+\end{itemize}
+\begin{itemize}
+\item verwaltet eine Rangliste aller SpielerInnen
+\item ein Spiel wird komplett vom Server geleitet, d.h. die Fragen und möglichen Antworten werden an die jeweiligen Clients gesendet und die korrekte Antwort wird vom Server geprüft (dies beinhaltet auch evtl. Spielregeln wie z.B. der Einsatz von Jokern oder das Einhalten der Zeitvorgaben)
+\end{itemize}
+
+\begin{itemize}
+\item Administrationszugang über eine Webseite
+\begin{itemize}
+\item redaktionelle Bearbeitung der Fragen und Antworten
+\begin{itemize}
+\item Kategorien hinzufügen, Zuordnung der Fragen zu Kategorien ändern
+\item Fragen und Antworten bearbeiten
+\item Fragen und Antworten hinzufügen
+\item Fragen und Antworten löschen
+\end{itemize}
+\item Import/Export der Fragen und Antworten in/aus geeignetem Format
+\item Konfiguration der Spiele
+\begin{itemize}
+\item Anzahl Fragerunden
+\item Anzahl Fragen pro Runde
+\item Zeitspanne zur Auswahl einer Antwort
+\item Punkte pro richtiger Antwort
+\item Punkte für gewonnenes und unentschiedenes Spiel
+\end{itemize}
+\end{itemize}
+\end{itemize}
+
+\textbf{Client:}
+
+\begin{itemize}
+\item lauffähig auf Android-Systemen
+\item unterstützt Registrierung und Anmeldung beim Server
+\item neues Spiel starten
+\item zufällige GegnerIn (siehe Server)
+\item Auswahl einer GegnerIn aus Liste der spielbereiten SpielerInnen
+\item Eingabe einer bekannten GegnerIn
+\item eine Spielanfrage annehmen, d.h. an einem Spiel teilnehmen
+\item Anzeige einer Frage mit möglichen Antworten
+\item Auswahl einer Antwort in vorgegebener Zeitspanne
+\item Anzeige einer Rangliste
+\end{itemize}
+
+
+
+\subsubsection{Technische Rahmenbedingungen} \label{subsubsec:TechRahmen} 
+\begin{itemize}
+
+\item Softwareergonomische Prinzipien werden umgesetzt
+\item Der Server soll unter Linux, Windows und MacOS laufen (als Referenz gelten die Rechner in den Praktikumsräumen im MZH)
+\item Es muss eine relationale Datenbank für die serverseitige Persistenz benutzt werden
+\item Persistenz-Frameworks sind erlaubt (z.B. JPA)
+\item Verwendung leichtgewichtiger DBMS (z.B. Derby, SQLite) ohne echte Serverinstallation ist vorgeschrieben
+\item Verwendung und Abgabe eines Build-/Installationsskriptes, damit die Anwendung einfach installiert und aus den Quellen gebaut werden kann. Alle notwendigen Installations- und Konfigurationsschritte sind dokumentiert
+\item Eventuell benutzte Fremdbibliotheken dürfen für den Einsatz in Forschung und Lehre keine Beschränkungen (Geld, Benutzung, ...) aufweisen
+\item Quelltext in Deutsch oder Englisch dokumentiert. Gleiches gilt für Variablen- und Klassennamen. Alle anderen Dokumente in Deutsch
+Die Implementierungssprache ist Java 6 oder höher (weitere zulässige Sprachen in geringem Umfang sind: HTML, XML und JavaScript)
+\end{itemize}
+	
+
+\subsubsection{Gesetzliche Rahmenbedingungen} \label{subsubsec:GesetzlRahmen} Hier gilt in erster Linie das deutsche Recht. Um genau zu sein, kommen hier das Datenschutzgesetz\footnote{\url{http://www.gesetze-im-internet.de/bdsg_1990/}} und das Urheberrecht\footnote{\url{http://www.gesetze-im-internet.de/urhg/}} zum Tragen. Verfahrensrechtliche Vorkehrungen, um die Datensicherheit\footnote{\url{http://www.gesetze-im-internet.de/bdsg_1990/__9.html}} zu gewährleisten, sind von dem Kunden zu treffen. Der Kunde wird von der Software hinsichtlich der technischen Vorkehrungen insofern unterstützt, dass der Zugriff auf die Daten und der Zugang auf das Administrationstool passwortgeschützt ist. Hinsichtlich des Urheberrechts ist besonders auf die Regelung für Computerprogramme\footnote{\url{http://www.gesetze-im-internet.de/urhg/BJNR012730965.htm\#BJNR012730965BJNG004201377}} zu achten.
+
+\subsubsection{Sicherheitskritische Aspekte} \label{subsubsec:SicherheitsAspekte} Um das deutschen Datenschutzgesetz einzuhalten, muss der Kunde weitere Maßnahmen treffen. Diese sind nicht entscheidend für die Entwicklung der Software und liegen in der Verantwortung des Kunden.
+
+\subsection{Annahmen und Abhängigkeiten (Tim)} \label{subsec:Annahmen} Bis zur Auslieferung der Software wird sich der Kunde nicht ändern. Die Anforderungsspezifikation dient als eine Art Vertrag mit dem Kunden. Deshalb ist davon auszugehen, dass nach der Abgabe der Anforderungsspezifikation keine zusätzlichen Anforderungen hinzukommen. Abgabetermine haben Deadlines und sind somit strikt einzuhalten.\\
+Des Weiteren wird davon ausgegangen, dass sich die Nutzer der Software zwar mit dem System eingehend auseinandersetzen. Es wird jedoch auch für den ungeübten Nutzer leicht möglich sein, dieses zu verwenden. Der jeweilige Nutzer sollte zumindest schon mal mit einem Computer bzw. Smartphone und dessen Bedienung vertraut sein.\\
+
+
+\subsection{Ausblick (Tim)} \label{subsec:Ausblick} Große Änderungen sind nach Auslieferung des Systems zwar nicht zu erwarten, aber es können sich dennoch immer wieder mit der Zeit Anpassungen ergeben, die zu diesem Zeitpunkt allerdings noch nicht feststehen.
 
 \section{Detaillierte Beschreibung}
 \label{ch:DetaillierteBeschreibung}
