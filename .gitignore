@@ -1,3 +1,8 @@
+# Latex
+*.aux
+*.toc
+*.synctex.gz
+
 #################
 ## Eclipse
 #################
