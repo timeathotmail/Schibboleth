@@ -720,6 +720,12 @@ Des Weiteren wird davon ausgegangen, dass sich die Nutzer der Software zwar mit 
 	\end{tabular}
 \end{table}
 
+\begin{figure}
+	[H] \caption{Liste aller Spieler die Online sind} 
+	\includegraphics[width=0.5
+	\textwidth]{Bilder/QuizzListeSpielerOnline.png} \label{pic:que} 
+\end{figure}
+
 \begin{table}
 	[H] \label{9} 
 	\begin{tabular}
@@ -773,6 +779,165 @@ Des Weiteren wird davon ausgegangen, dass sich die Nutzer der Software zwar mit 
 		\hline 
 	\end{tabular}
 \end{table}
+\begin{table}
+	[H] \label{12} 
+	\begin{tabular}
+		{|l|p{10cm}|} \hline \textbf{12} & \textbf{Website wird aufgerufen} \\
+		\hline \textbf{Akteure} & Armin Admin\\
+		\hline \textbf{Ziel} & Der Akteur will die Website aufrufen\\
+		\hline \textbf{Vorbedingungen} & keine\\
+		\hline \textbf{Regulärer Ablauf} & 1. Der Akteur ruft die Website auf, indem er die URL angibt\\
+		\hline \textbf{Varianten} & keine \\
+		\hline \textbf{Nachbedingungen} & Die Website wird angezeigt\\
+		\hline \textbf{Fehler-/Ausnahmefälle} & Server nicht erreichbar \\
+		\hline 
+	\end{tabular}
+\end{table}
+
+\begin{table}
+	[H] \label{13} 
+	\begin{tabular}
+		{|l|p{10cm}|} \hline \textbf{13} & \textbf{Admin anmelden} \\
+		\hline \textbf{Akteure} & Armin Admin\\
+		\hline \textbf{Ziel} & Der Akteur möchte sich anmelden\\
+		\hline \textbf{Vorbedingungen} & Website ist aufgerufen\\
+		\hline \textbf{Regulärer Ablauf} & 1. Der Akteur gibt seinen Nutzernamen und Passwort an\\
+		&2. Der Akteur drückt auf anmelden\\
+		\hline \textbf{Varianten} & keine \\
+		\hline \textbf{Nachbedingungen} & Der Akteur ist angemeldet\\
+		\hline \textbf{Fehler-/Ausnahmefälle} & Falscher Nutzername oder Passwort \\
+		\hline 
+	\end{tabular}
+\end{table}
+
+\begin{table}
+	[H] \label{14} 
+	\begin{tabular}
+		{|l|p{10cm}|} \hline \textbf{14} & \textbf{Admin abmelden} \\
+		\hline \textbf{Akteure} & Armin Admin\\
+		\hline \textbf{Ziel} & Der Akteur möchte sich abmelden\\
+		\hline \textbf{Vorbedingungen} & Der Akteur möchte sich abmelden\\
+		\hline \textbf{Regulärer Ablauf} & 1. Der Akteur drückt auf abmelden\\
+		\hline \textbf{Varianten} & keine \\
+		\hline \textbf{Nachbedingungen} & Der Akteur ist abgemeldet\\
+		\hline \textbf{Fehler-/Ausnahmefälle} & keine \\
+		\hline 
+	\end{tabular}
+\end{table}
+
+\begin{table}
+	[H] \label{15} 
+	\begin{tabular}
+		{|l|p{10cm}|} \hline \textbf{15} & \textbf{Frage hinzufügen} \\
+		\hline \textbf{Akteure} & Armin Admin\\
+		\hline \textbf{Ziel} & Der Akteur möchte eine Frage hinzufügen\\
+		\hline \textbf{Vorbedingungen} & Der Akteur ist angemeldet\\
+		\hline \textbf{Regulärer Ablauf} & 1. Der Akteur gibt die Frage und die Antworten an\\
+		&2. Der Akteur drückt auf speichern\\
+		\hline \textbf{Varianten} & keine \\
+		\hline \textbf{Nachbedingungen} & Die Frage wurde gespeichert\\
+		\hline \textbf{Fehler-/Ausnahmefälle} & Frage, bzw. Antworten unvollständig ausgefüllt \\
+		\hline 
+	\end{tabular}
+\end{table}
+
+\begin{table}
+	[H] \label{16} 
+	\begin{tabular}
+		{|l|p{10cm}|} \hline \textbf{16} & \textbf{Frage bearbeiten} \\
+		\hline \textbf{Akteure} & Armin Admin\\
+		\hline \textbf{Ziel} & Der Akteur möchte eine Frage bearbeiten\\
+		\hline \textbf{Vorbedingungen} & Es existieren bereits Fragen\\
+		\hline \textbf{Regulärer Ablauf} & 1. Der Akteur gibt die veränderte Frage und die Antworten an\\
+		&2. Der Akteur drückt auf speichern\\
+		\hline \textbf{Varianten} & keine \\
+		\hline \textbf{Nachbedingungen} & Die alte Frage wurde gelöscht und die neue gespeichert\\
+		\hline \textbf{Fehler-/Ausnahmefälle} & Frage, bzw. Antworten unvollständig ausgefüllt \\
+		\hline 
+	\end{tabular}
+\end{table}
+
+\begin{table}
+	[H] \label{17} 
+	\begin{tabular}
+		{|l|p{10cm}|} \hline \textbf{17} & \textbf{Frage löschen} \\
+		\hline \textbf{Akteure} & Armin Admin\\
+		\hline \textbf{Ziel} & Der Akteur möchte eine Frage löschen\\
+		\hline \textbf{Vorbedingungen} & Es existieren bereits Fragen\\
+		\hline \textbf{Regulärer Ablauf} & 1. Der Akteur wählt die Frage aus\\
+		&2. Der Akteur drückt auf löschen\\
+		\hline \textbf{Varianten} & keine \\
+		\hline \textbf{Nachbedingungen} & Die Frage wurde gelöscht\\
+		\hline \textbf{Fehler-/Ausnahmefälle} & keine\\
+		\hline 
+	\end{tabular}
+\end{table}
+
+\begin{table}
+	[H] \label{18} 
+	\begin{tabular}
+		{|l|p{10cm}|} \hline \textbf{18} & \textbf{Frageliste importieren} \\
+		\hline \textbf{Akteure} & Armin Admin\\
+		\hline \textbf{Ziel} & Der Akteur möchte eine Liste von Fragen importieren\\
+		\hline \textbf{Vorbedingungen} & Es existiert bereits eine Liste von Fragen\\
+		\hline \textbf{Regulärer Ablauf} & 1. Der Akteur wählt die Datei aus\\
+		&2. Der Akteur drückt auf importieren\\
+		\hline \textbf{Varianten} & keine \\
+		\hline \textbf{Nachbedingungen} & Die Fragen wurden importiert\\
+		\hline \textbf{Fehler-/Ausnahmefälle} & Falsches Dateiformat\\
+		\hline 
+	\end{tabular}
+\end{table}
+
+
+\begin{table}
+	[H] \label{19} 
+	\begin{tabular}
+		{|l|p{10cm}|} \hline \textbf{19} & \textbf{Frageliste exportieren} \\
+		\hline \textbf{Akteure} & Armin Admin\\
+		\hline \textbf{Ziel} & Der Akteur möchte eine Liste von Fragen exportieren\\
+		\hline \textbf{Vorbedingungen} & Es existieren bereits Fragen\\
+		\hline \textbf{Regulärer Ablauf} & 1. Der Akteur drückt auf Datei exportieren\\
+		&2. Der Akteur wählt den Speicherort aus\\
+		\hline \textbf{Varianten} & keine \\
+		\hline \textbf{Nachbedingungen} & Die Fragen wurden exportiert\\
+		\hline \textbf{Fehler-/Ausnahmefälle} & keine \\
+		\hline 
+	\end{tabular}
+\end{table}
+
+\begin{table}
+	[H] \label{20} 
+	\begin{tabular}
+		{|l|p{10cm}|} \hline \textbf{20} & \textbf{User löschen} \\
+		\hline \textbf{Akteure} & Armin Admin\\
+		\hline \textbf{Ziel} & Der Akteur möchte einen User löschen\\
+		\hline \textbf{Vorbedingungen} & Der User existiert\\
+		\hline \textbf{Regulärer Ablauf} & 1. Der Akteur drückt auf den entsprechenden User\\
+		&2. Der Akteur drückt auf löschen\\
+		\hline \textbf{Varianten} & keine \\
+		\hline \textbf{Nachbedingungen} & Der User wurde gelöscht\\
+		\hline \textbf{Fehler-/Ausnahmefälle} & keine \\
+		\hline 
+	\end{tabular}
+\end{table}
+
+\begin{table}
+	[H] \label{21} 
+	\begin{tabular}
+		{|l|p{10cm}|} \hline \textbf{21} & \textbf{Passwort ändern} \\
+		\hline \textbf{Akteure} & Armin Admin\\
+		\hline \textbf{Ziel} & Der Akteur möchte sein Passwort ändern\\
+		\hline \textbf{Vorbedingungen} & Der Akteur hat Einstellungen aufgerufen\\
+		\hline \textbf{Regulärer Ablauf} & 1. Der Akteur gibt sein neues und altes Passwort an\\
+		&2. Der Akteur drückt auf Passwort ändern\\
+		\hline \textbf{Varianten} & keine \\
+		\hline \textbf{Nachbedingungen} & Das Passwort wurde geändert\\
+		\hline \textbf{Fehler-/Ausnahmefälle} & altes Passwort wurde falsch eingegeben \\
+		\hline 
+	\end{tabular}
+\end{table}
+
 
 \subsection{Aktionen (Tim W.)}
 \subsubsection{App.Abmelden()}
