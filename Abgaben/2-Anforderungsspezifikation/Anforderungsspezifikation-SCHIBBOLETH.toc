@@ -1,4 +1,4 @@
-\contentsline {paragraph}{\nonumberline Wichtiger Hinweis:}{3}{section*.3}
+\contentsline {paragraph}{Wichtiger Hinweis:}{3}{section*.3}
 \contentsline {section}{\numberline {1}Einleitung (Patrick)}{3}{section.1}
 \contentsline {subsection}{\numberline {1.1}Zweck}{3}{subsection.1.1}
 \contentsline {subsection}{\numberline {1.2}Rahmen}{4}{subsection.1.2}
@@ -31,4 +31,11 @@
 \contentsline {subsection}{\numberline {3.1}Datenmodell (Tobias)}{24}{subsection.3.1}
 \contentsline {subsection}{\numberline {3.2}Anwendungsf\IeC {\"a}lle (Tobias und Daniel)}{24}{subsection.3.2}
 \contentsline {subsection}{\numberline {3.3}Aktionen (Tim W.)}{24}{subsection.3.3}
-\contentsline {subsection}{\numberline {3.4}Softwaresystemattribute Tim E.)}{24}{subsection.3.4}
+\contentsline {subsubsection}{\numberline {3.3.1}Offline-Modus starten()}{24}{subsubsection.3.3.1}
+\contentsline {subsubsection}{\numberline {3.3.2}Online-Modus starten()}{24}{subsubsection.3.3.2}
+\contentsline {subsubsection}{\numberline {3.3.3}Registrieren(nutzername, passwort)}{24}{subsubsection.3.3.3}
+\contentsline {subsubsection}{\numberline {3.3.4}Login(nutzername, passwort)}{25}{subsubsection.3.3.4}
+\contentsline {subsubsection}{\numberline {3.3.5}Abmelden()}{25}{subsubsection.3.3.5}
+\contentsline {subsubsection}{\numberline {3.3.6}Neues Spiel starten(modus)}{25}{subsubsection.3.3.6}
+\contentsline {subsubsection}{\numberline {3.3.7}Gegner herausfordern(nutzer)}{25}{subsubsection.3.3.7}
+\contentsline {subsection}{\numberline {3.4}Softwaresystemattribute Tim E.)}{26}{subsection.3.4}

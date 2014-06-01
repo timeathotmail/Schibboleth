@@ -588,9 +588,66 @@ Des Weiteren wird davon ausgegangen, dass sich die Nutzer der Software zwar mit 
   
 
 \subsection{Aktionen (Tim W.)}
-  
+\subsubsection{Offline-Modus starten()}
+\begin{itemize}
+\item Der Nutzer wählt den Offline-Modus über einen Button aus.
+\item \textbf{Vorbedingung}: Die App wurde gestartet.
+\item \textbf{Nachbedingung}: Der Nutzer ist im Offline-Modus.
+\item \textbf{max. Reaktionszeit}: 2 sek.
+\end{itemize}
 
+\subsubsection{Online-Modus starten()}
+\begin{itemize}
+\item Der Nutzer wählt den Online-Modus über einen Button aus.
+\item \textbf{Vorbedingung}: Die App wurde gestartet.
+\item \textbf{Nachbedingung}: Der Nutzer wird aufgefordert sich einzuloggen.
+\item \textbf{Fehlerbedingung}: Falls der Server nicht angesprochen werden kann, wird dem Nutzer dies durch eine Fehlermeldung mitgeteilt.
+\item \textbf{max. Reaktionszeit}: 1 sek.
+\end{itemize}
 
+\subsubsection{Registrieren(nutzername, passwort)}
+\begin{itemize}
+\item Der Nutzer initiiert die Registrierung mit einem Buttondruck und gibt seine Daten, mit denen er sich registrieren möchte, in zwei Eingabefelder ein und bestätigt die Eingabe per Button.
+\item \textbf{Vorbedingung}: Die App ist gestartet.
+\item \textbf{Nachbedingung}: Der Nutzer ist registriert.
+\item \textbf{Fehlerbedingung}: Falls Nutzername oder Passwort nicht den Anforderungen entsprechen, wird der Nutzer an den entsprechenden Feldern darauf hingewiesen.
+\item \textbf{max. Reaktionszeit}: 5 sek.
+\end{itemize}
+
+\subsubsection{Login(nutzername, passwort)}
+\begin{itemize}
+\item Der Nutzer gibt seine Daten, mit denen er sich registriert hat, in zwei Eingabefelder ein und bestätigt die Eingabe mit einem Buttondruck.
+\item \textbf{Vorbedingung}: Der Nutzer ist registriert und möchte den Onlinemodus starten. 
+\item \textbf{Nachbedingung}: Der Nutzer ist eingeloggt und die Daten sind für den nächsten Start gespeichert.
+\item \textbf{Fehlerbedingung}: Falls Nutzername oder Passwort nicht korrekt sind, wird der Nutzer aufgefordert, die Daten erneut einzugeben.
+\item \textbf{max. Reaktionszeit}: 5 sek.
+\end{itemize}
+
+\subsubsection{Abmelden()}
+\begin{itemize}
+\item Der Nutzer meldet sich per Button ab.
+\item \textbf{Vorbedingung}: Der Nutzer ist eingeloggt.
+\item \textbf{Nachbedingung}: Der Nutzer kann zwischen Online- und Offline-Modus wählen. Beim nächsten Start wird der Nutzer nicht automatisch eingeloggt.
+\item \textbf{max. Reaktionszeit}: 2 sek.
+\end{itemize}
+
+\subsubsection{Neues Spiel starten(modus)}
+\begin{itemize}
+\item Der Nutzer startet eine neue Partie per Button.
+\item \textbf{Vorbedingung}: Der Nutzer befindet sich im Offline- oder Online-Modus.
+\item \textbf{Nachbedingung}: Falls der Nutzer sich im Offline-Modus befindet, wird eine Einzelspieler Partie gestartet. Ist er online, wird ihm eine Liste von anderen Spielern angezeigt.
+\item \textbf{Fehlerbedingung}: Falls keine weiteren Spieler online sind, wird dem Nutzer dies mitgeteilt und er kann es später noch einmal versuchen.
+\item \textbf{max. Reaktionszeit}: 3 sek.
+\end{itemize}
+
+\subsubsection{Gegner herausfordern(nutzer)}
+\begin{itemize}
+\item Der Nutzer fordert einen Nutzer heraus, indem er auf einen der Namen in der Liste drückt. 
+\item \textbf{Vorbedingung}: Der Nutzer startet ein Online-Match.
+\item \textbf{Nachbedingung}: Die Herausforderung wurde versandt.
+\item \textbf{Fehlerbedingung}: Falls die Übertragung fehlschlägt, wird dem Nutzer dies mitgeteilt.
+\item \textbf{max. Reaktionszeit}: 3 sek.
+\end{itemize}
 
 \subsection{Softwaresystemattribute Tim E.)}
 \label{sec:softwaresystemattribute}
