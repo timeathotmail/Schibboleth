@@ -4,27 +4,22 @@ import java.net.Socket;
 
 import com.mygdx.game.QuizGame;
 
-import common.net.Communication;
+import common.net.responses.AuthResponse;
+import common.net.responses.UserListChangedResponse;
 
-public class ClientInbox implements Runnable {
-	private final ClientAdapter adapter;
-	private final Socket serverSocket;
-	private final QuizGame game;
+public class ClientInbox extends AbstractClientInbox {
 
-	public ClientInbox(Socket socket, QuizGame game) {
-		this.serverSocket = socket;
-		this.game = game;
-		this.adapter = ClientAdapter.getInstance(game);
+	protected ClientInbox(QuizGame game, Socket serverSocket) {
+		super(game, serverSocket);
 	}
 
 	@Override
-	public void run() {
-		try {
-			while (true) {
-				adapter.process(Communication.read(serverSocket));
-			}
-		} catch (RuntimeException e) {
-			game.onConnectionLost();
-		}
+	protected void process(AuthResponse obj) {
+		game.onLogin(obj.isSuccess(), obj.getUsers());
+	}
+
+	@Override
+	protected void process(UserListChangedResponse obj) {
+		game.onUserListChanged(obj.hasEntered(), obj.getUser());
 	}
 }

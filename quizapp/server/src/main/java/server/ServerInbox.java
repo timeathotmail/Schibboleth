@@ -2,30 +2,48 @@ package server;
 
 import java.net.Socket;
 
-import server.persistence.Data;
 import server.persistence.IPersistence;
+import common.entities.User;
+import common.net.NetUtils;
+import common.net.requests.AuthRequest;
+import common.net.requests.LogoutRequest;
+import common.net.responses.AuthResponse;
+import common.net.responses.UserListChangedResponse;
 
-import common.net.Communication;
+public class ServerInbox extends AbstractServerInbox {
+	private final IPersistence persistence;
 
-public class ServerInbox implements Runnable {
-	private final AbstractServerAdapter adapter;
-	private final Socket client;
-	private final ServerDirectory serverDir;
-	private final IPersistence persistence = Data.getInstance();
+	public ServerInbox(Socket client, ServerDirectory serverDir, IPersistence persistence) {
+		super(client, serverDir);
+		this.persistence = persistence;
+	}
+	
+	@Override
+	protected void process(Socket client, AuthRequest obj) {
+		User user;
+		if (obj.wantsToRegister()) {
+			user = persistence.registerUser(obj.getUsername(),
+					obj.getPassword());
+		} else {
+			user = persistence.loginUser(obj.getUsername(),
+					obj.getPassword());
+		}
 
-	public ServerInbox(final Socket client, ServerDirectory serverDir) {
-		this.client = client;
-		this.serverDir = serverDir;
-		this.adapter = ServerAdapter.getInstance(persistence, serverDir);
+		if (user != null) {
+			NetUtils.send(client,
+					new AuthResponse(true, serverDir.getActiveUsers()));
+			NetUtils.send(serverDir.getActiveSockets(),
+					new UserListChangedResponse(true, user));
+			serverDir.idClient(client, user);
+		} else {
+			NetUtils.send(client, new AuthResponse(false, null));
+		}
 	}
 
-	public void run() {
-		try {
-			while (true) {
-				adapter.process(client, Communication.read(client));
-			}
-		} catch (RuntimeException e) {
-			serverDir.RemoveClient(client);
-		}
+	@Override
+	protected void process(Socket client, LogoutRequest obj) {
+		serverDir.RemoveClient(client);
+		// TODO remove open challenges
+		// TODO inform other clients
 	}
 }
