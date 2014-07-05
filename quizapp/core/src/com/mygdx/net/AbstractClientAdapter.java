@@ -30,6 +30,8 @@ public abstract class AbstractClientAdapter {
 		if(obj2 != null) {
 			process(obj2);
 		}
+		
+		//TODO: rest
 	}
 	
 	abstract protected void process(AuthResponse obj);
