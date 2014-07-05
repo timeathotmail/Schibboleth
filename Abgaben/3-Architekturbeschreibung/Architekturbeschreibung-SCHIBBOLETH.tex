@@ -120,7 +120,7 @@
   \\ ~
   \vspace{2cm}
   \\
-  \it Abgabe: 06.Juli 2014 --- Version 1.1\\ ~
+  \it Abgabe: 06.Juli 2014 --- Version 1.7\\ ~
   \end{center}
   \end{minipage}
 
@@ -145,16 +145,22 @@
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section*{Version und Änderungsgeschichte}
 
-{\em Die aktuelle Versionsnummer des Dokumentes sollte eindeutig und gut zu
-identifizieren sein, hier und optimalerweise auf dem Titelblatt.}
+\paragraph{Wichtiger Hinweis:} Diese Architekturbeschreibung wurde zu einem Teil aus verschiedenen Dokumententeilen der Architekturbeschreibung unserer Gruppenmitglieder aus dem Wintersemester 2013/14 erstellt (Gruppe \textit{IT\_R3V0LUTION}). Einige Teile wurden komplett übernommen, andere überarbeitet bzw. angepasst. \\
+Diese Vereinbarung haben wir in der Kick-Off-Veranstaltung für RE SWP 2014 mit dem Veranstalter Dr. Karsten Hölscher getroffen. \\
+\section*{Version und Änderungsgeschichte}
 
 \begin{tabular}{ccl}
 Version & Datum & Änderungen \\
 \hline
-1.0 & TT.MM.JJJJ & Dokumentvorlage als initiale Fassung kopiert \\
-1.1 & TT.MM.JJJJ & .... \\
+1.0 & 28.06.2014 & Einleitung \\
+1.1 & 02.07.2014 & Globale Analyse \\
+1.2 & 02.07.2014 & Konzeptionelle Sicht \\
+1.3 & 03.07.2014 & Modulsicht \\
+1.4 & 03.07.2014 & Datensicht \\
+1.5 & 04.07.2014 & Ausführungssicht \\
+1.6 & 04.07.2014 & Zusammenhänge zwischen Anwendungsfällen und Architektur \\
+1.7 & 05.07.2014 & Evolution \\
 \end{tabular}
 
 
@@ -162,23 +168,71 @@ Version & Datum & Änderungen \\
 \section{Einführung}
 
 \subsection{Zweck}
-\nurlangversion
+Dieses Dokument ist die Architekturbeschreibung der von uns zu entwickelnden Software.
+Sie dient der Kommunikation zwischen allen Interessenten. Dies ist unerlässlich
+für die Entwicklung des Systems, da die Entwickler der Architekturbeschreibung die
+Funktionalität einzelner Komponenten entnehmen. Sie dient der Aufteilung der Arbeit
+in unabhängig bearbeitbare Teile, besitzt anfangs einen hohen Abstraktionsgrad, der
+von vielen verstanden werden kann und wird in den Schichten weiter unten in diesem
+Dokument präziser ausgearbeitet. Die präzise Ausarbeitung der Architektur ist wichtig,
+um Möglichkeiten und Probleme der Entwicklung auszuloten und präventive Strategien
+und Maßnahmen zu entwickeln.\\
+Die Architektur des Systems ist daher das Fundament unserer Implementierung, die
+direkt aus der Architektur resultiert.
 
-  {\em Was ist der Zweck dieser Architekturbeschreibung? Wer sind
-  die LeserInnen?}
 
 \subsection{Status}
-\nurlangversion
+Dies ist der erste Architekturentwurf vom 06.07.2014.
 
-
-  
 \subsection{Definitionen, Akronyme und Abkürzungen}
-
 
 \subsection{Referenzen}
 
+\begin{itemize}
+\item \url{http://www.elearning.uni-bremen.de} Plattform der Universität Bremen. Zugriff auf Folien der Veranstaltung Software Projekt 1 des Sommersemesters 2013
+und Übungen des Software Projekts 2 des Wintersemesters 13/14 nur eingeschränkt
+möglich.
+\item Vorlage dieses Dokuments - Stud.IP - 3-Architekturbeschreibung-Vorlage.tex
+\item Hinweise zu diesem Dokument - Stud.IP 3-Hinweise-Abgabe-Architektur.pdf
+\end{itemize}
 \subsection{Übersicht über das Dokument}
-\nurlangversion
+
+Dieses Dokument basiert auf der Vorlage des IEEE P1471 2002 Standards. Der Inhalt
+dieses Dokuments ist wie folgt aufgegliedert:\\
+\paragraph{1. Einführung}
+Die Einführung beschreibt den Nutzen dieses Dokuments. Sie erläutert Definitionen,
+Akronyme und Abkürzungen und listet die benutzten Referenzen auf, sowie
+eine Übersicht über dieses Dokument.
+\paragraph{2. Globale Analyse}
+In diesem Abschnitt werden die relevanten Einflussfaktoren aufgezeigt und bewertet,
+sowie Strategien entwickelt, um Probleme bzw. interferierende Einflussfaktoren
+zu behandeln und auf diese entsprechend zu reagieren.
+\paragraph{3. Konzeptionelle Sicht}
+Die konzeptionelle Sicht zeigt grob die einzelnen Komponenten und deren Zusammenspiel
+des zu entwickelnden Systems auf. Dies geschieht auf einer hohen Abstraktionsebene
+und wird im weiteren Verlauf des Dokuments und den folgenden
+Sichten konkretisiert und verfeinert.
+\paragraph{4. Modulsicht}
+Im Abschnitt Modulsicht dieser Architekturbeschreibung geht es um eine tiefere
+Ebene der Abstraktion. Hier werden die Komponenten in einzelne Pakete zerlegt
+und diese wiederum in Module, welche eine Einheit bilden, die ein Entwickler in
+einer Arbeitswoche implementieren kann.
+\paragraph{5. Datensicht}
+Die Datensicht beschreibt das zugrundeliegende Datenmodell und das Zusammenspiel
+der einzelnen Daten der Datenbank. Dies wird in Form eines erklärenden
+Textes und UML-Diagrammen realisiert.
+\paragraph{6. Ausführungssicht}
+Die Ausführungssicht zeigt im Prinzip das System in ''Aktion'', d.h. es zeigt auf,
+welche Prozesse laufen, welche Module hierfür gebraucht werden und wie diese
+zusammenspielen.
+\paragraph{7. Zusammenhänge zwischen Anwendungsfällen und Architektur}
+Hier werden die Zusammenhänge zwischen Architektur und den Anwendungsfällen
+der Anforderungsspezifikation beschrieben.
+\paragraph{8. Evolution}
+In diesem Teil der Architekturbeschreibung wird beschrieben, welche Änderungen
+vorgenommen werden müssen, wenn sich Anforderungen und oder Rahmenbedingungen
+ändern. Ein besonderes Augenmerk liegt hierbei auf die in der Anforderungsspezifikation unter ''Ausblick'' genannten Punkte.
+
 
 
 \section{Globale Analyse}
@@ -364,18 +418,25 @@ Prozessen auf welchen Rechnern ausgeführt werden.}
     anstreben.} }
 
 \section{Evolution}
-\nurlangversion
-
 \label{sec:evolution}
 
-{\it
-  Beschreibt in diesem Abschnitt, welche Änderungen Ihr
-  vornehmen müsst, wenn sich Anforderungen oder Rahmenbedingungen
-  ändern. Insbesondere sollten hierbei die in der
-  Anforderungsspezifikation unter "`Ausblick"' bereits genannten
-  Punkte behandelt werden.}
+In diesem Abschnitt geht es um mögliche Änderungen, Anpassungen bzw. Erweiterungen, die vorgenommen werden müssten, wenn sich Anforderungen des Systems ändern. \\
+Dabei ist wichtig, dass sich solche Änderungen möglichst modular realisieren lassen, ohne die bestehende Architektur komplett zu verändern, was sehr aufwändig und somit nicht wünschenswert wäre. \\
+Im Folgenden werden einige wichtige mögliche neue Anforderungen bzw. Erweiterungen aufgelistet und deren jeweiligen zu implementierenden Änderungen an der Architektur beschrieben. 
 
-\dots
+
+\subsection*{Erweiterungsmöglichkeiten}
+
+Da sich aus der Anforderungsspezifikation im Abschnitt ''Ausblick'' noch keine genauen absehbaren Änderungen ergeben haben, werden im Folgenden potenzielle Änderungen aufgezeigt, die näher beschrieben werden.
+
+\subsubsection*{1. Erweiterung des GUI-Layouts}
+
+Es wäre möglicherweise wünschenswert, wenn man als Benutzer nicht nur ein GUI-Design in der Quiz-App verwenden könnte, sondern mehrere. Dafür müsste eine Funktionalität hinzugefügt werden, um zwischen verschiedenen Benutzeroberflächen wählen zu können (z.B. verschiedene Themes oder Farbwahlen). \\
+Dazu müssten entsprechende Referenzierungen von neuen GUI-Style-Änderungen mit Bilddateien stattfinden sowie für Textanpassungen die XML-Dateien im entsprechendem Paket verändert bzw. erweitert werden. 
+
+\subsubsection*{2. Mehrsprachigkeit}
+
+Auch wenn die Mindestanforderungen keine Mehrsprachigkeit für die Quizapp vorschreibt, wäre es ggf. wünschenswert, dass die Möglichkeit besteht, mehrere Sprachen für die Quiz-App zu unterstützen, um einen größeren bzw. internationaleren Spielerkreis anzusprechen. Insofern wäre es denkbar, dass neben Deutsch eine weitere Sprache eingebaut werden könnte. Englisch würde sich natürlich anbieten.
 
 
 \end{document}
