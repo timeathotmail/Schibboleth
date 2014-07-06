@@ -41,14 +41,18 @@ public class ClientInbox implements Runnable {
 			while (true) {
 				String json = NetUtils.read(serverSocket);
 				
+				// === case 1: AuthResponse ===
 				AuthResponse obj = NetUtils.fromJson(json, AuthResponse.class);
 				if(obj != null) {
-					process(obj);
+					game.onLogin(obj.isSuccess(), obj.getUsers());
+					return;
 				}
 				
+				// === case 2: UserListChangedResponse ===
 				UserListChangedResponse obj2 = NetUtils.fromJson(json, UserListChangedResponse.class);
 				if(obj2 != null) {
-					process(obj2);
+					game.onUserListChanged(obj2.hasConnected(), obj2.getUser());
+					return;
 				}
 				
 				//TODO: rest
@@ -56,21 +60,5 @@ public class ClientInbox implements Runnable {
 		} catch (RuntimeException e) {
 			game.onConnectionLost();
 		}
-	}
-	
-	/**
-	 * Process an AuthResponse.
-	 * @param obj the response
-	 */
-	private void process(AuthResponse obj) {
-		game.onLogin(obj.isSuccess(), obj.getUsers());
-	}
-
-	/**
-	 * Process an UserListChangedResponse.
-	 * @param obj the response
-	 */
-	private void process(UserListChangedResponse obj) {
-		game.onUserListChanged(obj.hasConnected(), obj.getUser());
 	}
 }

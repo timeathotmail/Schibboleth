@@ -13,7 +13,7 @@ import common.net.requests.*;
  * 
  * @author Tim Wiechers
  */
-public class Client {
+public class Client implements IClient {
 	/**
 	 * The server's socket
 	 */
@@ -34,92 +34,72 @@ public class Client {
 		}
 	}
 	
-	/**
-	 * Sends an AuthRequest to register.
-	 * @param username desired username
-	 * @param password desired password
-	 */
+	@Override
 	public void register(String username, String password) {
 		NetUtils.send(serverSocket, new AuthRequest(username, password, true));
 	}
 	
-	/**
-	 * Sends an AuthRequest to login.
-	 * @param username username
-	 * @param password password
-	 */
+	@Override
 	public void login(String username, String password) {
 		NetUtils.send(serverSocket, new AuthRequest(username, password, false));
 	}
 	
-	/**
-	 * Sends a LogoutRequest.
-	 * @param username username
-	 */
+	@Override
 	public void logout(String username) {
 		NetUtils.send(serverSocket, new LogoutRequest());
 	}
-	
-	/**
-	 * TODO
-	 * @param username
-	 * @param pw1
-	 * @param pw2
-	 */
+
+	@Override
 	public void changeUserData(String username, String pw1, String pw2) {
+		// TODO Auto-generated method stub
+		
 	}
-	
-	/**
-	 * TODO
-	 */
+
+	@Override
 	public void searchMatch() {
+		// TODO Auto-generated method stub
+		
 	}
-	
-	/**
-	 * TODO
-	 */
+
+	@Override
 	public void cancelSearch() {
+		// TODO Auto-generated method stub
+		
 	}
-	
-	/**
-	 * TODO
-	 * @param username
-	 */
+
+	@Override
 	public void sendChallenge(String username) {
+		// TODO Auto-generated method stub
+		
 	}
-	
-	/**
-	 * TODO
-	 * @param username
-	 */
+
+	@Override
 	public void acceptChallenge(String username) {
+		// TODO Auto-generated method stub
+		
 	}
-	
-	/**
-	 * TODO
-	 * @param username
-	 */
+
+	@Override
 	public void denyChallenge(String username) {
+		// TODO Auto-generated method stub
+		
 	}
-	
-	/**
-	 * TODO
-	 * @param offset
-	 * @param length
-	 */
+
+	@Override
 	public void requestRankings(int offset, int length) {
+		// TODO Auto-generated method stub
+		
 	}
-	
-	/**
-	 * TODO
-	 * @param answer
-	 */
+
+	@Override
 	public void submitAnswer(int answer, boolean correct) {
+		// TODO Auto-generated method stub
+		
 	}
-	
-	/**
-	 * TODO
-	 */
+
+	@Override
 	public void leaveMatch() {
+		// TODO Auto-generated method stub
+		
 	}
 }
