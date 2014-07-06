@@ -4,17 +4,33 @@ import java.util.List;
 
 import common.entities.*;
 
+/**
+ * Provides database access.
+ * 
+ * @author Tim Wiechers
+ */
 public class Data implements IPersistence {
-
+	/**
+	 * Singleton instance
+	 */
 	private static Data instance;
 	
+	/**
+	 * Initiiate instance when class loaded.
+	 */
 	static {
 		instance = new Data();
 	}
 	
+	/**
+	 * Private constructor.
+	 */
 	private Data() {
 	}
 	
+	/**
+	 * @return the singleton instance
+	 */
 	public static Data getInstance() {
 		return instance;
 	}

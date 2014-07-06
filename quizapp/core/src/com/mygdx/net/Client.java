@@ -21,7 +21,7 @@ public class Client {
 	
 	/**
 	 * Creates an instance.
-	 * Opens a socket connection and a ClientInbox.
+	 * Opens a socket connection and initiiates a thread running a ClientInbox.
 	 * @param game
 	 */
 	public Client(QuizGame game) {

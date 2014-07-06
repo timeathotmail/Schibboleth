@@ -10,17 +10,40 @@ import common.net.requests.LogoutRequest;
 import common.net.responses.AuthResponse;
 import common.net.responses.UserListChangedResponse;
 
+/**
+ * Runnable processing incoming client messages.
+ * 
+ * @author Tim Wiechers
+ */
 public class ServerInbox implements Runnable {
+	/**
+	 * Client's socket.
+	 */
 	private final Socket client;
+	/**
+	 * Server's directory.
+	 */
 	private final ServerDirectory serverDir;
+	/**
+	 * Database access.
+	 */
 	private final IPersistence persistence;
 
-	protected ServerInbox(final Socket client, ServerDirectory serverDir, IPersistence persistence) {
+	/**
+	 * Creates an instance.
+	 * @param client client's socket
+	 * @param serverDir server's directory
+	 * @param persistence persistence instance
+	 */
+	public ServerInbox(final Socket client, ServerDirectory serverDir, IPersistence persistence) {
 		this.client = client;
 		this.serverDir = serverDir;
 		this.persistence = persistence;
 	}
 
+	/**
+	 * Waits for a client message, then tries to map and process it.
+	 */
 	public void run() {
 		try {
 			while (true) {
@@ -43,6 +66,11 @@ public class ServerInbox implements Runnable {
 		}
 	}
 
+	/**
+	 * Process an AuthRequest.
+	 * @param client sending client
+	 * @param obj the request
+	 */
 	private void process(Socket client, AuthRequest obj) {
 		// login or register user
 		User user;
@@ -68,6 +96,11 @@ public class ServerInbox implements Runnable {
 		}
 	}
 
+	/**
+	 * Process a LogoutRequest
+	 * @param client sending client
+	 * @param obj the request
+	 */
 	private void process(Socket client, LogoutRequest obj) {
 		serverDir.RemoveClient(client);
 		// TODO remove open challenges

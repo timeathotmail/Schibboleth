@@ -60,6 +60,7 @@ public class ClientInbox implements Runnable {
 	
 	/**
 	 * Process an AuthResponse.
+	 * @param obj the response
 	 */
 	private void process(AuthResponse obj) {
 		game.onLogin(obj.isSuccess(), obj.getUsers());
@@ -67,6 +68,7 @@ public class ClientInbox implements Runnable {
 
 	/**
 	 * Process an UserListChangedResponse.
+	 * @param obj the response
 	 */
 	private void process(UserListChangedResponse obj) {
 		game.onUserListChanged(obj.hasConnected(), obj.getUser());
