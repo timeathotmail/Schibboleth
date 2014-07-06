@@ -7,14 +7,22 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+
 import common.entities.*;
+
 import com.mygdx.net.Client;
 
+/**
+ * Game class.
+ * 
+ * @author Tim Wiechers
+ */
 public class QuizGame extends ApplicationAdapter implements IGame {
-	private final Client client = new Client(this);
+
+	// === ApplicationAdapter implementation ===
 	private SpriteBatch batch;
 	private Texture img;
-
+	
 	@Override
 	public void create() {
 		batch = new SpriteBatch();
@@ -35,6 +43,12 @@ public class QuizGame extends ApplicationAdapter implements IGame {
 	@Override
 	public void logout() {
 	}
+	
+	// === IGame implementation ===
+	/**
+	 * Client used for server communication.
+	 */
+	private final Client client = new Client(this);
 	
 	@Override
 	public void onNoConnection() {
@@ -153,7 +167,13 @@ public class QuizGame extends ApplicationAdapter implements IGame {
 	}
 
 	@Override
-	public void submitAnswer(int question) {
+	public void displayQuestion() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void submitAnswer(int answer, boolean correct) {
 		// TODO Auto-generated method stub
 		
 	}
@@ -201,7 +221,7 @@ public class QuizGame extends ApplicationAdapter implements IGame {
 	}
 
 	@Override
-	public void onOpponentAnswered(int question) {
+	public void onOpponentAnswered(int opponentAnswer) {
 		// TODO Auto-generated method stub
 		
 	}

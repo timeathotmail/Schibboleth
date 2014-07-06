@@ -2,20 +2,39 @@ package com.mygdx.net;
 
 import java.net.Socket;
 
-import com.mygdx.game.QuizGame;
+import com.mygdx.game.IGame;
 
 import common.net.NetUtils;
 import common.net.responses.*;
 
+/**
+ * Runnable processing incoming server messages.
+ * 
+ * @author Tim Wiechers
+ */
 public class ClientInbox implements Runnable {
+	/**
+	 * Server socket.
+	 */
 	private final Socket serverSocket;
-	private final QuizGame game;
+	/**
+	 * Client's game instance.
+	 */
+	private final IGame game;
 	
-	public ClientInbox(QuizGame game, Socket serverSocket) {
+	/**
+	 * Creates an instance.
+	 * @param game client's game instance
+	 * @param serverSocket server socket
+	 */
+	public ClientInbox(IGame game, Socket serverSocket) {
 		this.game = game;
 		this.serverSocket = serverSocket;
 	}
 	
+	/**
+	 * Waits for a server message, then tries to map and process it.
+	 */
 	@Override
 	public void run() {
 		try {
@@ -39,10 +58,16 @@ public class ClientInbox implements Runnable {
 		}
 	}
 	
+	/**
+	 * Process an AuthResponse.
+	 */
 	private void process(AuthResponse obj) {
 		game.onLogin(obj.isSuccess(), obj.getUsers());
 	}
 
+	/**
+	 * Process an UserListChangedResponse.
+	 */
 	private void process(UserListChangedResponse obj) {
 		game.onUserListChanged(obj.hasConnected(), obj.getUser());
 	}
