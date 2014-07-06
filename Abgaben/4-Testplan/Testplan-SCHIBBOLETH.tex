@@ -152,7 +152,7 @@
 Version & Datum & Änderungen \\
 \hline
 1.0 & 04.07.2014 & Dokumentvorlage als initiale Fassung kopiert \\
-1.1 & 05.07.2014 & Einführung, Systemüberblick, Merkmale, Abnahme- und Testendekriterien fertiggestellt\\
+1.1 & 05.07.2014 & Einführung, Systemüberblick, Merkmale, Abnahme- und Testendekriterien\\
 1.2 & 06.07.2014 & Testplan abgabefertig
 \end{tabular}
 
@@ -236,7 +236,7 @@ Da starke Abhängigkeiten zwischen all diesen Komponenten bestehen, ist es wicht
 \subsection{Module der Anwendungsschicht und deren Funktionen}
 \label{mod-controller}
 
-In der nachfolgenden Tabelle werden die Module verfeinert die in Punkt 5 visualisiert sind.
+In der nachfolgenden Tabelle werden die Module verfeinert, die in Punkt 5 visualisiert sind.
 
 \begin{tabular}{|l|p{12cm}|}
 \hline
@@ -252,7 +252,7 @@ In der nachfolgenden Tabelle werden die Module verfeinert die in Punkt 5 visuali
 \hline
 	Common & entities, common.net\\
 \hline
-	Persistence & Data.java IPersistence.java\\
+	Persistence & Data.java, IPersistence.java\\
 \hline
 \end{tabular}
 
@@ -263,8 +263,8 @@ In der nachfolgenden Tabelle werden die Module verfeinert die in Punkt 5 visuali
 \textit{bearbeitet von: Daniel Pupat }\\
 \label{c04}
 
-Zu testende Merkmale sind in erster Linie Funktionen, welche alle Anwendungsfälle abdeckt, welche die Kundin sich gewünscht hat. Dabei muss sowohl die App als auch die Website getestet werden.\\
-App\\
+Zu testende Merkmale sind in erster Linie Funktionen, welche alle Anwendungsfälle abdecken, die die Kundin sich gewünscht haben. Dabei muss sowohl die App, als auch die Website getestet werden.\\
+
 1. Online\\
 \begin{itemize}
 \item[1.1]Benutzer registrieren
@@ -298,16 +298,16 @@ App\\
 
 
 \subsubsection{Funktionale Anforderungen} 
-Besonders wichtig ist der Spielvorgang bei der App, da die Nutzer diesen hauptsächlich nutzen werden. Dabei muss darauf geachtet werden, dass der Nutzer sowohl online als auch offline spielen kann. Auch das spielen gegen eine andere Person muss getestet werden.\\
+Besonders wichtig ist der Spielvorgang bei der App, da die Nutzer diesen hauptsächlich nutzen werden. Dabei muss darauf geachtet werden, dass der Nutzer sowohl online als auch offline spielen kann. Auch das Spielen gegen eine andere Person muss getestet werden.\\
 
 \subsection{Nicht zu testende Merkmale}\label{c05}
-Da wir ein komplett neues Projekt erstellen, ist es wichtig das alle Merkmale getestet werden. Sollte es triviale Funktionen geben, müssen diese nicht getestet werden.
+Da wir ein komplett neues Projekt erstellen, ist es wichtig, dass alle Merkmale getestet werden. Sollte es triviale Funktionen geben, müssen diese nicht getestet werden.
 
 % Abnahme- und Testkriterien
 \section{Abnahme- und Testendekriterien}\label{c07}
 \textit{bearbeitet von: Daniel Pupat }\\
 
-Fehler werden in eine Kategorie eingeordnet und erhalten entsprechende Fehlerwerte. Aus diesen Fehlerwerten ergeben sich Prioritäten, welche die Reihenfolge der Fehlerbehandlung angibt. Das Testen wird beendet, wenn der berechnete Fehlerwert aller Fehler pro 1000 Zeilen Code unter dem Wert 10 liegt und die Software nicht beeinträchtigt wird, d.h. es keinen Fehler der Fehlerklasse \texttt{Mittel} oder höher gibt.
+Fehler werden in eine Kategorie eingeordnet und erhalten entsprechende Fehlerwerte. Aus diesen Fehlerwerten ergeben sich Prioritäten, welche die Reihenfolge der Fehlerbehandlung angeben. Das Testen wird beendet, wenn der berechnete Fehlerwert aller Fehler pro 1000 Zeilen Code unter dem Wert 10 liegt und die Software nicht beeinträchtigt wird, d.h. es keinen Fehler der Fehlerklasse \texttt{Mittel} oder höher gibt.
 
 \textbf{Testabdeckung}
 Die Testabdeckung soll so hoch wie möglich sein. Für ein stabiles System spricht, dass die Testabdeckung in systemkritischen Bereichen soweit vollständig ist. Jeder Fehler in diesem Bereich kann das System zum Absturz bringen und muss somit verhindert werden. In anderen Bereichen, die das laufende System bei einem Fehler weniger beeinträchtigen, wird die Testabdeckung nicht so vollständig sein, wie in kritischen Bereichen.
@@ -343,7 +343,7 @@ Die nachfolgende Tabelle spezifiziert die Auswirkung eines Fehlers, durch die ma
 
 \subsection{Funktionstest}
 
-Die Funktionstest sind durch jene Anwendungsfälle aus der Anforderungsspezifikation vorgegeben. Jede dieser Funktionen muss durch Tests gedeckt sein.
+Die Funktionstests sind durch jene Anwendungsfälle aus der Anforderungsspezifikation vorgegeben. Jede dieser Funktionen muss durch Tests gedeckt sein.
 
 
 \section{Aufhebung und Wiederaufnahme}\label{c08}
