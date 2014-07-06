@@ -39,7 +39,12 @@ public class Data implements IPersistence {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
+	
+	//Olga:
+	//hier soll eine Exception geworfen werden, falls einer der beiden Parameter 
+	//inkorrekt ist, zB null, leerer String oder zu kurz/zu lang
+	//Ich teste erstmal auf null und leerer String.
+	//Dazu kommt dass ein Name nicht mehr als einmal benutzt werden darf. Das teste ich auch.
 	public User registerUser(String username, String password) {
 		// TODO Auto-generated method stub
 		return null;
@@ -55,6 +60,9 @@ public class Data implements IPersistence {
 		return false;
 	}
 
+	/**
+	 * @param if null throws {@link IllegalArgumentException}
+	 */
 	public User getUser(String username) {
 		// TODO Auto-generated method stub
 		return null;

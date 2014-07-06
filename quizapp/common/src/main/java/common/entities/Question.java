@@ -10,6 +10,7 @@ public class Question {
 	 * Enum for category distinction.
 	 */
 	public enum Category {
+		science
 	}
 
 	/**
