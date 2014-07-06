@@ -21,6 +21,7 @@ public class ServerInbox extends AbstractServerInbox {
 
 	@Override
 	protected void process(Socket client, AuthRequest obj) {
+		// login or register user
 		User user;
 		if (obj.wantsToRegister()) {
 			user = persistence.registerUser(obj.getUsername(),
@@ -29,11 +30,15 @@ public class ServerInbox extends AbstractServerInbox {
 			user = persistence.loginUser(obj.getUsername(), obj.getPassword());
 		}
 
+		// on success
 		if (user != null) {
+			// send user the list of other users
 			NetUtils.send(client,
 					new AuthResponse(true, serverDir.getActiveUsers()));
+			// inform other users about the new client
 			NetUtils.send(serverDir.getActiveSockets(),
 					new UserListChangedResponse(true, user));
+			// connect username and socket in the server directory
 			serverDir.idClient(client, user);
 		} else {
 			NetUtils.send(client, new AuthResponse(false, null));

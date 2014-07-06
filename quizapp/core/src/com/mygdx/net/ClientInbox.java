@@ -20,6 +20,6 @@ public class ClientInbox extends AbstractClientInbox {
 
 	@Override
 	protected void process(UserListChangedResponse obj) {
-		game.onUserListChanged(obj.hasEntered(), obj.getUser());
+		game.onUserListChanged(obj.hasConnected(), obj.getUser());
 	}
 }

@@ -1,22 +1,62 @@
 package common.entities;
 
+/**
+ * This class represents a question posed in the game.
+ * 
+ * @author Tim Wiechers
+ */
 public class Question {
+	/**
+	 * Enum for category distinction.
+	 */
 	public enum Category {
-		
 	}
-	
+
+	/**
+	 * ID for unique identification.
+	 */
 	private int id;
+	/**
+	 * The question.
+	 */
 	private String text;
+	/**
+	 * First answer.
+	 */
 	private String answer1;
+	/**
+	 * Second answer.
+	 */
 	private String answer2;
+	/**
+	 * Third answer.
+	 */
 	private String answer3;
+	/**
+	 * Fourth answer.
+	 */
 	private String answer4;
+	/**
+	 * The question's category.
+	 */
 	private Category category;
-	
+
+	/**
+	 * Constructor for JSON deserialization and persistence framework.
+	 */
 	@Deprecated
 	public Question() {
 	}
-	
+
+	/**
+	 * Creates an instance.
+	 * @param text the question
+	 * @param answer1 first answer
+	 * @param answer2 second answer
+	 * @param answer3 third answer
+	 * @param answer4 fourth answer
+	 * @param category the question's category
+	 */
 	public Question(String text, String answer1, String answer2,
 			String answer3, String answer4, Category category) {
 		this.text = text;
@@ -27,6 +67,8 @@ public class Question {
 		this.category = category;
 	}
 
+	// === getters & setters ===
+	
 	public int getId() {
 		return id;
 	}
@@ -82,6 +124,5 @@ public class Question {
 	public void setCategory(Category category) {
 		this.category = category;
 	}
-	
-	
+
 }
