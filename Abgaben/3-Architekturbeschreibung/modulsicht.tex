@@ -55,6 +55,7 @@ Die \texttt{Common}-Schicht stellt im Paket \texttt{Entities} Klassen bereit, di
 	\end{minipage}
 \end{figure}
 
+\newpage
 \subsubsection{Net}
 Das \texttt{Net}-Paket enthält eine statische Helferklasse \texttt{NetUtils}, von der Zugangsdaten des Servers abgerufen werden können und in der das Lesen und Schreiben von Sockets implementiert ist. Die Nachrichten, die über die Sockets zwischen Server und Client geschickt werden, sind durch spezielle Klassen definiert, die zur Übertragung in JSON serialisiert und nach der Übertragung deserialisiert werden, um den Informationsaustausch so einfach wie möglich zu machen. Diese Klassen unterteilen sich in \texttt{Requests} und \texttt{Responses}:
 
@@ -62,31 +63,48 @@ Das \texttt{Net}-Paket enthält eine statische Helferklasse \texttt{NetUtils}, v
 
 \textbf{Responses} werden vom Server an einen Client geschickt, um angeforderte Daten zu übertragen oder ihn über etwas zu benachrichtigen. 
 
-Diagramm NetUtils
-
 \subsection{Server}
 \subsubsection{Net}
 Im \texttt{Net}-Paket ist die Funktionsweise des Servers durch die Klassen \texttt{ServerDirectory} und \texttt{ServerInbox} definiert: Wird er gestartet, wird ein Thread geöffnet, auf dem eine \texttt{ServerDirectory} auf einem Port arbeitet. Die Klasse dient zur Kontaktaufnahme mit den Clients. Für jeden Client wird zudem eine \texttt{ServerInbox} eingerichtet, die - wie der Name schon sagt - als eine Art Postfach für den Server dient und ebenfalls auf einem eigenen Thread läuft. Dort wird für die gesamte Dauer der Verbindung auf Nachrichten des Clients gewartet und anschließend verarbeitet. Ebenfalls ist in der Klasse definiert, wie der Server ggf. auf diese Nachrichten antwortet.
 
-Diagramm ServerDirectory
-Diagramm ServerInbox?
-
+\newpage
 \subsubsection{Persistence-Modul}
-Die Persistence-Schnittstelle dient zum Zugriff auf die Datenbank und ist wie folgt definiert:
+Die Persistence-Schnittstelle dient zum Zugriff auf die Datenbank.
 
-Diagramm IPersistence
+\begin{figure}[H]
+	\centering
+	\begin{minipage}[t]{\textwidth}
+		\includegraphics[width=0.5\textwidth]{Diagramme/server.jpeg}
+		\caption{Server}
+		\label{Server}
+	\end{minipage}
+\end{figure}
 
 \subsection{App-Client}
 \subsubsection{Client-Modul}
 Die Client-Schnittstelle ist durch die abstrakte Klasse \texttt{AbstractClient} gegeben und ist standardmäßig in der Lage, einen Socket zum Server zu öffnen. Analog zum Server wird auch hier ein Thread gestartet, auf dem eine \texttt{ClientInbox} läuft. Diese bearbeitet vom Server empfangene Nachrichten, indem die jeweilige Methode des Game-Moduls aufgerufen wird. letzteres wird durch das Modul implementiert.
 
-Diagramm AbstractClient
-Diagramm ClientInbox
+\begin{figure}[H]
+	\centering
+	\begin{minipage}[t]{\textwidth}
+		\includegraphics[width=0.6\textwidth]{Diagramme/client.jpeg}
+		\caption{Client.Net}
+		\label{Client.Net}
+	\end{minipage}
+\end{figure}
 
+\newpage
 \subsubsection{Game-Modul}
 Die Game-Schnittstelle definiert, welche Funktionalität die App bieten muss und beeinflusst dadurch essentiell Spielmechanik und Menüführung:
 
-Diagramm IGame
+\begin{figure}[H]
+	\centering
+	\begin{minipage}[t]{\textwidth}
+		\includegraphics[width=0.6\textwidth]{Diagramme/game.jpeg}
+		\caption{IGame}
+		\label{IGame}
+	\end{minipage}
+\end{figure}
 
 \subsection{HTML-Client}
 Beim HTML-Client beschränkt sich die Kommunikation mit dem Server auf HTTP-Anfragen. Je nachdem, auf welche Adresse zugegriffen wird, werden intern Methoden ausgeführt, um die benötigten Daten darzustellen. 

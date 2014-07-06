@@ -22,7 +22,7 @@ public class Client extends AbstractClient {
 	}
 	
 	@Override
-	public void logout(String username) {
+	public void logout() {
 		NetUtils.send(serverSocket, new LogoutRequest());
 	}
 

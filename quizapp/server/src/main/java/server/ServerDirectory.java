@@ -66,7 +66,7 @@ public class ServerDirectory implements Runnable {
 	 * Removes a client from the directory.
 	 * @param client the client to remove
 	 */
-	public void RemoveClient(Socket client) {
+	public void removeClient(Socket client) {
 		clients.get(client).interrupt();
 		clients.remove(client);
 		clientIds.remove(client);

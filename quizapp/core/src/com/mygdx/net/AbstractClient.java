@@ -3,7 +3,8 @@ package com.mygdx.net;
 import java.net.Socket;
 
 import com.badlogic.gdx.Gdx;
-import com.mygdx.game.QuizGame;
+import com.mygdx.game.IGame;
+
 import common.net.NetUtils;
 
 /**
@@ -22,7 +23,7 @@ public abstract class AbstractClient {
 	 * Opens a socket connection and initiiates a thread running a ClientInbox.
 	 * @param game
 	 */
-	protected AbstractClient(QuizGame game) {
+	protected AbstractClient(IGame game) {
 		try {
 			serverSocket = new Socket(NetUtils.IP, NetUtils.PORT);
 			new Thread(new ClientInbox(game, serverSocket)).start();
@@ -50,7 +51,7 @@ public abstract class AbstractClient {
 	 * Informs the server of a logout
 	 * @param username username
 	 */
-	abstract public void logout(String username);
+	abstract public void logout();
 	
 	/**
 	 * Requests a user data change.

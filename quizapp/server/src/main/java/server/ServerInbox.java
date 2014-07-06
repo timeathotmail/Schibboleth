@@ -89,7 +89,7 @@ public class ServerInbox implements Runnable {
 				LogoutRequest obj2 = NetUtils.fromJson(json,
 						LogoutRequest.class);
 				if (obj2 != null) {
-					serverDir.RemoveClient(client);
+					serverDir.removeClient(client);
 					// TODO remove open challenges
 					// TODO inform other clients
 					return;
@@ -98,7 +98,7 @@ public class ServerInbox implements Runnable {
 				// TODO: rest
 			}
 		} catch (RuntimeException e) {
-			serverDir.RemoveClient(client);
+			serverDir.removeClient(client);
 		}
 	}
 }
