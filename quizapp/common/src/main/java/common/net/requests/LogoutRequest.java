@@ -1,20 +1,7 @@
 package common.net.requests;
 
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+
+@JsonTypeInfo(use = JsonTypeInfo.Id.MINIMAL_CLASS, include = JsonTypeInfo.As.PROPERTY)
 public class LogoutRequest {
-	public LogoutRequest() {
-	}
-	
-	/*private String username;
-	
-	@Deprecated
-	public LogoutRequest() {
-	}
-	
-	public LogoutRequest(String username) {
-		this.username = username;
-	}
-	
-	public String getUsername() {
-		return username;
-	}*/
 }

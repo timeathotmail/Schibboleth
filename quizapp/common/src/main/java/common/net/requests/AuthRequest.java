@@ -1,10 +1,10 @@
 package common.net.requests;
 
-import java.io.IOException;
-import java.lang.reflect.Type;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
-@SuppressWarnings("unused")
+@JsonTypeInfo(use = JsonTypeInfo.Id.MINIMAL_CLASS, include = JsonTypeInfo.As.PROPERTY)
 public class AuthRequest {
+
 	private String username;
 	private String password;
 	private boolean register;
@@ -16,7 +16,7 @@ public class AuthRequest {
 	public String getPassword() {
 		return password;
 	}
-	
+
 	public boolean wantsToRegister() {
 		return register;
 	}

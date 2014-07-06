@@ -13,11 +13,12 @@ import common.net.responses.UserListChangedResponse;
 public class ServerInbox extends AbstractServerInbox {
 	private final IPersistence persistence;
 
-	public ServerInbox(Socket client, ServerDirectory serverDir, IPersistence persistence) {
+	public ServerInbox(Socket client, ServerDirectory serverDir,
+			IPersistence persistence) {
 		super(client, serverDir);
 		this.persistence = persistence;
 	}
-	
+
 	@Override
 	protected void process(Socket client, AuthRequest obj) {
 		User user;
@@ -25,8 +26,7 @@ public class ServerInbox extends AbstractServerInbox {
 			user = persistence.registerUser(obj.getUsername(),
 					obj.getPassword());
 		} else {
-			user = persistence.loginUser(obj.getUsername(),
-					obj.getPassword());
+			user = persistence.loginUser(obj.getUsername(), obj.getPassword());
 		}
 
 		if (user != null) {
