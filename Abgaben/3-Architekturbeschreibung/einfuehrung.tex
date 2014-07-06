@@ -1,0 +1,67 @@
+\subsection{Zweck}
+Dieses Dokument ist die Architekturbeschreibung der von uns zu entwickelnden Software.
+Sie dient der Kommunikation zwischen allen Interessenten. Dies ist unerlässlich
+für die Entwicklung des Systems, da die Entwickler der Architekturbeschreibung die
+Funktionalität einzelner Komponenten entnehmen. Sie dient der Aufteilung der Arbeit
+in unabhängig bearbeitbare Teile, besitzt anfangs einen hohen Abstraktionsgrad, der
+von vielen verstanden werden kann und wird in den Schichten weiter unten in diesem
+Dokument präziser ausgearbeitet. Die präzise Ausarbeitung der Architektur ist wichtig,
+um Möglichkeiten und Probleme der Entwicklung auszuloten und präventive Strategien
+und Maßnahmen zu entwickeln.\\
+Die Architektur des Systems ist daher das Fundament unserer Implementierung, die
+direkt aus der Architektur resultiert.
+
+
+\subsection{Status}
+Dies ist der erste Architekturentwurf vom 06.07.2014.
+
+\subsection{Definitionen, Akronyme und Abkürzungen}
+
+\subsection{Referenzen}
+
+\begin{itemize}
+\item{\url{https://elearning.uni-bremen.de/scm.php?cid=2b323f34b16a84e8dce31dcdfc0be6ad\&show\_scm=4c88951a202b2543c96de2c8a476d471}}
+Die Mindestanforderungen für die Quiz-App 
+\item \url{http://www.elearning.uni-bremen.de} Plattform der Universität Bremen. Zugriff auf Folien der Veranstaltung Software Projekt 1 des Sommersemesters 2013
+und Übungen des Software Projekts 2 des Wintersemesters 13/14 nur eingeschränkt
+möglich.
+\item Vorlage dieses Dokuments - Stud.IP - 3-Architekturbeschreibung-Vorlage.tex
+\item Hinweise zu diesem Dokument - Stud.IP 3-Hinweise-Abgabe-Architektur.pdf
+\end{itemize}
+\subsection{Übersicht über das Dokument}
+
+Dieses Dokument basiert auf der Vorlage des IEEE P1471 2002 Standards. Der Inhalt
+dieses Dokuments ist wie folgt aufgegliedert:\\
+\paragraph{1. Einführung}
+Die Einführung beschreibt den Nutzen dieses Dokuments. Sie erläutert Definitionen,
+Akronyme und Abkürzungen und listet die benutzten Referenzen auf, sowie
+eine Übersicht über dieses Dokument.
+\paragraph{2. Globale Analyse}
+In diesem Abschnitt werden die relevanten Einflussfaktoren aufgezeigt und bewertet,
+sowie Strategien entwickelt, um Probleme bzw. interferierende Einflussfaktoren
+zu behandeln und auf diese entsprechend zu reagieren.
+\paragraph{3. Konzeptionelle Sicht}
+Die konzeptionelle Sicht zeigt grob die einzelnen Komponenten und deren Zusammenspiel
+des zu entwickelnden Systems auf. Dies geschieht auf einer hohen Abstraktionsebene
+und wird im weiteren Verlauf des Dokuments und den folgenden
+Sichten konkretisiert und verfeinert.
+\paragraph{4. Modulsicht}
+Im Abschnitt Modulsicht dieser Architekturbeschreibung geht es um eine tiefere
+Ebene der Abstraktion. Hier werden die Komponenten in einzelne Pakete zerlegt
+und diese wiederum in Module, welche eine Einheit bilden, die ein Entwickler in
+einer Arbeitswoche implementieren kann.
+\paragraph{5. Datensicht}
+Die Datensicht beschreibt das zugrundeliegende Datenmodell und das Zusammenspiel
+der einzelnen Daten der Datenbank. Dies wird in Form eines erklärenden
+Textes und UML-Diagrammen realisiert.
+\paragraph{6. Ausführungssicht}
+Die Ausführungssicht zeigt im Prinzip das System in ''Aktion'', d.h. es zeigt auf,
+welche Prozesse laufen, welche Module hierfür gebraucht werden und wie diese
+zusammenspielen.
+\paragraph{7. Zusammenhänge zwischen Anwendungsfällen und Architektur}
+Hier werden die Zusammenhänge zwischen Architektur und den Anwendungsfällen
+der Anforderungsspezifikation beschrieben.
+\paragraph{8. Evolution}
+In diesem Teil der Architekturbeschreibung wird beschrieben, welche Änderungen
+vorgenommen werden müssen, wenn sich Anforderungen und oder Rahmenbedingungen
+ändern. Ein besonderes Augenmerk liegt hierbei auf die in der Anforderungsspezifikation unter ''Ausblick'' genannten Punkte.
