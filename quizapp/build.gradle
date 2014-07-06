@@ -79,8 +79,26 @@ project(":core") {
 
 
     dependencies {
+        compile project(":common")
         compile "com.badlogicgames.gdx:gdx:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
+    }
+}
+
+project(":server") {
+    apply plugin: "java"
+
+
+    dependencies {
+        compile project(":common")
+    }
+}
+
+project(":common") {
+    apply plugin: "java"
+
+
+    dependencies {
     }
 }
 
