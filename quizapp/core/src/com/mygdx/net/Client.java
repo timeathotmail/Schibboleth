@@ -1,37 +1,14 @@
 package com.mygdx.net;
 
-import java.net.Socket;
-
-import com.badlogic.gdx.Gdx;
 import com.mygdx.game.QuizGame;
 
 import common.net.NetUtils;
 import common.net.requests.*;
 
-/**
- * Class used to connect and send requests to the server.
- * 
- * @author Tim Wiechers
- */
-public class Client implements IClient {
-	/**
-	 * The server's socket
-	 */
-	private Socket serverSocket;
+public class Client extends AbstractClient {
 	
-	/**
-	 * Creates an instance.
-	 * Opens a socket connection and initiiates a thread running a ClientInbox.
-	 * @param game
-	 */
 	public Client(QuizGame game) {
-		try {
-			serverSocket = new Socket(NetUtils.IP, NetUtils.PORT);
-			new Thread(new ClientInbox(game, serverSocket)).start();
-		} catch (Exception e) {
-			Gdx.app.error("Client", "couldn't connect to server", e);
-			game.onNoConnection();
-		}
+		super(game);
 	}
 	
 	@Override
