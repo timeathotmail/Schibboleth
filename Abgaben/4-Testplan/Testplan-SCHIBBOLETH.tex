@@ -152,7 +152,7 @@
 Version & Datum & Änderungen \\
 \hline
 1.0 & 04.07.2014 & Dokumentvorlage als initiale Fassung kopiert \\
-1.1 & 05.07.2014 & \\
+1.1 & 05.07.2014 & Einführung, Systemüberblick, Merkmale, Abnahme- und Testendekriterien fertiggestellt\\
 1.2 & 06.07.2014 & Testplan abgabefertig
 \end{tabular}
 
@@ -161,6 +161,7 @@ Diese Vereinbarung haben wir in der Kick-Off-Veranstaltung für RE SWP 2014 mit 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Einführung}\label{c01}
+\textit{bearbeitet von: Daniel Pupat }
 
 \subsection{Zweck}
 Der Testplan bietet einen Überblick über die geplanten Tests und dient u.a. als Anleitung für die Tester. Die Software soll dabei ausführlich auf Funktionalität getestet werden. 
@@ -222,7 +223,7 @@ Zu jedem Testfall wird ein kurzes Testprotokoll angefertigt. Dieses beinhaltet d
 
 % Systemüberblick
 \section{Systemüberblick}\label{c02}
-\nurlangversion
+\textit{bearbeitet von: Daniel Pupat }\\
 
 Das System besteht aus der Server- und der Clientkomponente. Die konzeptionelle Sicht der Architekturbeschreibung (vgl. Abschnitt 3 der Architekturbeschreibung) dient als Grundlage für den Testplan, da dort die verschiedenen Komponenten  beschrieben werden.
 
@@ -241,26 +242,25 @@ In der nachfolgenden Tabelle werden die Module verfeinert die in Punkt 5 visuali
 \hline
 	GUI & webapp(xhtml)\\
 \hline
-	AndroidApp & AsyncBookTask.java BookAdapter.java MainActivity.java  ShowBookActivity.java\\
+	AndroidApp & com.mygdx.game, com.mygdx.game\\
 \hline
-	Model & it\_r3v.bibjsf.presentation\\
-\hline
-	Communication & Network.java\\
+	Communication & common.net\\
 \hline
 	UserInterface & GUI AndroidApp\\
 \hline
-	BusinessLogic & AdministrationHandler.java MediumHandler.java BusinessHandler.java BusinessObjectHandler.java ReaderHandler.java LibrarianHandler.java BorrowHandler.java\\
+	Server & Persistence, ServerInbox, ServerDirectory, Server, \\
 \hline
-	BibCommon & Medium.java BusinessObject.java Reader.java Admin.java Librarian.java\\
+	Common & entities, common.net\\
 \hline
-	Persistence & Data.java Persistence.java\\
+	Persistence & Data.java IPersistence.java\\
 \hline
 \end{tabular}
 
 
 \clearpage
 
-\section{Merkmale (Daniel)}
+\section{Merkmale}
+\textit{bearbeitet von: Daniel Pupat }\\
 \label{c04}
 
 Zu testende Merkmale sind in erster Linie Funktionen, welche alle Anwendungsfälle abdeckt, welche die Kundin sich gewünscht hat. Dabei muss sowohl die App als auch die Website getestet werden.\\
@@ -305,6 +305,7 @@ Da wir ein komplett neues Projekt erstellen, ist es wichtig das alle Merkmale ge
 
 % Abnahme- und Testkriterien
 \section{Abnahme- und Testendekriterien}\label{c07}
+\textit{bearbeitet von: Daniel Pupat }\\
 
 Fehler werden in eine Kategorie eingeordnet und erhalten entsprechende Fehlerwerte. Aus diesen Fehlerwerten ergeben sich Prioritäten, welche die Reihenfolge der Fehlerbehandlung angibt. Das Testen wird beendet, wenn der berechnete Fehlerwert aller Fehler pro 1000 Zeilen Code unter dem Wert 10 liegt und die Software nicht beeinträchtigt wird, d.h. es keinen Fehler der Fehlerklasse \texttt{Mittel} oder höher gibt.
 
@@ -330,6 +331,7 @@ Die nachfolgende Tabelle spezifiziert die Auswirkung eines Fehlers, durch die ma
 
 % Vorgehensweise
 \section{Vorgehensweise}\label{c06}
+\textit{bearbeitet von: Daniel Pupat }\\
 
 \subsection{Komponenten- und Integrationstest}
 
@@ -345,17 +347,15 @@ Die Funktionstest sind durch jene Anwendungsfälle aus der Anforderungsspezifika
 
 
 \section{Aufhebung und Wiederaufnahme}\label{c08}
+\textit{bearbeitet von: Daniel Pupat }\\
 
 Wir werden Tests unterbrechen, wenn ein gewisser Wert überschritten wird, welcher über die Tabelle in Abschnitt  \ref{c07} berechnet wird. In diesem Fall werden wir sofort wieder mit der Implementierung anfangen. Da wir mit der Bottom-up Strategie testen, werden wir bei Fehlern in der unteren Schicht einen niedrigeren Wert nehmen.\\
 Bei Fehlern der Data setzen wir einen Wert von 10, bei Fehlern in der Logik einen Wert von 20 und bei Fehlern, welche die GUI betreffen, einen von 40 und bei den restlichen Faktoren einen von 100.\\
 Sollten die Fehler behoben sein, testen wir noch einmal alle Komponenten, die mit den veränderten interagieren.
 
 \section{Hardware- und Softwareanforderungen}\label{c09}
-\nurlangversion
+\textit{bearbeitet von: Daniel Pupat }\\
 
-{\em Hier soll das zu prüfende Material spezifiziert werden. Auf
-  welchen Rechnern werden die Tests durchgeführt? Welche anderen
-  Hilfsmittel oder Ressourcen sind dafür nötig?}
 
 \subsection{Hardware}
 
@@ -367,27 +367,11 @@ Als Software benutzen wir in der Eclipse Umgebung JUnit-Tests. Diese werden in F
 
 % Testfälle
 \section{Testfälle}\label{c10}
-
-{\em Dies ist der wichtigste (und vermutlich umfangreichste) Teil des
-  Testplans. Hier wird genau aufgelistet, {\bf was wie} und {\bf von
-  wem} getestet wird. Das spätere Testen besteht dann einfach aus
-  einer Durchführung dieser Tests.}
-
-{\em Zu jedem Testfall muss es eine {\bf Testfallspezifikation}
-  geben (außer Komponententests, siehe unten). Schwerpunkt sollen
-  hier Integrations- und Leistungstests sein. Welche Arten von
-  Integrationstests und Leistungstests seht Ihr vor und wie wollt Ihr
-  diese genau ausgestalten?}
+\textit{bearbeitet von: Daniel Pupat }\\
 
 \subsection{Komponententest}\label{c10-0}
 
-{\em Auf die genaue Spezifikation der Komponententests könnt Ihr
-  verzichten -- diese werden durch die JUnit-Testfälle gegeben. Uns
-  genügt hierzu eine Beschreibung, welche Komponenten/Klassen wie,
-  wann und durch wen getestet werden sollen. Die zugehörigen
-  JUnit-Tests werden separat abgegeben (Black-Box jetzt, White-Box
-  später bei der Abgabe der Implementierung) und müssen im Testplan
-  nicht als Code aufgeführt werden.}
+Wir haben hier alle Klassen aufgelistet, welche wir testen wollen. Dabei werden wir keine abstrakten Klassen und Interfaces testen. Exceptions testen wir nicht einzeln, sondern diese werden mit den zugehörigen Methoden getestet.
 
 \begin{table}[h]
 \centering
@@ -395,44 +379,120 @@ Als Software benutzen wir in der Eclipse Umgebung JUnit-Tests. Diese werden in F
 \hline
 Klasse & Implementierer & Tester & Testart \\
 \hline
-ReferenceManagement & Klaus  & Hans    & Blackbox \\
-UserManagement      & Anna   & Klaus   & Blackbox \\
-\dots               & \dots  & \dots   & \dots \\
-ReferenceTable      & Heinz  & Bert    & Whitebox \\
+Match & Patrick  & Tim E.   & Whitebox \\
+Question      & Tim W.   & Daniel   & Whitebox \\
+User     & Patrick  & Olga   & Whitebox \\
+Client      & Daniel  & Tobias    & Whitebox \\
+ClientInbox      & Patrick  & Tim E.   & Whitebox \\
+Data      & Tim W.  & Olga    & Blackbox \\
+Server      & Tim W. & Patrick    & Whitebox \\
+ServerDirectory      & Tim E. & Tobias    & Whitebox \\
+ServerInbox      & Tobias & Daniel    & Whitebox \\
+AuthRequest      & Tim E. & Olga    & Whitebox \\
+LogoutRequest      & Tobias  & Patrick    & Whitebox \\
+AuthResponse      & Daniel  & Tim W.   & Whitebox \\
+UserListChangedResponse      & Daniel  & Tobias    & Whitebox \\
+NetUtils      & Olga  & Tobias    & Whitebox \\
+QuizGame      & Daniel  & Tim W.   & Whitebox \\
 \hline
 \end{tabular}
 \caption{Komponententests}
-\label{tab:komponententests}
 \end{table}
-
-{\em Achtet darauf, dass der Tester ein anderer ist als der
-  Implementierer. Jeder soll mindestens eine Klasse als Black-Box und
-  eine Klasse als White-Box testen!}
-
-{\em Hier könnten später noch die Kontrollflussdiagramme für die
-  Whiteboxtests eingefügt werden.}
 
 \clearpage
 \subsection{Integrationstest}\label{c10a}
 
-{\em Die Integrationstests werden hier genauer beschrieben: Welche
-  Klassen sind beteiligt? Wie ist der Zustand des Systems vor Beginn?
-  Welche Eingaben werden getätigt? Welche Ergebnisse/welches Verhalten
-  wird erwartet?}
+\begin{tabular}{|l|p{12cm}|}
+\hline
+	Testfallbezeichner & IT-1-a Frage hinzufügen\\
+\hline
+	Testobjekte & Persistence, entities\\
+\hline
+	Eingabe & Frage(Frage, Antwort)\\
+\hline
+	Ausgabe & Erfolgreich Frage hinzugefügt\\
+\hline
+	Umgebungserfordernisse & Server läuft, Datenbank existiert, Admin angemeldet\\
+\hline
+	Anforderungen & keine\\
+\hline
+	Abhängigkeiten & keine \\
+\hline
+\end{tabular}
 
-{\em Aufbau einer Testfallspezifikation:
-\begin{enumerate}
-\item eindeutiger Testfallbezeichner (entspricht Namenskonvention aus Abschnitt~\ref{sec:aufb-der-testb})
-\item Testobjekte: welche Komponenten werden getestet?
-\item Eingabespezifikationen (Eingaben des Testfalls)
-\item Ausgabespezifikationen (erwartete Ausgaben)
-\item Umgebungserfordernisse (notwendige Software- und
-  Hardwareplattform sowie Testtreiber und -rümpfe)
-\item besondere prozedurale Anforderungen (Einschränkungen wie
-  Zeitvorgaben, Belastung oder Eingreifen durch den Operator)
-\item Abhängigkeiten zwischen Testfällen
-\end{enumerate}
-}
+\begin{tabular}{|l|p{12cm}|}
+\hline
+	Testfallbezeichner & IT-1-b Frage löschen\\
+\hline
+	Testobjekte & Persistence, entities\\
+\hline
+	Eingabe & Frage\\
+\hline
+	Ausgabe & Erfolgreich Frage gelöscht\\
+\hline
+	Umgebungserfordernisse & Server läuft, Datenbank existiert, Admin angemeldet\\
+\hline
+	Anforderungen & Frage ist in Datenbank vorhanden\\
+\hline
+	Abhängigkeiten & IT-1-a \\
+\hline
+\end{tabular}
+
+
+\begin{tabular}{|l|p{12cm}|}
+\hline
+	Testfallbezeichner & IT-2 User löschen\\
+\hline
+	Testobjekte & Persistence, entities\\
+\hline
+	Eingabe & User\\
+\hline
+	Ausgabe & Erfolgreich User gelöscht\\
+\hline
+	Umgebungserfordernisse & Server läuft, Datenbank existiert, Admin angemeldet\\
+\hline
+	Anforderungen & User ist in Datenbank vorhanden\\
+\hline
+	Abhängigkeiten & keine \\
+\hline
+\end{tabular}
+
+\begin{tabular}{|l|p{12cm}|}
+\hline
+	Testfallbezeichner & IT-3 User registrieren\\
+\hline
+	Testobjekte & entities, Persistence, Communication\\
+\hline
+	Eingabe &  Registrierdaten(Nutzername, Passwort)\\
+\hline
+	Ausgabe & Registrierung erfolgreich\\
+\hline
+	Umgebungserfordernisse & App ist gestartet, Server läuft, Datenbank existiert\\
+\hline
+	Anforderungen & korrekte Eingabedaten\\
+\hline
+	Abhängigkeiten & keine \\
+\hline
+\end{tabular}
+
+\begin{tabular}{|l|p{12cm}|}
+\hline
+	Testfallbezeichner & IT-4 Anmelden\\
+\hline
+	Testobjekte & entities, Persistence, Communication\\
+\hline
+	Eingabe &  Anmeldedaten\\
+\hline
+	Ausgabe & Anmeldung erfolgreich\\
+\hline
+	Umgebungserfordernisse & App ist gestartet, Server läuft, Datenbank existiert\\
+\hline
+	Anforderungen & User existiert in Datenbank\\
+\hline
+	Abhängigkeiten & IT-3 \\
+\hline
+\end{tabular}
+
 
 \subsection{Funktionstest}\label{c10b}
 
@@ -840,6 +900,9 @@ ReferenceTable      & Heinz  & Bert    & Whitebox \\
 
 \section{Testzeitplan}
 \label{sec:testzeitplan}
-\nurlangversion
+Komponententests: Woche ab 28.7.2014\\
+Integrationstests: Woche ab 28.7.2014\\
+Funktionstests: Woche ab 28.7.2014\\
+Leistungstests: Woche ab 04.8.2014\\
 
 \end{document}
