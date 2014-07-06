@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import server.persistence.Data;
 import common.entities.User;
 
 
@@ -26,7 +27,7 @@ public class ServerDirectory implements Runnable {
 		while (true) {
 			try {
 				final Socket client = socket.accept();
-				Thread thread = new Thread(new ServerInbox(client, this));
+				Thread thread = new Thread(new ServerInbox(client, this, Data.getInstance()));
 				thread.start();
 				clients.put(client, thread);
 				logger.log(Level.INFO, client + " accepted");

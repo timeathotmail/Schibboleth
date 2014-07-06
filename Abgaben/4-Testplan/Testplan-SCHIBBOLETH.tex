@@ -148,49 +148,63 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section*{Version und Änderungsgeschichte}
 
-{\em Die aktuelle Versionsnummer des Dokumentes sollte eindeutig und gut zu
-identifizieren sein, hier und optimalerweise auf dem Titelblatt.}
-
 \begin{tabular}{ccl}
 Version & Datum & Änderungen \\
 \hline
-1.0 & TT.MM.JJJJ & Dokumentvorlage als initiale Fassung kopiert \\
-1.1 & TT.MM.JJJJ & .... \\
+1.0 & 04.07.2014 & Dokumentvorlage als initiale Fassung kopiert \\
+1.1 & 05.07.2014 & \\
+1.2 & 06.07.2014 & Testplan abgabefertig
 \end{tabular}
 
+\paragraph{Wichtiger Hinweis:} Dieser Testplan wurde zu einem Teil aus verschiedenen Dokumententeilen von dem Testplan unserer Gruppenmitglieder aus dem Wintersemester 2013/14 erstellt (Gruppe \textit{IT\_R3V0LUTION}). Einige Teile wurden komplett übernommen, andere überarbeitet bzw. angepasst. \\
+Diese Vereinbarung haben wir in der Kick-Off-Veranstaltung für RE SWP 2014 mit dem Veranstalter Dr. Karsten Hölscher getroffen. \\
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Einführung}\label{c01}
 
 \subsection{Zweck}
-\nurlangversion
+Der Testplan bietet einen Überblick über die geplanten Tests und dient u.a. als Anleitung für die Tester. Die Software soll dabei ausführlich auf Funktionalität getestet werden. 
 
-  {\em Was ist der Zweck dieses Testplans? Wer sind
-  die LeserInnen?}
+Im Testplan wird festgelegt, wie man welche Komponenten testet. Dazu wird außerdem definiert, welchen Umfang die Tests haben sollen und wann ein Test erfolgreich ist und wann nicht.
+
+Während der Implementierungsphase werden wir uns nach dem Testplan richten und ihn gegebenenfalls weiterführen und vervollständigen.
+
 
 \subsection{Umfang}
-\nurlangversion
+Der Testplan entspricht der vereinfachten Form des \emph{IEEE Standard for Software Test Documentation 829-1998}. 
 
 \subsection{Beziehungen zu anderen Dokumenten}
-\nurlangversion
+Dieser Testplan bezieht sich zum einen auf die Anforderungsspezifikation, da dort die Systemeigenschaften und Systemattribute spezifiziert wurden. Die Testfälle werden auf Grundlage der dortigen Anwendungsfälle entwickelt.
+
+Außerdem gibt es Referenzen zur Architekturbeschreibung, da in dieser die Module und Komponenten definiert wurden, die in diesem Dokument getestet werden sollen.
 
 
 \subsection{Aufbau der Testbezeichner}
 \label{sec:aufb-der-testb}
 
-\emph{Jeder Testfall muss einen eindeutigen Bezeichner haben. Der könnte
-hierarchisch aufgebaut sein. Hier wird dieses Namensschema einheitlich festgelegt.}
+Der Aufbau der Testbezeichner richtet sich nach folgendem Schema:
+\begin{itemize}
+\item Die ersten beiden Buchstaben geben die Art des Tests vor. Dabei unterscheiden wir zwischen vier verschiedenen Testarten:
+\begin{itemize}
+	\item Komponententests = KT
+	\item Integrationstests = IT
+	\item Funktionstests = FT
+	\item Leistungstests = LT
+\end{itemize}
+\item Die Nummer steht für die jeweilige Testfallnummer
+
+\item Optional: in alphabetischer Reihenfolge werden hier Variationen oder untergeordnete Testfälle definiert
+\end{itemize}
+Nach diesem Schema sieht ein Testbezeichner nun folgendermaßen aus:
+
+\textbf{\emph{IT-3-A}}: Integrationstest, Nr. 3, Variante 1
 
 %%
 %% Dokumentation der Testergebnisse 
 %%
 \subsection{Dokumentation der Testergebnisse}
-\nurlangversion
 
-{\em In welcher Form werden die Testergebnisse dokumentiert
-($\Rightarrow$ Testprotokoll)? Wie werden gefundene Fehler dokumentiert
-(Bugtracking)?}
-
+Zu jedem Testfall wird ein kurzes Testprotokoll angefertigt. Dieses beinhaltet den Ablauf des Testfalls und die möglichen Komplikationen, die bei der Durchführung entstehen können. Dann werden die Resultate des Testfalls bestimmt und eventuell gefundene Fehler beschrieben.
 
 %%
 %% Definitionen und Referenzen 
@@ -200,69 +214,119 @@ hierarchisch aufgebaut sein. Hier wird dieses Namensschema einheitlich festgeleg
 
 
 \subsection{Referenzen}
+\emph{IEEE Standard for Software Test Documentation 829-1998}\\
+\url{http://standards.ieee.org/findstds/standard/829-1998.html}
 
 \bibliographystyle{plain}
 \bibliography{literatur}
-
 
 % Systemüberblick
 \section{Systemüberblick}\label{c02}
 \nurlangversion
 
-{\em Dieser Abschnitt soll einen Überblick über das System geben, und
-  zwar insbesondere hinsichtlich jener Komponenten, die durch
-  Komponententests geprüft werden sollen. Dazu ist die richtige
-  Granularität der Komponenten wichtig (einzelne Klassen, ganze Pakete
-  oder Systeme etc.). Für den Integrationstest sind die Abhängigkeiten
-  der Komponenten voneinander von besonderer Wichtigkeit.}
+Das System besteht aus der Server- und der Clientkomponente. Die konzeptionelle Sicht der Architekturbeschreibung (vgl. Abschnitt 3 der Architekturbeschreibung) dient als Grundlage für den Testplan, da dort die verschiedenen Komponenten  beschrieben werden.
 
-{\em Der Überblick sollte leicht verständlich sein und sich auf die
-  wesentlichen benötigten Informationen konzentrieren. Hier sind
-  evtl.\ auch Referenzen auf die Architekturbeschreibung angebracht.}
+Auf der Serverseite gibt es die Komponenten \texttt{Communication, BusinessLogic} und \texttt{Persistence} (vgl. Abbildung 3: Konzeptionelle Sicht Server; Architekturbeschreibung).
 
-{\em Es sollten die Hofmeister-Konzepte verwendet
-  werden.\ Benutzt am besten Diagramme aus der Architekturbeschreibung.}
+Die Clientseite besteht aus den Komponenten \texttt{Communication, Model} und \texttt{User Interface} (vgl. Abbildung 4: Konzeptionelle Sicht Client; Architekturbeschreibung).
 
-\emph{Dieser Abschnitt ist nicht einfach nur Copy\&Paste der
-  Architekturbeschreibung. Es gilt einerseits, Redundanzen soweit wie
-  möglich zu vermeiden, und andererseits, dieses Dokument so
-  selbsterklärend wie möglich zu machen.}
+Da starke Abhängigkeiten zwischen all diesen Komponenten bestehen, ist es wichtig, dass diese Komponenten fehlerfrei funktionieren. 
 
 \subsection{Module der Anwendungsschicht und deren Funktionen}
 \label{mod-controller}
-\nurlangversion
 
-{\em Hier solltet ihr dann die einzelnen Module aus Sicht des
-Tests weiter verfeinern. Auch wäre noch eine Grafik angebracht, die
-die Abhängigkeiten der Subsysteme/Module zeigt, sowie eine kurze
-Beschreibung dazu.}
+In der nachfolgenden Tabelle werden die Module verfeinert die in Punkt 5 visualisiert sind.
+
+\begin{tabular}{|l|p{12cm}|}
+\hline
+	GUI & webapp(xhtml)\\
+\hline
+	AndroidApp & AsyncBookTask.java BookAdapter.java MainActivity.java  ShowBookActivity.java\\
+\hline
+	Model & it\_r3v.bibjsf.presentation\\
+\hline
+	Communication & Network.java\\
+\hline
+	UserInterface & GUI AndroidApp\\
+\hline
+	BusinessLogic & AdministrationHandler.java MediumHandler.java BusinessHandler.java BusinessObjectHandler.java ReaderHandler.java LibrarianHandler.java BorrowHandler.java\\
+\hline
+	BibCommon & Medium.java BusinessObject.java Reader.java Admin.java Librarian.java\\
+\hline
+	Persistence & Data.java Persistence.java\\
+\hline
+\end{tabular}
 
 
 \clearpage
 
-\section{Merkmale}
+\section{Merkmale (Daniel)}
+\label{c04}
 
-{\em Hier sollen die zu testenden Merkmale, aber auch die nicht zu
-  testenden Merkmale (mit Begründung) aufgelistet werden. Welche
-  Kombinationen von Merkmalen sind relevant?}
-
-\subsection{Zu testende Merkmale}\label{c04}
-
+Zu testende Merkmale sind in erster Linie Funktionen, welche alle Anwendungsfälle abdeckt, welche die Kundin sich gewünscht hat. Dabei muss sowohl die App als auch die Website getestet werden.\\
+App\\
+1. Online\\
+\begin{itemize}
+\item[1.1]Benutzer registrieren
+\item[1.2]Benutzer anmelden 
+\item[1.3]Benutzer abmelden 
+\item[1.4]Gegner herausfordern
+\item[1.5]Angefangenes Spiel weiterspielen
+\item[1.6]Frage beantworten 
+\item[1.7]Einstellungen ändern
+\end{itemize}
+\bigskip
+2. Offline\\
+\begin{itemize}
+\item[2.1]Neues Spiel starten
+\item[2.2]Frage beantworten
+\end{itemize}
+\bigskip
+3.Website\\
+\begin{itemize}
+\item[3.1]Admin anmelden
+\item[3.2]Admin abmelden
+\item[3.3]Frage hinzufügen
+\item[3.4]Frage bearbeiten
+\item[3.5]Frage löschen
+\item[3.6]Frageliste importieren
+\item[3.7]Frageliste exportieren
+\item[3.8]User löschen
+\item[3.9]Passwort ändern
+\end{itemize}
+\bigskip
 
 
 \subsubsection{Funktionale Anforderungen} 
-
-{\em Welche sind besonders wichtig?}
+Besonders wichtig ist der Spielvorgang bei der App, da die Nutzer diesen hauptsächlich nutzen werden. Dabei muss darauf geachtet werden, dass der Nutzer sowohl online als auch offline spielen kann. Auch das spielen gegen eine andere Person muss getestet werden.\\
 
 \subsection{Nicht zu testende Merkmale}\label{c05}
+Da wir ein komplett neues Projekt erstellen, ist es wichtig das alle Merkmale getestet werden. Sollte es triviale Funktionen geben, müssen diese nicht getestet werden.
 
 % Abnahme- und Testkriterien
 \section{Abnahme- und Testendekriterien}\label{c07}
 
-{\em Wann wird das Testen beendet? Die angegebenen Kriterien müssen
-  objektiv prüfbar sein.}
+Fehler werden in eine Kategorie eingeordnet und erhalten entsprechende Fehlerwerte. Aus diesen Fehlerwerten ergeben sich Prioritäten, welche die Reihenfolge der Fehlerbehandlung angibt. Das Testen wird beendet, wenn der berechnete Fehlerwert aller Fehler pro 1000 Zeilen Code unter dem Wert 10 liegt und die Software nicht beeinträchtigt wird, d.h. es keinen Fehler der Fehlerklasse \texttt{Mittel} oder höher gibt.
 
+\textbf{Testabdeckung}
+Die Testabdeckung soll so hoch wie möglich sein. Für ein stabiles System spricht, dass die Testabdeckung in systemkritischen Bereichen soweit vollständig ist. Jeder Fehler in diesem Bereich kann das System zum Absturz bringen und muss somit verhindert werden. In anderen Bereichen, die das laufende System bei einem Fehler weniger beeinträchtigen, wird die Testabdeckung nicht so vollständig sein, wie in kritischen Bereichen.
 
+\textbf{Fehlerbewertung:}\\
+Die nachfolgende Tabelle spezifiziert die Auswirkung eines Fehlers, durch die man diese nach Priorität einordnen kann.\\
+
+\begin{tabularx}{\textwidth}{|p{2cm}|p{11.53cm}|c|}
+\hline
+	\textbf{Fehlerkl.\footnote{=Fehlerklasse}} & \textbf{Beschreibung} & \textbf{Wert}\\
+\hline
+	Leicht & Unwesentliche Fehler, die den Programmablauf nicht beeinträchtigen, aber trotzdem behandelt werden sollten. & 1\\
+\hline
+	Mittel & Fehler in dieser Art haben Auswirkungen auf den Programmablauf. Dieser beeinträchtigt aber nicht die grundlegenden Funktionen. & 10\\
+\hline
+	Schwer & Fehler der Klasse ,,Schwer'' beeinträchtigen die Funktionsfähigkeit des Systems sehr stark und müssen sofort behandelt werden. & 20\\
+\hline
+	Fatal & Diese Fehler machen den Programmablauf unmöglich und können zum Absturz des Systems führen.  & 100\\
+\hline
+\end{tabularx}
 
 % Vorgehensweise
 \section{Vorgehensweise}\label{c06}
@@ -277,10 +341,14 @@ Beschreibung dazu.}
 
 \subsection{Funktionstest}
 
+Die Funktionstest sind durch jene Anwendungsfälle aus der Anforderungsspezifikation vorgegeben. Jede dieser Funktionen muss durch Tests gedeckt sein.
 
 
 \section{Aufhebung und Wiederaufnahme}\label{c08}
 
+Wir werden Tests unterbrechen, wenn ein gewisser Wert überschritten wird, welcher über die Tabelle in Abschnitt  \ref{c07} berechnet wird. In diesem Fall werden wir sofort wieder mit der Implementierung anfangen. Da wir mit der Bottom-up Strategie testen, werden wir bei Fehlern in der unteren Schicht einen niedrigeren Wert nehmen.\\
+Bei Fehlern der Data setzen wir einen Wert von 10, bei Fehlern in der Logik einen Wert von 20 und bei Fehlern, welche die GUI betreffen, einen von 40 und bei den restlichen Faktoren einen von 100.\\
+Sollten die Fehler behoben sein, testen wir noch einmal alle Komponenten, die mit den veränderten interagieren.
 
 \section{Hardware- und Softwareanforderungen}\label{c09}
 \nurlangversion
@@ -291,10 +359,11 @@ Beschreibung dazu.}
 
 \subsection{Hardware}
 
-\nurlangversion
+Als Hardware stehen uns unsere Notebooks und Smartphones, sowie die Unirechner zur Verfügung. Dabei haben wir alle geforderten Betriebssysteme mindestens einmal auf unseren Notebooks installiert, sodass wir auf jeden Gerät testen können. Da Android Unterstützung gefordert ist, werden wir die App über unseren vorhandenen Smartphones, die Android haben, testen. Andere Systeme (iOS) werden wir testen, falls noch genügend Zeit vorhanden ist.
 
 \subsection{Software}
-\nurlangversion
+
+Als Software benutzen wir in der Eclipse Umgebung JUnit-Tests. Diese werden in Form von BlackBox- und WhiteBox-Tests implementiert. Die App werden wir mithilfe eines Android Emulators und unseren Smartphones testen.
 
 % Testfälle
 \section{Testfälle}\label{c10}
@@ -366,53 +435,407 @@ ReferenceTable      & Heinz  & Bert    & Whitebox \\
 }
 
 \subsection{Funktionstest}\label{c10b}
-\nurlangversion
 
-\variante{}{\emph{Auch wenn dieser Teil in SWP-1 nicht gefordert ist,
-    so müsst Ihr Euch dennoch über den Funktionstest Gedanken machen
-    und ihn planen. In SWP-1 ist der Plan für den Funktionstest
-    letztlich nichts anderes als das Drehbuch Eurer
-    Abschlusspräsentation, die den Akzeptanztest darstellt.}}
+\begin{tabular}{|l|p{13.75cm}|}
+\hline
+	Bezeichner: & FT-1\\
+\hline
+	Anwendungsfall & App starten\\
+\hline
+	Eingabe & Start-Button wird gedrückt\\
+\hline
+	Ausgabe & App ist gestartet\\ &
+	Bei Fehlerfall: Rückmeldung Probleme beim starten der App\\
+\hline
+	Umsetzung & Start-Button wird gedrückt, Benutzer hat die App bereits heruntergeladen\\
+\hline
+\end{tabular}
 
-{\em Die Funktionstests basieren auf den Anwendungsfällen. Diese
-  müssen hier nun konkretisiert werden, um einen Testfall zu
-  erhalten. Es müssen also konkrete Werte für Ein- und Ausgabe
-  festgelegt werden. Auch das Verhalten im Fehlerfall sollte getestet
-  werden.}
+\begin{tabular}{|l|p{13.75cm}|}
+\hline
+	Bezeichner: & FT-2\\
+\hline
+	Anwendungsfall & Offline-Modus starten\\
+\hline
+	Eingabe & Offline Modus starten wird gedrückt\\
+\hline
+	Ausgabe & Der Modus wurde gestartet, spielen nun möglich\\ &
+	Bei Fehlerfall: Rückmeldung starten nicht erfolgreich\\
+\hline
+	Umsetzung & Auf Offline Modus starten drücken\\
+\hline
+\end{tabular}
 
-{\em Die Anwendungsfälle müssen nicht alle wiederholt werden. Sie
-  werden schließlich in der Anforderungsspezifikation
-  spezifiziert. Hier genügt eine tabellarische Auflistung aller zu
-  testenden Anwendungsfälle, deren konkrete Ein- und Ausgaben sowie
-  die Umsetzung (automatisiert oder manuell und falls manuell, durch
-  welche Art von Benutzer?). Insbesondere müsst Ihr an dieser Stelle
-  klären, welche Varianten von Anwendungsfällen getestet werden. Falls
-  Varianten oder gar ganze Anwendungsfälle nicht getestet werden
-  sollen, dann wird hier eine plausible Begründung erwartet.}
+\begin{tabular}{|l|p{13.75cm}|}
+\hline
+	Bezeichner: & FT-3\\
+\hline
+	Anwendungsfall & Benutzer registrieren\\
+\hline
+	Eingabe & Informationen des Nutzers(Nickname, Passwort)\\ 
+\hline
+	Ausgabe & Rückmeldung über erfolgreiches Anmelden. Nutzer ist nun in Datenbank gespeichert\\ &
+	Bei Fehlerfall: Fehlerrückmeldung\\
+\hline
+	Umsetzung & Manuelles eintragen der Daten, dann auf registrieren klicken\\
+\hline
+\end{tabular}
+
+\begin{tabular}{|l|p{13.75cm}|}
+\hline
+	Bezeichner: & FT-4\\
+\hline
+	Anwendungsfall & Benutzer anmelden\\
+\hline
+	Eingabe & Anmeldedaten(Nutzername, Passwort)\\
+\hline
+	Ausgabe & Rückmeldung über erfolgreiche Anmeldung\\ &
+	Bei Fehlerfall: Rückmeldung Anmeldung nicht erfolgreich\\
+\hline
+	Umsetzung & Manuelle Eingabe der Nutzerdaten, Benutzer ist registriert\\
+\hline
+\end{tabular}
+
+\begin{tabular}{|l|p{13.75cm}|}
+\hline
+	Bezeichner: & FT-5\\
+\hline
+	Anwendungsfall & Benutzer abmelden\\
+\hline
+	Eingabe & Logout-Button wird gedrückt\\
+\hline
+	Ausgabe & Rückmeldung über erfolgreiche Abmeldung\\ &
+	Bei Fehlerfall: Rückmeldung Abmeldung nicht erfolgreich\\
+\hline
+	Umsetzung & Manuelles ausloggen, Benutzer ist angemeldet\\
+\hline
+\end{tabular}
+
+\begin{tabular}{|l|p{13.75cm}|}
+\hline
+	Bezeichner: & FT-6\\
+\hline
+	Anwendungsfall & Spielen(Offline)\\
+\hline
+	Eingabe & Spielen-Button drücken\\
+\hline
+	Ausgabe & Spiel wird gestartet\\ &
+	Bei Fehlerfall: Rückmeldung Spielen nicht möglich\\
+\hline
+	Umsetzung & Manuell, Benutzer spielt Offline\\
+\hline
+\end{tabular}
+
+\begin{tabular}{|l|p{13.75cm}|}
+\hline
+	Bezeichner: & FT-7\\
+\hline
+	Anwendungsfall & Spielen(Online)\\
+\hline
+	Eingabe & Spielen-Button wird gedrückt\\
+\hline
+	Ausgabe & Auswahl zwischen Neues Spiel starten und offenes Spiel wird angezeigt\\ &
+	Bei Fehlerfall: Rückmeldung Spielen nicht möglich\\
+\hline
+	Umsetzung & Manuell, Benutzer ist angemeldet\\
+\hline
+\end{tabular}
+
+\begin{tabular}{|l|p{13.75cm}|}
+\hline
+	Bezeichner: & FT-8\\
+\hline
+	Anwendungsfall & Neues Spiel\\
+\hline
+	Eingabe & Neues Spiel wird gedrückt\\
+\hline
+	Ausgabe & Liste aller Spieler die Online sind erscheint\\ &
+	Bei Fehlerfall: Rückmeldung Neues Spiel nicht erfolgreich\\
+\hline
+	Umsetzung & Manuell, Benutzer war auf Spielen\\
+\hline
+\end{tabular}
+
+\begin{tabular}{|l|p{13.75cm}|}
+\hline
+	Bezeichner: & FT-9\\
+\hline
+	Anwendungsfall & Gegner herausfordern\\
+\hline
+	Eingabe & Gegner der herausgefordert werden soll\\
+\hline
+	Ausgabe & Spiel wird gestartet\\ &
+	Bei Fehlerfall: Rückmeldung herausfordern nicht erfolgreich\\
+\hline
+	Umsetzung & Manuell, Gegner ist Online\\
+\hline
+\end{tabular}
+
+\begin{tabular}{|l|p{13.75cm}|}
+\hline
+	Bezeichner: & FT-10\\
+\hline
+	Anwendungsfall & Offenes Spiel spielen\\
+\hline
+	Eingabe & Antwort auf die Frage\\
+\hline
+	Ausgabe & Nachricht ob richtige oder falsche Antwort\\ &
+	Bei Fehlerfall: Rückmeldung Fehler\\
+\hline
+	Umsetzung & Manuell, Spiel wurde bereits angefangen\\
+\hline
+\end{tabular}
+
+\begin{tabular}{|l|p{13.75cm}|}
+\hline
+	Bezeichner: & FT-11\\
+\hline
+	Anwendungsfall & Einstellungen ändern\\
+\hline
+	Eingabe & Benutzername, Passwort\\
+\hline
+	Ausgabe & Rückmeldung über erfolgreiches Ändern\\ &
+	Bei Fehlerfall: Rückmeldung Ändern war nicht erfolgreich\\
+\hline
+	Umsetzung & Manuell, Benutzer ist angemeldet\\
+\hline
+\end{tabular}
+
+\begin{tabular}{|l|p{13.75cm}|}
+\hline
+	Bezeichner: & FT-12\\
+\hline
+	Anwendungsfall & Website wird aufgerufen\\
+\hline
+	Eingabe & URL\\
+\hline
+	Ausgabe & Website wird angezeigt\\ &
+	Bei Fehlerfall: Rückmeldung anzeigen war nicht erfolgreich\\
+\hline
+	Umsetzung & Manuell, Internet Verbindung vorhanden\\
+\hline
+\end{tabular}
+
+\begin{tabular}{|l|p{13.75cm}|}
+\hline
+	Bezeichner: & FT-13\\
+\hline
+	Anwendungsfall & Admin anmelden\\
+\hline
+	Eingabe & Nutzername, Passwort\\
+\hline
+	Ausgabe & Rückmeldung, anmelden erfolgreich\\ &
+	Bei Fehlerfall: Rückmeldung anmelden war nicht erfolgreich\\
+\hline
+	Umsetzung & Manuell\\
+\hline
+\end{tabular}
+
+\begin{tabular}{|l|p{13.75cm}|}
+\hline
+	Bezeichner: & FT-14\\
+\hline
+	Anwendungsfall & Admin abmelden\\
+\hline
+	Eingabe & Logout-Button drücken\\
+\hline
+	Ausgabe & Rückmeldung abmelden erfolgreich\\ &
+	Bei Fehlerfall: Rückmeldung abmelden nicht erfolgreich\\
+\hline
+	Umsetzung & Manuell, Admin ist angemeldet\\
+\hline
+\end{tabular}
+
+\begin{tabular}{|l|p{13.75cm}|}
+\hline
+	Bezeichner: & FT-15\\
+\hline
+	Anwendungsfall & Frage hinzufügen\\
+\hline
+	Eingabe & Frageinformationen(Frage, Antworten)\\
+\hline
+	Ausgabe & Rückmeldung über erfolgreiches Hinzufügen\\ &
+	Bei Fehlerfall: Rückmeldung Hinzufügen war nicht erfolgreich\\
+\hline
+	Umsetzung & Manuell, Benutzer ist Admin\\
+\hline
+\end{tabular}
+
+\begin{tabular}{|l|p{13.75cm}|}
+\hline
+	Bezeichner: & FT-16\\
+\hline
+	Anwendungsfall & Frage bearbeiten\\
+\hline
+	Eingabe & Frageinformationen(Frage, Antworten)\\
+\hline
+	Ausgabe & Rückmeldung über erfolgreiches Ändern\\ &
+	Bei Fehlerfall: Rückmeldung Ändern nicht erfolgreich\\
+\hline
+	Umsetzung & Manuell, Benutzer ist Bibliothekar\\
+\hline
+\end{tabular}
+
+\begin{tabular}{|l|p{13.75cm}|}
+\hline
+	Bezeichner: & FT-17\\
+\hline
+	Anwendungsfall & Frage löschen\\
+\hline
+	Eingabe & zu löschende Frage\\
+\hline
+	Ausgabe & Rückmeldung über erfolgreiches Löschen\\ &
+	Bei Fehlerfall: Rückmeldung Löschen war nicht erfolgreich\\
+\hline
+	Umsetzung & Manuell, Benutzer ist Admin\\
+\hline
+\end{tabular}
+
+\begin{tabular}{|l|p{13.75cm}|}
+\hline
+	Bezeichner: & FT-18\\
+\hline
+	Anwendungsfall & Frageliste importieren\\
+\hline
+	Eingabe & Frageliste\\
+\hline
+	Ausgabe & Rückmeldung über erfolgreiches importieren\\ &
+	Bei Fehlerfall: Rückmeldung Importieren war nicht erfolgreich\\
+\hline
+	Umsetzung & Manuell, Benutzer ist Admin\\
+\hline
+\end{tabular}
+
+\begin{tabular}{|l|p{13.75cm}|}
+\hline
+	Bezeichner: & FT-19\\
+\hline
+	Anwendungsfall & Frageliste exportieren\\
+\hline
+	Eingabe & Frageliste\\
+\hline
+	Ausgabe & Rückmeldung über erfolgreiches exportieren\\ &
+	Bei Fehlerfall: Rückmeldung Exportieren nicht erfolgreich\\
+\hline
+	Umsetzung & Manuell, Benutzer ist Admin\\
+\hline
+\end{tabular}
+
+\begin{tabular}{|l|p{13.75cm}|}
+\hline
+	Bezeichner: & FT-20\\
+\hline
+	Anwendungsfall & User löschen\\
+\hline
+	Eingabe & User\\
+\hline
+	Ausgabe & Rückmeldung über erfolgreiches Löschen\\ &
+	Bei Fehlerfall: Rückmeldung Löschen war nicht erfolgreich\\
+\hline
+	Umsetzung & Manuell, User existiert\\
+\hline
+\end{tabular}
+
+\begin{tabular}{|l|p{13.75cm}|}
+\hline
+	Bezeichner: & FT-21\\
+\hline
+	Anwendungsfall & Passwort ändern\\
+\hline
+	Eingabe & Passwort\\
+\hline
+	Ausgabe & Rückmeldung über erfolgreiches Ändern\\ &
+	Bei Fehlerfall: Rückmeldung Ändern war nicht erfolgreich\\
+\hline
+	Umsetzung & Manuell, Admin ist angemeldet\\
+\hline
+\end{tabular}
+
+
+
 
 
 \subsection{Leistungstest}\label{c10c}
-\nurlangversion
-
-{\em Die Leistungstests prüfen die Leistungsanforderungen, wie z.B.\ Reaktionszeiten, 
-das Verhalten unter extremen Bedingungen, bei großen Datenmengen etc\ldots}
 
 \subsubsection{Härtetest}
-\nurlangversion
+
+\begin{tabular}{|l|p{13.75cm}|}
+\hline
+	Bezeichner: & LT-1\\
+\hline
+	Beschreibung & 100 Nutzer starten gleichzeitig ein Spiel\\
+\hline
+	Ziel: & Robustheit der Datenbank mit vielen Anfragen umzugehen wird getestet\\
+\hline
+	Bei Erfolg: & Datenbank kann Anfragen bearbeiten; es gibt keine langen Wartezeiten\\
+\hline
+	Fehler: & TimeOut, Absturz\\
+\hline
+\end{tabular}
 
 
 \subsubsection{Volumentest}
-\nurlangversion
+
+\begin{tabular}{|l|p{13.75cm}|}
+\hline
+	Bezeichner: & LT-2\\
+\hline
+	Beschreibung & Eine sehr große CSV-Datei wird importiert\\
+\hline
+	Ziel: & Robustheit der Datenbank mit großen Datenmengen umzugehen wird getestet\\
+\hline
+	Bei Erfolg: & Datenbank kann mit der Verarbeitung umgehen; es gibt keine Fehler\\
+\hline
+	Fehler: & TimeOut, Absturz\\
+\hline
+\end{tabular}
 
 
 \subsubsection{Sicherheitstest}
-\nurlangversion
+
+\begin{tabular}{|l|p{13.75cm}|}
+\hline
+	Bezeichner: & LT-3\\
+\hline
+	Beschreibung & Ein Nutzer gibt ein falsches Passwort ein(App und Website)\\
+\hline
+	Ziel: & Korrekte Authentifizierung wird getestet\\
+\hline
+	Bei Erfolg: & Nutzer kann sich nicht einloggen; System gibt Fehlermeldung\\
+\hline
+	Fehler: & Benutzer kann sich anmelden\\
+\hline
+\end{tabular}
 
 \subsubsection{Erholungstest}
-\nurlangversion
 
-{\em Hier wird geprüft, ob sich das System von Fehlerzuständen auch wieder erholt.
- Es werden also gezielt Fehler provoziert, um die Korrektheit der Systemreaktion herauszufinden.}
+\begin{tabular}{|l|p{13.75cm}|}
+\hline
+	Bezeichner: & LT-4\\
+\hline
+	Beschreibung & Ein Nutzer gibt mehrmals ein falsches Passwort ein\\
+\hline
+	Ziel: & Erholt sich das System; Kann man sich danach problemlos mit dem richtigen Passwort einloggen\\
+\hline
+	Bei Erfolg: & Bei richtiger Eingabe der Logindaten, ist man eingeloggt\\
+\hline
+	Fehler: & Man kann sich nicht mehr einloggen, Absturz\\
+\hline
+\end{tabular}
+
+\begin{tabular}{|l|p{13.75cm}|}
+\hline
+	Bezeichner: & LT-5\\
+\hline
+	Beschreibung & Der Server geht offline und startet die Verbindung neu\\
+\hline
+	Ziel: & Ist das System nach neuer Verbindung wieder funktionstüchtig\\
+\hline
+	Bei Erfolg: & System produziert keine Fehler\\
+\hline
+	Fehler: & Funktionen werden nicht mehr unterstützt, Datenverlust, TimeOut, Absturz\\
+\hline
+\end{tabular}
 
 
 \section{Testzeitplan}
