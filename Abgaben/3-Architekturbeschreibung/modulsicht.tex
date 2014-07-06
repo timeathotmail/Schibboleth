@@ -68,7 +68,8 @@ Diagramm NetUtils
 \subsubsection{Net}
 Im \texttt{Net}-Paket ist die Funktionsweise des Servers durch die Klassen \texttt{ServerDirectory} und \texttt{ServerInbox} definiert: Wird er gestartet, wird ein Thread geöffnet, auf dem eine \texttt{ServerDirectory} auf einem Port arbeitet. Die Klasse dient zur Kontaktaufnahme mit den Clients. Für jeden Client wird zudem eine \texttt{ServerInbox} eingerichtet, die - wie der Name schon sagt - als eine Art Postfach für den Server dient und ebenfalls auf einem eigenen Thread läuft. Dort wird für die gesamte Dauer der Verbindung auf Nachrichten des Clients gewartet und anschließend verarbeitet. Ebenfalls ist in der Klasse definiert, wie der Server ggf. auf diese Nachrichten antwortet.
 
-Diagramme ServerDirectory, ServerInbox
+Diagramm ServerDirectory
+Diagramm ServerInbox?
 
 \subsubsection{Persistence-Modul}
 Die Persistence-Schnittstelle dient zum Zugriff auf die Datenbank und ist wie folgt definiert:
@@ -76,9 +77,10 @@ Die Persistence-Schnittstelle dient zum Zugriff auf die Datenbank und ist wie fo
 Diagramm IPersistence
 
 \subsection{App-Client}
-\subsubsection{Net}
-Die \texttt{Client}-Klasse öffnet ein Socket zum Server und implementiert Methoden, um \texttt{Requests} an den Server zu senden. Analog zur \texttt{ServerInbox} wird auch hier ein Thread gestartet, auf dem eine \texttt{ClientInbox} läuft. Diese bearbeitet vom Server empfangene Nachrichten, indem die jeweilige Methode des Game-Moduls aufgerufen wird.
+\subsubsection{Client-Modul}
+Die Client-Schnittstelle ist durch die abstrakte Klasse \texttt{AbstractClient} gegeben und ist standardmäßig in der Lage, einen Socket zum Server zu öffnen. Analog zum Server wird auch hier ein Thread gestartet, auf dem eine \texttt{ClientInbox} läuft. Diese bearbeitet vom Server empfangene Nachrichten, indem die jeweilige Methode des Game-Moduls aufgerufen wird. letzteres wird durch das Modul implementiert.
 
+Diagramm AbstractClient
 Diagramm ClientInbox
 
 \subsubsection{Game-Modul}
@@ -87,12 +89,4 @@ Die Game-Schnittstelle definiert, welche Funktionalität die App bieten muss und
 Diagramm IGame
 
 \subsection{HTML-Client}
-Beim HTML-Client beschränkt sich die Kommunikation mit dem Server auf HTTP-Anfragen. Je nachdem, auf welche Adresse zugegriffen wird, werden intern Methoden ausgeführt, um die benötigten Daten darzustellen. Im folgenden sollen deshalb den möglichen Pfaden Methoden zugeordnet werden.
-
-\begin{table}[h]
-    \begin{tabular}{|l|l|l|l|}
-    \hline Pfad & Methode & Request & Parameter\\ 
-    \hline /login & ~ & POST & name, password\\ 
-    	\hline
-    \end{tabular}
-\end{table}
+Beim HTML-Client beschränkt sich die Kommunikation mit dem Server auf HTTP-Anfragen. Je nachdem, auf welche Adresse zugegriffen wird, werden intern Methoden ausgeführt, um die benötigten Daten darzustellen. 
