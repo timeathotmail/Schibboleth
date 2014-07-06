@@ -8,6 +8,11 @@ import com.mygdx.game.QuizGame;
 import common.net.NetUtils;
 import common.net.requests.*;
 
+/**
+ * 
+ * 
+ * @author Tim Wiechers
+ */
 public class Client {
 	private Socket serverSocket;
 	

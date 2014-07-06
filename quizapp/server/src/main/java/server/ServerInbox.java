@@ -10,17 +10,40 @@ import common.net.requests.LogoutRequest;
 import common.net.responses.AuthResponse;
 import common.net.responses.UserListChangedResponse;
 
-public class ServerInbox extends AbstractServerInbox {
+public class ServerInbox implements Runnable {
+	private final Socket client;
+	private final ServerDirectory serverDir;
 	private final IPersistence persistence;
 
-	public ServerInbox(Socket client, ServerDirectory serverDir,
-			IPersistence persistence) {
-		super(client, serverDir);
+	protected ServerInbox(final Socket client, ServerDirectory serverDir, IPersistence persistence) {
+		this.client = client;
+		this.serverDir = serverDir;
 		this.persistence = persistence;
 	}
 
-	@Override
-	protected void process(Socket client, AuthRequest obj) {
+	public void run() {
+		try {
+			while (true) {
+				String json = NetUtils.read(client);
+				AuthRequest obj = NetUtils.fromJson(json, AuthRequest.class);
+				if (obj != null) {
+					process(client, obj);
+				}
+
+				LogoutRequest obj2 = NetUtils.fromJson(json,
+						LogoutRequest.class);
+				if (obj2 != null) {
+					process(client, obj2);
+				}
+
+				// TODO: rest
+			}
+		} catch (RuntimeException e) {
+			serverDir.RemoveClient(client);
+		}
+	}
+
+	private void process(Socket client, AuthRequest obj) {
 		// login or register user
 		User user;
 		if (obj.wantsToRegister()) {
@@ -45,8 +68,7 @@ public class ServerInbox extends AbstractServerInbox {
 		}
 	}
 
-	@Override
-	protected void process(Socket client, LogoutRequest obj) {
+	private void process(Socket client, LogoutRequest obj) {
 		serverDir.RemoveClient(client);
 		// TODO remove open challenges
 		// TODO inform other clients
