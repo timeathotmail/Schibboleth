@@ -8,7 +8,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
  * @author Tim Wiechers
  */
 @JsonTypeInfo(use = JsonTypeInfo.Id.MINIMAL_CLASS, include = JsonTypeInfo.As.PROPERTY)
-public class AuthRequest {
+public class UserAuthRequest {
 	/**
 	 * The user's nickname.
 	 */
@@ -26,7 +26,7 @@ public class AuthRequest {
 	 * Constructor for JSON deserialization.
 	 */
 	@Deprecated
-	public AuthRequest() {
+	public UserAuthRequest() {
 	}
 
 	/**
@@ -35,7 +35,7 @@ public class AuthRequest {
 	 * @param password the user's password
 	 * @param register true if the user wants to register
 	 */
-	public AuthRequest(String username, String password, boolean register) {
+	public UserAuthRequest(String username, String password, boolean register) {
 		this.username = username;
 		this.password = password;
 		this.register = register;
