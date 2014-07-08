@@ -38,6 +38,16 @@ public class Match {
 	 * Creates an instance.
 	 * @param user1 first player
 	 * @param user2 second player
+	 */
+	public Match(User user1, User user2) {
+		this.user1 = user1;
+		this.user2 = user2;
+	}
+	
+	/**
+	 * Creates an instance.
+	 * @param user1 first player
+	 * @param user2 second player
 	 * @param points1 first player's points
 	 * @param points2 second player's points
 	 */

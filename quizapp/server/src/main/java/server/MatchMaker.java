@@ -1,31 +1,41 @@
 package server;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.net.Socket;
 
-import server.persistence.IPersistence;
 import common.entities.User;
+import common.net.NetUtils;
+import common.net.responses.MatchCreatedResponse;
+import common.net.responses.MatchSearchCancelledResponse;
 
-public class MatchMaker implements Runnable {
-	/**
-	 * Users searching for a quick match.
-	 */
-	private final List<User> searchingUsers = new ArrayList<User>();
+public class MatchMaker {
+	private Socket waitingClient;
+	private User waitingUser;
+	private int waitingRevision;
 
-	@Override
-	public void run() {
-		while (true) {
-			// TODO take 2 users out of the list, connect
+	public synchronized void addUserToSearch(Socket client, User user,
+			int revision) {
+		if (waitingUser == null) {
+			// wait
+			waitingUser = user;
+			waitingClient = client;
+			waitingRevision = revision;
+		} else {
+			// assert that both clients have the question locally avaiable
+			boolean sendQuestions = waitingRevision <= revision;
+
+			// connect
+			NetUtils.send(waitingClient, new MatchCreatedResponse(user,
+					sendQuestions));
+			NetUtils.send(client, new MatchCreatedResponse(waitingUser,
+					!sendQuestions));
+
+			// clear spot
+			waitingUser = null;
 		}
 	}
 
-	public void addUserToSearch(User user) {
-		searchingUsers.add(user);
-	}
-	
-	public void removeUserFromSearch(User user) {
-		searchingUsers.remove(user);
+	public synchronized void removeUserFromSearch() {
+		NetUtils.send(waitingClient, new MatchSearchCancelledResponse());
+		waitingClient = null;
 	}
 }

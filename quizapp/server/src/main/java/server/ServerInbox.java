@@ -13,6 +13,7 @@ import common.net.responses.*;
  * 
  * @author Tim Wiechers
  */
+// TODO: MatchStartRequest -> serverDir.startMatch
 public class ServerInbox implements Runnable {
 	/**
 	 * Client's socket.
@@ -26,7 +27,7 @@ public class ServerInbox implements Runnable {
 	 * Database access.
 	 */
 	private final IPersistence persistence;
-	
+
 	private final MatchMaker matchMaker;
 
 	/**
@@ -47,6 +48,13 @@ public class ServerInbox implements Runnable {
 		this.matchMaker = matchMaker;
 	}
 
+	// =====================================================================
+
+	/**
+	 * TODO
+	 * 
+	 * @param req
+	 */
 	private void process(UserAuthRequest req) {
 		// login or register user
 		User user;
@@ -66,12 +74,17 @@ public class ServerInbox implements Runnable {
 			NetUtils.send(serverDir.getActiveSockets(),
 					new UserListChangedResponse(true, user));
 			// connect username and socket in the server directory
-			serverDir.idClient(client, user);
+			serverDir.idClient(client, user, req.getRevision());
 		} else {
 			NetUtils.send(client, new AuthResponse(false, null));
 		}
 	}
 
+	/**
+	 * TODO
+	 * 
+	 * @param req
+	 */
 	private void process(UserLogoutRequest req) {
 		User disconnectedUser = serverDir.getUser(client);
 		serverDir.removeClient(client);
@@ -79,46 +92,93 @@ public class ServerInbox implements Runnable {
 				new UserListChangedResponse(false, disconnectedUser));
 	}
 
+	/**
+	 * TODO
+	 * 
+	 * @param req
+	 */
 	private void process(UserDataChangeRequest req) {
-		persistence.changeUserCredentials(req.getNewUsername(), 
+		persistence.changeUserCredentials(req.getNewUsername(),
 				req.getNewPassword(), req.getNewPasswordConfirm());
 		// TODO send error if not successful
 	}
 
+	/**
+	 * TODO
+	 * 
+	 * @param req
+	 */
 	private void process(MatchSearchStartRequest req) {
-		matchMaker.addUserToSearch(serverDir.getUser(client));
+		matchMaker.addUserToSearch(client, serverDir.getUser(client),
+				serverDir.getRevision(client));
 	}
 
+	/**
+	 * TODO
+	 * 
+	 * @param req
+	 */
 	private void process(MatchSearchCancelRequest req) {
-		matchMaker.removeUserFromSearch(serverDir.getUser(client));
+		matchMaker.removeUserFromSearch();
 	}
 
+	/**
+	 * TODO
+	 * 
+	 * @param req
+	 */
 	private void process(ChallengeSendRequest req) {
-		serverDir.addChallenge(client, req.getOpponent());
+		// serverDir.addChallenge(client, req.getOpponent());
 		// TODO inform other client about challenge
 		// TODO send error & delete challenge if not successful
 	}
 
+	/**
+	 * TODO
+	 * 
+	 * @param req
+	 */
 	private void process(ChallengeAcceptRequest req) {
-		serverDir.startMatch(req.getOpponent(), req.getQuestionId());
-		// TODO inform other client about challenge acceptance, send him first question
+		// serverDir.startMatch(req.getOpponent(), req.getQuestionId());
+		// TODO inform other client about challenge acceptance, send him first
+		// question
 	}
 
+	/**
+	 * TODO
+	 * 
+	 * @param req
+	 */
 	private void process(ChallengeDenyRequest req) {
-		serverDir.removeChallenge(req.getOpponent());
+		// serverDir.removeChallenge(req.getOpponent());
 		// TODO inform other client about challenge denial
 	}
 
+	/**
+	 * TODO
+	 * 
+	 * @param req
+	 */
 	private void process(GetRankingsRequest req) {
 		// TODO send rankings
 	}
 
+	/**
+	 * TODO
+	 * 
+	 * @param req
+	 */
 	private void process(AnswerSubmitRequest req) {
-		serverDir.saveAnswer(client, req.getIndex(), req.getNextQuestionId());
+		serverDir.saveAnswer(client, req.getIndex());
 		// TODO send answer (and next question id if first player) to the
 		// opponent
 	}
 
+	/**
+	 * TODO
+	 * 
+	 * @param req
+	 */
 	private void process(MatchLeaveRequest req) {
 		serverDir.endMatch(client);
 		// TODO inform opponent that the other user left

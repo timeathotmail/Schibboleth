@@ -38,6 +38,10 @@ public class Question {
 	 */
 	private String answer4;
 	/**
+	 * Correct answer's index.
+	 */
+	private int correctIndex;
+	/**
 	 * The question's category.
 	 */
 	private Category category;
@@ -56,15 +60,17 @@ public class Question {
 	 * @param answer2 second answer
 	 * @param answer3 third answer
 	 * @param answer4 fourth answer
+	 * @param correctIndex the question's category
 	 * @param category the question's category
 	 */
 	public Question(String text, String answer1, String answer2,
-			String answer3, String answer4, Category category) {
+			String answer3, String answer4, int correctIndex, Category category) {
 		this.text = text;
 		this.answer1 = answer1;
 		this.answer2 = answer2;
 		this.answer3 = answer3;
 		this.answer4 = answer4;
+		this.correctIndex = correctIndex;
 		this.category = category;
 	}
 
@@ -124,6 +130,14 @@ public class Question {
 
 	public void setCategory(Category category) {
 		this.category = category;
+	}
+
+	public int getCorrectIndex() {
+		return correctIndex;
+	}
+
+	public void setCorrectIndex(int correctIndex) {
+		this.correctIndex = correctIndex;
 	}
 
 }

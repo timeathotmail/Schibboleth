@@ -6,6 +6,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import server.persistence.Data;
+import server.persistence.IPersistence;
 import common.net.NetUtils;
 
 /**
@@ -19,6 +20,8 @@ public class Server {
 	 */
 	private static final Logger logger = Logger.getLogger("Server");
 
+	private static final IPersistence persistence = Data.getInstance();
+
 	/**
 	 * Initiiates a thread running a server directory.
 	 * 
@@ -27,10 +30,8 @@ public class Server {
 	 */
 	public static void main(String[] args) {
 		try {
-			MatchMaker m = new MatchMaker();
-			new Thread(m).start();
-			new Thread(new ServerDirectory(new ServerSocket(NetUtils.PORT), m,
-					Data.getInstance())).start();
+			new Thread(new ServerDirectory(new ServerSocket(NetUtils.PORT),
+					persistence)).start();
 		} catch (IOException e) {
 			logger.log(Level.SEVERE, "error creating server socket", e);
 		}

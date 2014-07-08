@@ -22,6 +22,8 @@ public class UserAuthRequest {
 	 */
 	private boolean register;
 
+	private int revision;
+
 	/**
 	 * Constructor for JSON deserialization.
 	 */
@@ -31,16 +33,22 @@ public class UserAuthRequest {
 
 	/**
 	 * Creates an instance.
-	 * @param username the user's name
-	 * @param password the user's password
-	 * @param register true if the user wants to register
+	 * 
+	 * @param username
+	 *            the user's name
+	 * @param password
+	 *            the user's password
+	 * @param register
+	 *            true if the user wants to register
 	 */
-	public UserAuthRequest(String username, String password, boolean register) {
+	public UserAuthRequest(String username, String password, boolean register,
+			int revision) {
 		this.username = username;
 		this.password = password;
 		this.register = register;
+		this.revision = revision;
 	}
-	
+
 	// === getters ===
 	public String getUsername() {
 		return username;
@@ -52,5 +60,9 @@ public class UserAuthRequest {
 
 	public boolean wantsToRegister() {
 		return register;
+	}
+
+	public int getRevision() {
+		return revision;
 	}
 }

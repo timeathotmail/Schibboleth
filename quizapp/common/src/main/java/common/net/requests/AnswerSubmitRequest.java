@@ -14,10 +14,6 @@ public class AnswerSubmitRequest {
 	 */
 	private int index;
 	/**
-	 * The next question's id.
-	 */
-	private int nextQuestionId;
-	/**
 	 * Constructor for JSON deserialization.
 	 */
 	@Deprecated
@@ -27,20 +23,14 @@ public class AnswerSubmitRequest {
 	/**
 	 * Creates an instance.
 	 * @param index the answer's index
-	 * @param nextQuestionId the next question's index
 	 */
-	public AnswerSubmitRequest(int index, int nextQuestionId) {
+	public AnswerSubmitRequest(int index) {
 		this.index = index;
-		this.nextQuestionId = nextQuestionId;
 	}
 
 	// === getters ===
 	
 	public int getIndex() {
 		return index;
-	}
-	
-	public int getNextQuestionId() {
-		return nextQuestionId;
 	}
 }

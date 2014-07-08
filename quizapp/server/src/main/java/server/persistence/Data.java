@@ -109,4 +109,10 @@ public class Data implements IPersistence {
 		// TODO Auto-generated method stub
 		return false;
 	}
+
+	@Override
+	public Question[] getQuestionsForGame(int[] ids) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

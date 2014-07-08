@@ -3,16 +3,14 @@ package server;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import server.persistence.Data;
 import server.persistence.IPersistence;
+import common.entities.Question;
 import common.entities.User;
 
 /**
@@ -20,7 +18,26 @@ import common.entities.User;
  * 
  * @author Tim Wiechers
  */
+// TODO: challenges
 public class ServerDirectory implements Runnable {
+	class MatchMap {
+		private final Map<User, MatchFactory> matches1 = new HashMap<User, MatchFactory>();
+		private final Map<User, MatchFactory> matches2 = new HashMap<User, MatchFactory>();
+
+		public void put(User user1, User user2, Question[] questions) {
+			MatchFactory factory = new MatchFactory(user1, user2, questions);
+			matches1.put(user1, factory);
+			matches2.put(user2, factory);
+		}
+
+		public MatchFactory get(User user) {
+			MatchFactory factory = matches1.get(user);
+			return factory != null ? factory : matches2.get(user);
+		}
+	}
+	
+	// =====================================================================
+
 	/**
 	 * Logger.
 	 */
@@ -37,18 +54,14 @@ public class ServerDirectory implements Runnable {
 	 * Mapping sockets to users.
 	 */
 	private final Map<Socket, User> clientIds = new HashMap<Socket, User>();
-	
-	/**
-	 * Unanswered challenges.
-	 */
-	private final Map<User, User> challenges = new HashMap<User, User>(); // TODO List<pair<user>>
 	/**
 	 * Running matches.
 	 */
-	private final Map<User, User> matches = new HashMap<User, User>(); // TODO Map<pair<user>, RunningMatch>
+	private final MatchMap matches = new MatchMap();
+	private final Map<Socket, Integer> clientRevisions = new HashMap<Socket, Integer>();
 
 	private final IPersistence persistence;
-	private final MatchMaker matchMaker;
+	private final MatchMaker matchMaker = new MatchMaker();
 
 	/**
 	 * Creates an instance
@@ -56,12 +69,12 @@ public class ServerDirectory implements Runnable {
 	 * @param socket
 	 *            server's socket
 	 */
-	public ServerDirectory(ServerSocket socket, MatchMaker matchMaker,
-			IPersistence persistence) {
+	public ServerDirectory(ServerSocket socket, IPersistence persistence) {
 		this.socket = socket;
-		this.matchMaker = matchMaker;
 		this.persistence = persistence;
 	}
+	
+	// =====================================================================
 
 	/**
 	 * Listens for socket connections, stores them and initiiates threads
@@ -83,21 +96,34 @@ public class ServerDirectory implements Runnable {
 		}
 	}
 
+	// =====================================================================
+	
+	/**
+	 * Maps a user to a client socket.
+	 * 
+	 * @param client
+	 *            the client
+	 * @param user
+	 *            the identity of the client
+	 */
+	public synchronized void idClient(Socket client, User user, int revision) {
+		clientIds.put(client, user);
+		clientRevisions.put(client, revision);
+		logger.log(Level.INFO, client + " is " + user.getName());
+	}
+	
 	/**
 	 * Removes a client from the directory.
 	 * 
 	 * @param client
 	 *            the client to remove
 	 */
-	public void removeClient(Socket client) {
+	public synchronized void removeClient(Socket client) {
+		endMatch(client);
 		clients.get(client).interrupt();
 		clients.remove(client);
 		clientIds.remove(client);
-		User user = clientIds.get(client);
-		challenges.remove(user);
-		while (challenges.values().remove(user))
-			;
-		endMatch(client);
+		clientRevisions.remove(client);
 
 		try {
 			client.close();
@@ -109,56 +135,43 @@ public class ServerDirectory implements Runnable {
 		logger.log(Level.INFO, client + " disconnected");
 	}
 
-	/**
-	 * Maps a user to a client socket.
-	 * 
-	 * @param client
-	 *            the client
-	 * @param user
-	 *            the identity of the client
-	 */
-	public void idClient(Socket client, User user) {
-		clientIds.put(client, user);
-		logger.log(Level.INFO, client + " is " + user.getName());
-	}
-
-	/**
-	 * @return active users
-	 */
-	public Collection<User> getActiveUsers() {
+	public synchronized Collection<User> getActiveUsers() {
 		return clientIds.values();
 	}
 
-	/**
-	 * @return active sockets
-	 */
-	public Collection<Socket> getActiveSockets() {
+	public synchronized Collection<Socket> getActiveSockets() {
 		return clientIds.keySet();
 	}
 
 	public User getUser(Socket client) {
 		return clientIds.get(client);
 	}
-	
-	public void addChallenge(Socket client, String challengedUser) {
-		// TODO
+
+	public int getRevision(Socket client) {
+		return clientRevisions.get(client);
 	}
-	
-	public void startMatch(String challengingUser, int questionId) {
-		// TODO
+
+	// =====================================================================
+
+	public void startMatch(Socket client, String challengingUser,
+			int[] questionIds) {
+		matches.put(clientIds.get(client),
+				persistence.getUser(challengingUser),
+				persistence.getQuestionsForGame(questionIds));
 	}
-	
-	public void removeChallenge(String challengingUser) {
-		// TODO
-	}
-	
-	public void saveAnswer(Socket client, int answerIndex, int nextQuestionId) {
-		// TODO check if id == 0
-		// TODO if last question save match in persistence, update user
-		// statistics
+
+	public void saveAnswer(Socket client, int answerIndex) {
+		User user = clientIds.get(client);
+		MatchFactory factory = matches.get(user);
+		if (factory.addAnswer(user, answerIndex)) {
+			persistence.saveMatch(factory.getMatch());
+		}
 	}
 
 	public void endMatch(Socket client) {
-		// TODO leaving client loses, save match in persistence
+		User user = clientIds.get(client);
+		MatchFactory factory = matches.get(user);
+		factory.forfeit(user);
+		persistence.saveMatch(factory.getMatch());
 	}
 }

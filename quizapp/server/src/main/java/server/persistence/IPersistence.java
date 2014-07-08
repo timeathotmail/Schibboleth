@@ -88,6 +88,8 @@ public interface IPersistence {
 	 */
 	List<Question> getQuestions();
 	
+	Question[] getQuestionsForGame(int[] ids);
+	
 	/**
 	 * Saves the result of a match in the database.
 	 * @param match match to save
