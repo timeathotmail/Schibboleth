@@ -26,6 +26,8 @@ public class ServerInbox implements Runnable {
 	 * Database access.
 	 */
 	private final IPersistence persistence;
+	
+	private final MatchMaker matchMaker;
 
 	/**
 	 * Creates an instance.
@@ -38,10 +40,11 @@ public class ServerInbox implements Runnable {
 	 *            persistence instance
 	 */
 	public ServerInbox(final Socket client, ServerDirectory serverDir,
-			IPersistence persistence) {
+			IPersistence persistence, MatchMaker matchMaker) {
 		this.client = client;
 		this.serverDir = serverDir;
 		this.persistence = persistence;
+		this.matchMaker = matchMaker;
 	}
 
 	private void process(UserAuthRequest req) {
@@ -70,41 +73,40 @@ public class ServerInbox implements Runnable {
 	}
 
 	private void process(UserLogoutRequest req) {
+		User disconnectedUser = serverDir.getUser(client);
 		serverDir.removeClient(client);
-		// TODO remove open challenges
-		// TODO inform other clients
+		NetUtils.send(serverDir.getActiveSockets(),
+				new UserListChangedResponse(false, disconnectedUser));
 	}
 
 	private void process(UserDataChangeRequest req) {
-		// TODO update user in persistence
-		// TODO inform client whether successful or not
+		persistence.changeUserCredentials(req.getNewUsername(), 
+				req.getNewPassword(), req.getNewPasswordConfirm());
+		// TODO send error if not successful
 	}
 
 	private void process(MatchSearchStartRequest req) {
-		// TODO add user to play queue in server directory
-		// TODO inform client whether successful or not
+		matchMaker.addUserToSearch(serverDir.getUser(client));
 	}
 
 	private void process(MatchSearchCancelRequest req) {
-		// TODO remove user from play queue in server directory
-		// TODO inform client whether successful or not
+		matchMaker.removeUserFromSearch(serverDir.getUser(client));
 	}
 
 	private void process(ChallengeSendRequest req) {
+		serverDir.addChallenge(client, req.getOpponent());
 		// TODO inform other client about challenge
-		// TODO save challenge in server directory
-		// TODO inform client whether successful or not
+		// TODO send error & delete challenge if not successful
 	}
 
 	private void process(ChallengeAcceptRequest req) {
+		serverDir.startMatch(req.getOpponent(), req.getQuestionId());
 		// TODO inform other client about challenge acceptance, send him first question
-		// TODO remove challenge in server directory
-		// TODO create match in server directory
 	}
 
 	private void process(ChallengeDenyRequest req) {
+		serverDir.removeChallenge(req.getOpponent());
 		// TODO inform other client about challenge denial
-		// TODO remove challenge in server directory
 	}
 
 	private void process(GetRankingsRequest req) {
@@ -112,16 +114,16 @@ public class ServerInbox implements Runnable {
 	}
 
 	private void process(AnswerSubmitRequest req) {
-		// TODO update match points in server directory
-		// TODO send answer (and next question id if first player) to the opponent
-		// TODO if last question save match in persistence, update user statistics
+		serverDir.saveAnswer(client, req.getIndex(), req.getNextQuestionId());
+		// TODO send answer (and next question id if first player) to the
+		// opponent
 	}
 
 	private void process(MatchLeaveRequest req) {
-		// TODO save match in persistence, update user statistics
+		serverDir.endMatch(client);
 		// TODO inform opponent that the other user left
 	}
-	
+
 	/**
 	 * Waits for a client message, then tries to map and process it.
 	 */

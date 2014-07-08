@@ -102,4 +102,11 @@ public class Data implements IPersistence {
 		// TODO Auto-generated method stub
 		return false;
 	}
+
+	@Override
+	public boolean changeUserCredentials(String username, String password,
+			String confirmation) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }

@@ -26,6 +26,8 @@ public interface IPersistence {
 	 */
 	User registerUser(String username, String password);
 	
+	boolean changeUserCredentials(String username, String password, String confirmation);
+	
 	/**
 	 * Updates a user's data based on his ID.
 	 * @param user user to update

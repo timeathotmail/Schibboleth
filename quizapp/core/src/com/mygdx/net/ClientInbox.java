@@ -21,17 +21,20 @@ public class ClientInbox implements Runnable {
 	 * Client's game instance.
 	 */
 	private final IGame game;
-	
+
 	/**
 	 * Creates an instance.
-	 * @param game client's game instance
-	 * @param serverSocket server socket
+	 * 
+	 * @param game
+	 *            client's game instance
+	 * @param serverSocket
+	 *            server socket
 	 */
 	public ClientInbox(IGame game, Socket serverSocket) {
 		this.game = game;
 		this.serverSocket = serverSocket;
 	}
-	
+
 	/**
 	 * Waits for a server message, then tries to map and process it.
 	 */
@@ -40,22 +43,28 @@ public class ClientInbox implements Runnable {
 		try {
 			while (true) {
 				String json = NetUtils.read(serverSocket);
-				
-				// === case 1: AuthResponse ===
-				AuthResponse obj = NetUtils.fromJson(json, AuthResponse.class);
-				if(obj != null) {
-					game.onLogin(obj.isSuccess(), obj.getUsers());
-					return;
+
+				// Matching...
+				{ // ============================================================
+					AuthResponse obj = NetUtils.fromJson(json,
+							AuthResponse.class);
+					if (obj != null) {
+						game.onLogin(obj.isSuccess(), obj.getUsers());
+						continue;
+					}
 				}
-				
-				// === case 2: UserListChangedResponse ===
-				UserListChangedResponse obj2 = NetUtils.fromJson(json, UserListChangedResponse.class);
-				if(obj2 != null) {
-					game.onUserListChanged(obj2.hasConnected(), obj2.getUser());
-					return;
+
+				{ // ============================================================
+					UserListChangedResponse obj = NetUtils.fromJson(json,
+							UserListChangedResponse.class);
+					if (obj != null) {
+						game.onUserListChanged(obj.hasConnected(),
+								obj.getUser());
+						continue;
+					}
 				}
-				
-				//TODO: rest
+
+				// TODO: rest
 			}
 		} catch (RuntimeException e) {
 			game.onConnectionLost();
