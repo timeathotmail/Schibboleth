@@ -28,8 +28,10 @@ public class ServerInbox implements Runnable {
 	 */
 	private final IPersistence persistence;
 
-	private final MatchMaker matchMaker = new MatchMaker();
-
+	private Socket waitingClient;
+	private User waitingUser;
+	private int waitingRevision;
+	
 	/**
 	 * Creates an instance.
 	 * 
@@ -108,9 +110,28 @@ public class ServerInbox implements Runnable {
 	 * 
 	 * @param req
 	 */
-	private void process(MatchSearchStartRequest req) {
-		matchMaker.addUserToSearch(client, serverDir.getUser(client),
-				serverDir.getRevision(client));
+	private synchronized void process(MatchSearchStartRequest req) {
+		User user = serverDir.getUser(client);
+		int revision = serverDir.getRevision(client);
+		
+		if (waitingUser == null) {
+			// wait
+			waitingUser = user;
+			waitingClient = client;
+			waitingRevision = revision;
+		} else {
+			// assert that both clients have the question locally available
+			boolean sendQuestions = waitingRevision <= revision;
+
+			// connect
+			NetUtils.send(waitingClient, new MatchCreatedResponse(user,
+					sendQuestions));
+			NetUtils.send(client, new MatchCreatedResponse(waitingUser,
+					!sendQuestions));
+
+			// clear spot
+			waitingUser = null;
+		}
 	}
 
 	/**
@@ -118,8 +139,9 @@ public class ServerInbox implements Runnable {
 	 * 
 	 * @param req
 	 */
-	private void process(MatchSearchCancelRequest req) {
-		matchMaker.removeUserFromSearch();
+	private synchronized void process(MatchSearchCancelRequest req) {
+		NetUtils.send(waitingClient, new MatchSearchCancelledResponse());
+		waitingClient = null;
 	}
 
 	/**

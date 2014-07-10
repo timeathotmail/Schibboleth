@@ -41,9 +41,12 @@ public class NetUtils {
 
 	/**
 	 * Waits for an incoming message and returns it.
-	 * @param socket the monitored socket
+	 * 
+	 * @param socket
+	 *            the monitored socket
 	 * @return the received message
-	 * @throws RuntimeException in case the socket was closed
+	 * @throws RuntimeException
+	 *             in case the socket was closed
 	 */
 	public static String read(Socket socket) throws RuntimeException {
 		char[] buffer = new char[MSG_LENGTH];
@@ -66,10 +69,14 @@ public class NetUtils {
 
 	/**
 	 * Receives an object, serializes it as JSON and sends it to a socket.
-	 * @param socket the socket to receive the message
-	 * @param obj the object to send
+	 * 
+	 * @param socket
+	 *            the socket to receive the message
+	 * @param obj
+	 *            the object to send
 	 * @return true if the message was sent
-	 * @throws RuntimeException in case the message was too long
+	 * @throws RuntimeException
+	 *             in case the message was too long
 	 */
 	public static boolean send(Socket socket, Object obj)
 			throws RuntimeException {
@@ -80,7 +87,8 @@ public class NetUtils {
 
 			if (json.length() > MSG_LENGTH)
 				throw new RuntimeException(
-						"message too long for server's read-buffer ("+MSG_LENGTH+")");
+						"message too long for server's read-buffer ("
+								+ MSG_LENGTH + ")");
 
 			printWriter.print(json);
 			printWriter.flush();
@@ -94,8 +102,11 @@ public class NetUtils {
 
 	/**
 	 * Sends an object to multiple sockets.
-	 * @param sockets the receiving sockets
-	 * @param obj the object to send
+	 * 
+	 * @param sockets
+	 *            the receiving sockets
+	 * @param obj
+	 *            the object to send
 	 */
 	public static void send(Collection<Socket> sockets, Object obj) {
 		for (Socket socket : sockets) {
@@ -105,15 +116,22 @@ public class NetUtils {
 
 	/**
 	 * Tries to map a JSON string to an instance of a class.
-	 * @param json the JSON string to map
-	 * @param classOf the class to map to
+	 * 
+	 * @param json
+	 *            the JSON string to map
+	 * @param classOf
+	 *            the class to map to
 	 * @return the object if successful, else null
 	 */
 	public static <T> T fromJson(String json, Class<T> classOf) {
 		try {
 			return mapper.readValue(json, classOf);
+		} catch (IllegalArgumentException e) {
+			// doesn't match with provided class
 		} catch (Exception e) {
-			return null;
+			logger.log(Level.SEVERE, "unexpected error parsing json", e);
 		}
+
+		return null;
 	}
 }
