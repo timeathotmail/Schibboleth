@@ -89,7 +89,8 @@ public interface IPersistence {
 	 */
 	List<Question> getQuestions();
 	
-	Question[] getQuestionsForGame(int[] ids);
+	List<Integer> getQuestionIds(int revision);
+	List<Question> getQuestionsForGame(List<Integer> ids);
 	
 	/**
 	 * Saves the result of a match in the database.

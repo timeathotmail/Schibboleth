@@ -1,9 +1,11 @@
-package server;
+package server.net;
 
 import java.net.Socket;
+import java.util.List;
 
+import server.ServerDirectory;
 import server.persistence.IPersistence;
-import common.entities.User;
+import common.entities.*;
 import common.net.NetUtils;
 import common.net.requests.*;
 import common.net.responses.*;
@@ -15,6 +17,46 @@ import common.net.responses.*;
  */
 // TODO: MatchStartRequest -> serverDir.startMatch
 public class ServerInbox implements Runnable {
+	
+	private static Socket waitingClient;
+	private static User waitingUser;
+	private static int waitingRevision;
+
+	public static synchronized void process(MatchSearchStartRequest req,
+			Socket client) {
+		User user = serverDir.getUser(client);
+		int revision = serverDir.getRevision(client);
+
+		if (waitingUser == null) {
+			// wait
+			waitingUser = user;
+			waitingClient = client;
+			waitingRevision = revision;
+		} else {
+			// assert that both clients have the question locally available
+			List<Integer> questionIds = persistence.getQuestionIds(Math.max(
+					waitingRevision, revision));
+
+			// connect
+			NetUtils.send(waitingClient, new MatchCreatedResponse(user,
+					questionIds));
+			NetUtils.send(client, new MatchCreatedResponse(waitingUser,
+					questionIds));
+			serverDir.startMatch(client, waitingClient, user, waitingUser,
+					questionIds);
+
+			// clear spot
+			waitingUser = null;
+		}
+	}
+
+	public static synchronized void process(MatchSearchCancelRequest req) {
+		NetUtils.send(waitingClient, new MatchSearchCancelledResponse());
+		waitingClient = null;
+	}
+
+	// =====================================================================
+
 	/**
 	 * Client's socket.
 	 */
@@ -22,16 +64,12 @@ public class ServerInbox implements Runnable {
 	/**
 	 * Server's directory.
 	 */
-	private final ServerDirectory serverDir;
+	private static ServerDirectory serverDir;
 	/**
 	 * Database access.
 	 */
-	private final IPersistence persistence;
+	private static IPersistence persistence;
 
-	private Socket waitingClient;
-	private User waitingUser;
-	private int waitingRevision;
-	
 	/**
 	 * Creates an instance.
 	 * 
@@ -42,11 +80,16 @@ public class ServerInbox implements Runnable {
 	 * @param persistence
 	 *            persistence instance
 	 */
-	public ServerInbox(final Socket client, ServerDirectory serverDir,
-			IPersistence persistence) {
+	public ServerInbox(final Socket client, ServerDirectory _serverDir,
+			IPersistence _persistence) {
 		this.client = client;
-		this.serverDir = serverDir;
-		this.persistence = persistence;
+
+		if (serverDir == null) {
+			serverDir = _serverDir;
+		}
+		if (persistence == null) {
+			persistence = _persistence;
+		}
 	}
 
 	// =====================================================================
@@ -110,45 +153,6 @@ public class ServerInbox implements Runnable {
 	 * 
 	 * @param req
 	 */
-	private synchronized void process(MatchSearchStartRequest req) {
-		User user = serverDir.getUser(client);
-		int revision = serverDir.getRevision(client);
-		
-		if (waitingUser == null) {
-			// wait
-			waitingUser = user;
-			waitingClient = client;
-			waitingRevision = revision;
-		} else {
-			// assert that both clients have the question locally available
-			boolean sendQuestions = waitingRevision <= revision;
-
-			// connect
-			NetUtils.send(waitingClient, new MatchCreatedResponse(user,
-					sendQuestions));
-			NetUtils.send(client, new MatchCreatedResponse(waitingUser,
-					!sendQuestions));
-
-			// clear spot
-			waitingUser = null;
-		}
-	}
-
-	/**
-	 * TODO
-	 * 
-	 * @param req
-	 */
-	private synchronized void process(MatchSearchCancelRequest req) {
-		NetUtils.send(waitingClient, new MatchSearchCancelledResponse());
-		waitingClient = null;
-	}
-
-	/**
-	 * TODO
-	 * 
-	 * @param req
-	 */
 	private void process(ChallengeSendRequest req) {
 		// serverDir.addChallenge(client, req.getOpponent());
 		// TODO inform other client about challenge
@@ -192,8 +196,8 @@ public class ServerInbox implements Runnable {
 	 */
 	private void process(AnswerSubmitRequest req) {
 		serverDir.saveAnswer(client, req.getIndex());
-		// TODO send answer (and next question id if first player) to the
-		// opponent
+		NetUtils.send(serverDir.getOpponent(client),
+				new OpponentAnswerResponse(req.getIndex()));
 	}
 
 	/**
@@ -246,7 +250,7 @@ public class ServerInbox implements Runnable {
 					MatchSearchStartRequest obj = NetUtils.fromJson(json,
 							MatchSearchStartRequest.class);
 					if (obj != null) {
-						process(obj);
+						process(obj, client);
 						continue;
 					}
 				}

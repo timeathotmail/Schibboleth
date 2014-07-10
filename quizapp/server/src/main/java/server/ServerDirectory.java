@@ -5,10 +5,12 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import server.net.ServerInbox;
 import server.persistence.IPersistence;
 import common.entities.Match;
 import common.entities.Question;
@@ -29,16 +31,26 @@ public class ServerDirectory implements Runnable {
 	class MatchMap {
 		private final Map<User, MatchFactory> matches1 = new HashMap<User, MatchFactory>();
 		private final Map<User, MatchFactory> matches2 = new HashMap<User, MatchFactory>();
+		private final Map<Socket, Socket> sockets1 = new HashMap<Socket, Socket>();
+		private final Map<Socket, Socket> sockets2 = new HashMap<Socket, Socket>();
 
-		public void put(User user1, User user2, Question[] questions) {
+		public void put(Socket client1, Socket client2, User user1, User user2,
+				List<Question> questions) {
 			MatchFactory factory = new MatchFactory(user1, user2, questions);
 			matches1.put(user1, factory);
 			matches2.put(user2, factory);
+			sockets1.put(client1, client2);
+			sockets2.put(client2, client1);
 		}
 
 		public MatchFactory get(User user) {
 			MatchFactory factory = matches1.get(user);
 			return factory != null ? factory : matches2.get(user);
+		}
+
+		public Socket getOpponent(Socket client) {
+			Socket opp = sockets1.get(client);
+			return opp != null ? opp : sockets2.get(client);
 		}
 
 		public void remove(User user1, User user2) {
@@ -52,7 +64,7 @@ public class ServerDirectory implements Runnable {
 	/**
 	 * Logger.
 	 */
-	private static final Logger logger = Logger.getLogger("ClientRegistration");
+	private static final Logger logger = Logger.getLogger("ServerDirectory");
 	/**
 	 * Persistence.
 	 */
@@ -165,12 +177,15 @@ public class ServerDirectory implements Runnable {
 		return clientRevisions.get(client);
 	}
 
+	public Socket getOpponent(Socket client) {
+		return matches.getOpponent(client);
+	}
+
 	// =====================================================================
 
-	public void startMatch(Socket client, String challengingUser,
-			int[] questionIds) {
-		matches.put(clientIds.get(client),
-				persistence.getUser(challengingUser),
+	public void startMatch(Socket client1, Socket client2, User user1,
+			User user2, List<Integer> questionIds) {
+		matches.put(client1, client2, user1, user2,
 				persistence.getQuestionsForGame(questionIds));
 	}
 
@@ -190,12 +205,17 @@ public class ServerDirectory implements Runnable {
 
 	public void endMatch(Socket client) {
 		User user = clientIds.get(client);
-		MatchFactory factory = matches.get(user);
+		if (user != null) {
 
-		factory.forfeit(user);
+			MatchFactory factory = matches.get(user);
+			if (factory != null) {
 
-		Match match = factory.getMatch();
-		persistence.saveMatch(match);
-		matches.remove(match.getUser1(), match.getUser2());
+				factory.forfeit(user);
+
+				Match match = factory.getMatch();
+				persistence.saveMatch(match);
+				matches.remove(match.getUser1(), match.getUser2());
+			}
+		}
 	}
 }

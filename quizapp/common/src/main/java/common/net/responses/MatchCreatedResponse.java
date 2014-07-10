@@ -1,13 +1,15 @@
 package common.net.responses;
 
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 import common.entities.User;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.MINIMAL_CLASS, include = JsonTypeInfo.As.PROPERTY)
 public class MatchCreatedResponse {
-	private boolean sendQuestions;
 	private User user;
+	private List<Integer> questionIds;
 
 	/**
 	 * Constructor for JSON deserialization.
@@ -16,21 +18,13 @@ public class MatchCreatedResponse {
 	public MatchCreatedResponse() {
 	}
 
-	/**
-	 * Creates an instance.
-	 * 
-	 * @param success
-	 *            true if the he registration and/or login was successful
-	 * @param users
-	 *            collection of other currently online users
-	 */
-	public MatchCreatedResponse(User user, boolean sendQuestions) {
-		this.sendQuestions = sendQuestions;
+	public MatchCreatedResponse(User user, List<Integer> questionIds) {
+		this.questionIds = questionIds;
 		this.user = user;
 	}
 
-	public boolean hasToSendQuestions() {
-		return sendQuestions;
+	public List<Integer> getQuestionIds() {
+		return questionIds;
 	}
 
 	public User getUser() {

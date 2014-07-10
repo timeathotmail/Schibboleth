@@ -187,7 +187,13 @@ public class Data implements IPersistence {
 	}
 
 	@Override
-	public Question[] getQuestionsForGame(int[] ids) {
+	public List<Integer> getQuestionIds(int revision) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<Question> getQuestionsForGame(List<Integer> ids) {
 		// TODO Auto-generated method stub
 		return null;
 	}
