@@ -10,6 +10,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import server.persistence.IPersistence;
+import common.entities.Match;
 import common.entities.Question;
 import common.entities.User;
 
@@ -20,6 +21,11 @@ import common.entities.User;
  */
 // TODO: challenges
 public class ServerDirectory implements Runnable {
+
+	/**
+	 * BiMap: both players in a match act as key for an instance of
+	 * MatchFactory.
+	 */
 	class MatchMap {
 		private final Map<User, MatchFactory> matches1 = new HashMap<User, MatchFactory>();
 		private final Map<User, MatchFactory> matches2 = new HashMap<User, MatchFactory>();
@@ -34,8 +40,13 @@ public class ServerDirectory implements Runnable {
 			MatchFactory factory = matches1.get(user);
 			return factory != null ? factory : matches2.get(user);
 		}
+
+		public void remove(User user1, User user2) {
+			matches1.remove(user1);
+			matches2.remove(user2);
+		}
 	}
-	
+
 	// =====================================================================
 
 	/**
@@ -43,28 +54,32 @@ public class ServerDirectory implements Runnable {
 	 */
 	private static final Logger logger = Logger.getLogger("ClientRegistration");
 	/**
+	 * Persistence.
+	 */
+	private final IPersistence persistence;
+	/**
 	 * Server's socket.
 	 */
 	private final ServerSocket socket;
 	/**
 	 * Mapping sockets and threads accepting messages on these sockets.
 	 */
-	private final Map<Socket, Thread> clients = new HashMap<Socket, Thread>();
+	private final Map<Socket, Thread> clientThreads = new HashMap<Socket, Thread>();
 	/**
 	 * Mapping sockets to users.
 	 */
 	private final Map<Socket, User> clientIds = new HashMap<Socket, User>();
 	/**
+	 * Mapping sockets to user's app revision.
+	 */
+	private final Map<Socket, Integer> clientRevisions = new HashMap<Socket, Integer>();
+	/**
 	 * Running matches.
 	 */
 	private final MatchMap matches = new MatchMap();
-	private final Map<Socket, Integer> clientRevisions = new HashMap<Socket, Integer>();
-
-	private final IPersistence persistence;
-	private final MatchMaker matchMaker = new MatchMaker();
 
 	/**
-	 * Creates an instance
+	 * Creates an instance.
 	 * 
 	 * @param socket
 	 *            server's socket
@@ -73,7 +88,7 @@ public class ServerDirectory implements Runnable {
 		this.socket = socket;
 		this.persistence = persistence;
 	}
-	
+
 	// =====================================================================
 
 	/**
@@ -84,11 +99,11 @@ public class ServerDirectory implements Runnable {
 	public void run() {
 		while (true) {
 			try {
-				final Socket client = socket.accept();
+				final Socket client = socket.accept(); // wait for new client
 				Thread thread = new Thread(new ServerInbox(client, this,
-						persistence, matchMaker));
+						persistence));
 				thread.start();
-				clients.put(client, thread);
+				clientThreads.put(client, thread);
 				logger.log(Level.INFO, client + " accepted");
 			} catch (IOException e) {
 				logger.log(Level.SEVERE, "error accepting client", e);
@@ -97,7 +112,7 @@ public class ServerDirectory implements Runnable {
 	}
 
 	// =====================================================================
-	
+
 	/**
 	 * Maps a user to a client socket.
 	 * 
@@ -111,7 +126,7 @@ public class ServerDirectory implements Runnable {
 		clientRevisions.put(client, revision);
 		logger.log(Level.INFO, client + " is " + user.getName());
 	}
-	
+
 	/**
 	 * Removes a client from the directory.
 	 * 
@@ -120,16 +135,15 @@ public class ServerDirectory implements Runnable {
 	 */
 	public synchronized void removeClient(Socket client) {
 		endMatch(client);
-		clients.get(client).interrupt();
-		clients.remove(client);
+		clientThreads.get(client).interrupt();
+		clientThreads.remove(client);
 		clientIds.remove(client);
 		clientRevisions.remove(client);
 
 		try {
 			client.close();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.log(Level.SEVERE, "error closing client socket", e);
 		}
 
 		logger.log(Level.INFO, client + " disconnected");
@@ -163,15 +177,25 @@ public class ServerDirectory implements Runnable {
 	public void saveAnswer(Socket client, int answerIndex) {
 		User user = clientIds.get(client);
 		MatchFactory factory = matches.get(user);
-		if (factory.addAnswer(user, answerIndex)) {
-			persistence.saveMatch(factory.getMatch());
+
+		factory.addAnswer(user, answerIndex);
+
+		if (factory.isFinished()) {
+			Match match = factory.getMatch();
+			persistence.saveMatch(match);
+			matches.remove(match.getUser1(), match.getUser2());
 		}
+
 	}
 
 	public void endMatch(Socket client) {
 		User user = clientIds.get(client);
 		MatchFactory factory = matches.get(user);
+
 		factory.forfeit(user);
-		persistence.saveMatch(factory.getMatch());
+
+		Match match = factory.getMatch();
+		persistence.saveMatch(match);
+		matches.remove(match.getUser1(), match.getUser2());
 	}
 }

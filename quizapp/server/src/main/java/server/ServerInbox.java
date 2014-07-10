@@ -28,7 +28,7 @@ public class ServerInbox implements Runnable {
 	 */
 	private final IPersistence persistence;
 
-	private final MatchMaker matchMaker;
+	private final MatchMaker matchMaker = new MatchMaker();
 
 	/**
 	 * Creates an instance.
@@ -41,11 +41,10 @@ public class ServerInbox implements Runnable {
 	 *            persistence instance
 	 */
 	public ServerInbox(final Socket client, ServerDirectory serverDir,
-			IPersistence persistence, MatchMaker matchMaker) {
+			IPersistence persistence) {
 		this.client = client;
 		this.serverDir = serverDir;
 		this.persistence = persistence;
-		this.matchMaker = matchMaker;
 	}
 
 	// =====================================================================
@@ -81,7 +80,8 @@ public class ServerInbox implements Runnable {
 	}
 
 	/**
-	 * TODO
+	 * Called when a user logged out: he will be deleted from the server
+	 * directory and online users' player list will be updated.
 	 * 
 	 * @param req
 	 */

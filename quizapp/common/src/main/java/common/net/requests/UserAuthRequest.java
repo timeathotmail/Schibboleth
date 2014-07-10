@@ -21,7 +21,9 @@ public class UserAuthRequest {
 	 * True if the user wants to register.
 	 */
 	private boolean register;
-
+	/**
+	 * User's app's revision.
+	 */
 	private int revision;
 
 	/**

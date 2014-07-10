@@ -17,7 +17,8 @@ public class MatchFactory {
 		this.questions = questions;
 	}
 
-	public synchronized boolean addAnswer(User user, int answerIndex) {
+	public synchronized void addAnswer(User user, int answerIndex) {
+		// add point if answer is correct
 		if (answerIndex == questions[q_index].getCorrectIndex()) {
 			if (user == match.getUser1()) {
 				match.setPoints1(match.getPoints1() + 1);
@@ -26,14 +27,14 @@ public class MatchFactory {
 			}
 		}
 
+		// next question after two answers
 		if ((_continue = !_continue)) {
 			q_index++;
 		}
-
-		return q_index == ROUND_COUNT;
 	}
 
 	public synchronized void forfeit(User user) {
+		// make the other user win
 		if (user == match.getUser1()) {
 			match.setPoints1(0);
 			match.setPoints2(Math.max(1, match.getPoints2()));
@@ -41,8 +42,14 @@ public class MatchFactory {
 			match.setPoints1(Math.max(1, match.getPoints2()));
 			match.setPoints2(0);
 		}
+		
+		q_index = ROUND_COUNT;
 	}
-
+	
+	public synchronized boolean isFinished() {
+		return q_index == ROUND_COUNT;
+	}
+	
 	public Match getMatch() {
 		return match;
 	}

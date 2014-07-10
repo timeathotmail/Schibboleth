@@ -10,6 +10,7 @@ import common.entities.*;
  * @author Tim Wiechers
  */
 public interface IPersistence {
+	
 	/**
 	 * Searches a user with given credentials.
 	 * @param username user's nickname

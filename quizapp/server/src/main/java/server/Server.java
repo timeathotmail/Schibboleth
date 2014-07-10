@@ -2,6 +2,7 @@ package server;
 
 import java.io.IOException;
 import java.net.ServerSocket;
+import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -19,8 +20,10 @@ public class Server {
 	 * Logger.
 	 */
 	private static final Logger logger = Logger.getLogger("Server");
-
-	private static final IPersistence persistence = Data.getInstance();
+	/**
+	 * Persistence.
+	 */
+	private static IPersistence persistence;
 
 	/**
 	 * Initiiates a thread running a server directory.
@@ -30,10 +33,13 @@ public class Server {
 	 */
 	public static void main(String[] args) {
 		try {
+			persistence = Data.getInstance();
 			new Thread(new ServerDirectory(new ServerSocket(NetUtils.PORT),
 					persistence)).start();
 		} catch (IOException e) {
 			logger.log(Level.SEVERE, "error creating server socket", e);
+		} catch (SQLException e) {
+			logger.log(Level.SEVERE, "error connecting to database", e);
 		}
 	}
 }

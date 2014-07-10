@@ -20,7 +20,7 @@ public class MatchMaker {
 			waitingClient = client;
 			waitingRevision = revision;
 		} else {
-			// assert that both clients have the question locally avaiable
+			// assert that both clients have the question locally available
 			boolean sendQuestions = waitingRevision <= revision;
 
 			// connect
