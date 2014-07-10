@@ -90,7 +90,7 @@ public interface IPersistence {
 	List<Question> getQuestions();
 	
 	List<Integer> getQuestionIds(int revision);
-	List<Question> getQuestionsForGame(List<Integer> ids);
+	List<Question> getQuestions(int revision);
 	
 	/**
 	 * Saves the result of a match in the database.

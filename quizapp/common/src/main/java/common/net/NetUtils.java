@@ -49,6 +49,10 @@ public class NetUtils {
 	 *             in case the socket was closed
 	 */
 	public static String read(Socket socket) throws RuntimeException {
+		if(socket == null) {
+			return "";
+		}
+		
 		char[] buffer = new char[MSG_LENGTH];
 		int charCount = -1;
 
@@ -80,6 +84,10 @@ public class NetUtils {
 	 */
 	public static boolean send(Socket socket, Object obj)
 			throws RuntimeException {
+		if(socket == null || obj == null) {
+			return false;
+		}
+		
 		try {
 			PrintWriter printWriter = new PrintWriter(new OutputStreamWriter(
 					socket.getOutputStream()));

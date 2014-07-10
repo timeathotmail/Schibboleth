@@ -21,7 +21,6 @@ import common.entities.User;
  * 
  * @author Tim Wiechers
  */
-// TODO: challenges
 public class ServerDirectory implements Runnable {
 
 	/**
@@ -60,7 +59,7 @@ public class ServerDirectory implements Runnable {
 	}
 
 	// =====================================================================
-
+	
 	/**
 	 * Logger.
 	 */
@@ -73,23 +72,7 @@ public class ServerDirectory implements Runnable {
 	 * Server's socket.
 	 */
 	private final ServerSocket socket;
-	/**
-	 * Mapping sockets and threads accepting messages on these sockets.
-	 */
-	private final Map<Socket, Thread> clientThreads = new HashMap<Socket, Thread>();
-	/**
-	 * Mapping sockets to users.
-	 */
-	private final Map<Socket, User> clientIds = new HashMap<Socket, User>();
-	/**
-	 * Mapping sockets to user's app revision.
-	 */
-	private final Map<Socket, Integer> clientRevisions = new HashMap<Socket, Integer>();
-	/**
-	 * Running matches.
-	 */
-	private final MatchMap matches = new MatchMap();
-
+	
 	/**
 	 * Creates an instance.
 	 * 
@@ -102,7 +85,34 @@ public class ServerDirectory implements Runnable {
 	}
 
 	// =====================================================================
+	// Mapping
+	// =====================================================================
 
+	/**
+	 * Mapping sockets and threads accepting messages on these sockets.
+	 */
+	private final Map<Socket, Thread> threads = new HashMap<Socket, Thread>();
+	/**
+	 * Mapping sockets to users.
+	 */
+	private final Map<Socket, User> users = new HashMap<Socket, User>();
+	/**
+	 * Mapping sockets to user's app revision.
+	 */
+	private final Map<Socket, Integer> revisions = new HashMap<Socket, Integer>();
+	/**
+	 * 
+	 */
+	private final Map<String, User> usersFromName = new HashMap<String, User>();
+	/**
+	 * Running matches.
+	 */
+	private final MatchMap matches = new MatchMap();
+	/**
+	 * 
+	 */
+	private final Map<User, Socket> socketsFromUser = new HashMap<User, Socket>();
+	
 	/**
 	 * Listens for socket connections, stores them and initiiates threads
 	 * running ServerInboxes.
@@ -115,16 +125,14 @@ public class ServerDirectory implements Runnable {
 				Thread thread = new Thread(new ServerInbox(client, this,
 						persistence));
 				thread.start();
-				clientThreads.put(client, thread);
+				threads.put(client, thread);
 				logger.log(Level.INFO, client + " accepted");
 			} catch (IOException e) {
 				logger.log(Level.SEVERE, "error accepting client", e);
 			}
 		}
 	}
-
-	// =====================================================================
-
+	
 	/**
 	 * Maps a user to a client socket.
 	 * 
@@ -134,8 +142,10 @@ public class ServerDirectory implements Runnable {
 	 *            the identity of the client
 	 */
 	public synchronized void idClient(Socket client, User user, int revision) {
-		clientIds.put(client, user);
-		clientRevisions.put(client, revision);
+		users.put(client, user);
+		revisions.put(client, revision);
+		usersFromName.put(user.getName(), user);
+		socketsFromUser.put(user, client);
 		logger.log(Level.INFO, client + " is " + user.getName());
 	}
 
@@ -147,10 +157,12 @@ public class ServerDirectory implements Runnable {
 	 */
 	public synchronized void removeClient(Socket client) {
 		endMatch(client);
-		clientThreads.get(client).interrupt();
-		clientThreads.remove(client);
-		clientIds.remove(client);
-		clientRevisions.remove(client);
+		threads.get(client).interrupt();
+		threads.remove(client);
+		usersFromName.remove(users.get(client));
+		socketsFromUser.remove(users.get(client));
+		users.remove(client);
+		revisions.remove(client);
 
 		try {
 			client.close();
@@ -162,35 +174,45 @@ public class ServerDirectory implements Runnable {
 	}
 
 	public synchronized Collection<User> getActiveUsers() {
-		return clientIds.values();
+		return users.values();
 	}
 
 	public synchronized Collection<Socket> getActiveSockets() {
-		return clientIds.keySet();
+		return users.keySet();
 	}
 
 	public User getUser(Socket client) {
-		return clientIds.get(client);
+		return users.get(client);
+	}
+
+	public User getUser(String username) {
+		return usersFromName.get(username);
 	}
 
 	public int getRevision(Socket client) {
-		return clientRevisions.get(client);
+		return revisions.get(client);
 	}
 
 	public Socket getOpponent(Socket client) {
 		return matches.getOpponent(client);
 	}
+	
+	public Socket getSocket(User user) {
+		return socketsFromUser.get(user);
+	}
 
 	// =====================================================================
-
-	public void startMatch(Socket client1, Socket client2, User user1,
-			User user2, List<Integer> questionIds) {
-		matches.put(client1, client2, user1, user2,
-				persistence.getQuestionsForGame(questionIds));
+	// Match organization
+	// =====================================================================
+	
+	public void startMatch(Socket client1, Socket client2,
+			List<Question> questions) {
+		matches.put(client1, client2, users.get(client1),
+				users.get(client2), questions);
 	}
 
 	public void saveAnswer(Socket client, int answerIndex) {
-		User user = clientIds.get(client);
+		User user = users.get(client);
 		MatchFactory factory = matches.get(user);
 
 		factory.addAnswer(user, answerIndex);
@@ -200,11 +222,10 @@ public class ServerDirectory implements Runnable {
 			persistence.saveMatch(match);
 			matches.remove(match.getUser1(), match.getUser2());
 		}
-
 	}
 
 	public void endMatch(Socket client) {
-		User user = clientIds.get(client);
+		User user = users.get(client);
 		if (user != null) {
 
 			MatchFactory factory = matches.get(user);

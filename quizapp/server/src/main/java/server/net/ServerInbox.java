@@ -1,6 +1,7 @@
 package server.net;
 
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.List;
 
 import server.ServerDirectory;
@@ -15,47 +16,7 @@ import common.net.responses.*;
  * 
  * @author Tim Wiechers
  */
-// TODO: MatchStartRequest -> serverDir.startMatch
 public class ServerInbox implements Runnable {
-	
-	private static Socket waitingClient;
-	private static User waitingUser;
-	private static int waitingRevision;
-
-	public static synchronized void process(MatchSearchStartRequest req,
-			Socket client) {
-		User user = serverDir.getUser(client);
-		int revision = serverDir.getRevision(client);
-
-		if (waitingUser == null) {
-			// wait
-			waitingUser = user;
-			waitingClient = client;
-			waitingRevision = revision;
-		} else {
-			// assert that both clients have the question locally available
-			List<Integer> questionIds = persistence.getQuestionIds(Math.max(
-					waitingRevision, revision));
-
-			// connect
-			NetUtils.send(waitingClient, new MatchCreatedResponse(user,
-					questionIds));
-			NetUtils.send(client, new MatchCreatedResponse(waitingUser,
-					questionIds));
-			serverDir.startMatch(client, waitingClient, user, waitingUser,
-					questionIds);
-
-			// clear spot
-			waitingUser = null;
-		}
-	}
-
-	public static synchronized void process(MatchSearchCancelRequest req) {
-		NetUtils.send(waitingClient, new MatchSearchCancelledResponse());
-		waitingClient = null;
-	}
-
-	// =====================================================================
 
 	/**
 	 * Client's socket.
@@ -93,9 +54,71 @@ public class ServerInbox implements Runnable {
 	}
 
 	// =====================================================================
+	// Matchmaking
+	// =====================================================================
+	/**
+	 * 
+	 */
+	private static Socket waitingClient;
+	/**
+	 * 
+	 */
+	private static User waitingUser;
+	/**
+	 * 
+	 */
+	private static int waitingRevision;
 
 	/**
-	 * TODO
+	 * Process a MatchSearchStartRequest.
+	 * 
+	 * @param req
+	 * @param client
+	 */
+	public static synchronized void process(MatchSearchStartRequest req,
+			Socket client) {
+		User user = serverDir.getUser(client);
+		int revision = serverDir.getRevision(client);
+
+		if (waitingUser == null) {
+			// wait
+			waitingUser = user;
+			waitingClient = client;
+			waitingRevision = revision;
+		} else {
+			// assert that both clients have the question locally available
+			List<Question> questions = persistence.getQuestions(Math.max(
+					waitingRevision, revision));
+			List<Integer> questionIds = getQuestionIds(questions);
+
+			// connect
+			NetUtils.send(waitingClient, new MatchCreatedResponse(user,
+					questionIds));
+			NetUtils.send(client, new MatchCreatedResponse(waitingUser,
+					questionIds));
+			serverDir.startMatch(client, waitingClient, questions);
+
+			// clear spot
+			waitingUser = null;
+		}
+	}
+
+	/**
+	 * Process a MatchSearchCancelRequest.
+	 * 
+	 * @param req
+	 */
+	public static synchronized void process(MatchSearchCancelRequest req) {
+		NetUtils.send(waitingClient, new MatchSearchCancelledResponse());
+		waitingClient = null;
+	}
+
+	// =====================================================================
+	// Processing requests
+	// =====================================================================
+
+	/**
+	 * Process a UserAuthRequest.
 	 * 
 	 * @param req
 	 */
@@ -138,59 +161,79 @@ public class ServerInbox implements Runnable {
 	}
 
 	/**
-	 * TODO
+	 * Process a UserDataChangeRequest.
 	 * 
 	 * @param req
 	 */
 	private void process(UserDataChangeRequest req) {
-		persistence.changeUserCredentials(req.getNewUsername(),
-				req.getNewPassword(), req.getNewPasswordConfirm());
-		// TODO send error if not successful
+		if (!persistence.changeUserCredentials(req.getNewUsername(),
+				req.getNewPassword(), req.getNewPasswordConfirm())) {
+			NetUtils.send(client, new ErrorResponse(
+					"User data couldn't be saved!"));
+		}
 	}
 
 	/**
-	 * TODO
+	 * Process a ChallengeSendRequest.
 	 * 
 	 * @param req
 	 */
 	private void process(ChallengeSendRequest req) {
-		// serverDir.addChallenge(client, req.getOpponent());
-		// TODO inform other client about challenge
-		// TODO send error & delete challenge if not successful
+		User sendTo = serverDir.getUser(req.getOpponent());
+		if (!NetUtils.send(serverDir.getSocket(sendTo),
+				new ChallengeReceivedResponse(sendTo))) {
+			NetUtils.send(client, new ErrorResponse("Couldn't send challenge!"));
+		}
 	}
 
 	/**
-	 * TODO
-	 * 
-	 * @param req
-	 */
-	private void process(ChallengeAcceptRequest req) {
-		// serverDir.startMatch(req.getOpponent(), req.getQuestionId());
-		// TODO inform other client about challenge acceptance, send him first
-		// question
-	}
-
-	/**
-	 * TODO
+	 * Process a ChallengeDenyRequest.
 	 * 
 	 * @param req
 	 */
 	private void process(ChallengeDenyRequest req) {
-		// serverDir.removeChallenge(req.getOpponent());
-		// TODO inform other client about challenge denial
+		User sendTo = serverDir.getUser(req.getOpponent());
+		NetUtils.send(serverDir.getSocket(sendTo), new ChallengeDeniedResponse(
+				sendTo));
 	}
 
 	/**
-	 * TODO
+	 * Process a ChallengeAcceptRequest.
+	 * 
+	 * @param req
+	 */
+	private void process(ChallengeAcceptRequest req) {
+		Socket opponent = serverDir.getOpponent(client);
+
+		List<Question> questions = persistence
+				.getQuestions(Math.max(serverDir.getRevision(client),
+						serverDir.getRevision(opponent)));
+		List<Integer> questionIds = getQuestionIds(questions);
+
+		NetUtils.send(
+				opponent,
+				new MatchCreatedResponse(serverDir.getUser(client), questionIds));
+		NetUtils.send(client,
+				new MatchCreatedResponse(serverDir.getUser(req.getOpponent()),
+						questionIds));
+
+		serverDir.startMatch(client, opponent, questions);
+	}
+
+	/**
+	 * Process a GetRankingsRequest.
 	 * 
 	 * @param req
 	 */
 	private void process(GetRankingsRequest req) {
-		// TODO send rankings
+		NetUtils.send(
+				client,
+				new RankingsResponse(persistence.getRankedUsers(
+						req.getOffset(), req.getLength())));
 	}
 
 	/**
-	 * TODO
+	 * Process a AnswerSubmitRequest.
 	 * 
 	 * @param req
 	 */
@@ -201,14 +244,30 @@ public class ServerInbox implements Runnable {
 	}
 
 	/**
-	 * TODO
+	 * Process a MatchLeaveRequest.
 	 * 
 	 * @param req
 	 */
 	private void process(MatchLeaveRequest req) {
 		serverDir.endMatch(client);
-		// TODO inform opponent that the other user left
+		NetUtils.send(client, new OpponentLeftResponse());
 	}
+
+	// =====================================================================
+	// Utils
+	// =====================================================================
+
+	private static List<Integer> getQuestionIds(List<Question> questions) {
+		List<Integer> questionIds = new ArrayList<Integer>();
+		for (Question q : questions) {
+			questionIds.add(q.getId());
+		}
+		return questionIds;
+	}
+
+	// =====================================================================
+	// Run loop/request matching
+	// =====================================================================
 
 	/**
 	 * Waits for a client message, then tries to map and process it.
