@@ -9,7 +9,7 @@ import common.entities.*;
  * 
  * @author Tim Wiechers
  */
-public interface IPersistence {
+public interface Persistence {
 	
 	/**
 	 * Searches a user with given credentials.
@@ -89,7 +89,6 @@ public interface IPersistence {
 	 */
 	List<Question> getQuestions();
 	
-	List<Integer> getQuestionIds(int revision);
 	List<Question> getQuestions(int revision);
 	
 	/**

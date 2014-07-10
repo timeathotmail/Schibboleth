@@ -6,8 +6,9 @@ import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import server.net.ServerDirectory;
 import server.persistence.Data;
-import server.persistence.IPersistence;
+import server.persistence.Persistence;
 import common.net.NetUtils;
 
 /**
@@ -23,7 +24,7 @@ public class Server {
 	/**
 	 * Persistence.
 	 */
-	private static IPersistence persistence;
+	private static Persistence persistence;
 
 	/**
 	 * Initiiates a thread running a server directory.
@@ -31,7 +32,7 @@ public class Server {
 	 * @param args
 	 *            unused
 	 */
-	public static void main(String[] args) {
+	public static void main(String[] args) {	
 		try {
 			persistence = Data.getInstance();
 			new Thread(new ServerDirectory(new ServerSocket(NetUtils.PORT),

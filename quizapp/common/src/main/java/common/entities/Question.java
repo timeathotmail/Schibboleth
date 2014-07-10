@@ -18,6 +18,10 @@ public class Question {
 	 */
 	private int id;
 	/**
+	 * States in which app revision the question was introduced.
+	 */
+	private int revision;
+	/**
 	 * The question.
 	 */
 	private String text;
@@ -55,16 +59,25 @@ public class Question {
 
 	/**
 	 * Creates an instance.
-	 * @param text the question
-	 * @param answer1 first answer
-	 * @param answer2 second answer
-	 * @param answer3 third answer
-	 * @param answer4 fourth answer
-	 * @param correctIndex the question's category
-	 * @param category the question's category
+	 * 
+	 * @param text
+	 *            the question
+	 * @param answer1
+	 *            first answer
+	 * @param answer2
+	 *            second answer
+	 * @param answer3
+	 *            third answer
+	 * @param answer4
+	 *            fourth answer
+	 * @param correctIndex
+	 *            the question's category
+	 * @param category
+	 *            the question's category
 	 */
 	public Question(String text, String answer1, String answer2,
-			String answer3, String answer4, int correctIndex, Category category) {
+			String answer3, String answer4, int correctIndex,
+			Category category, int revision) {
 		this.text = text;
 		this.answer1 = answer1;
 		this.answer2 = answer2;
@@ -72,10 +85,11 @@ public class Question {
 		this.answer4 = answer4;
 		this.correctIndex = correctIndex;
 		this.category = category;
+		this.revision = revision;
 	}
 
 	// === getters & setters ===
-	
+
 	public int getId() {
 		return id;
 	}
@@ -138,6 +152,14 @@ public class Question {
 
 	public void setCorrectIndex(int correctIndex) {
 		this.correctIndex = correctIndex;
+	}
+
+	public int getRevision() {
+		return revision;
+	}
+
+	public void setRevision(int revision) {
+		this.revision = revision;
 	}
 
 }

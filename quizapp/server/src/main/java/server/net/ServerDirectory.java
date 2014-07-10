@@ -1,4 +1,4 @@
-package server;
+package server.net;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -10,8 +10,8 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import server.net.ServerInbox;
-import server.persistence.IPersistence;
+import server.MatchFactory;
+import server.persistence.Persistence;
 import common.entities.Match;
 import common.entities.Question;
 import common.entities.User;
@@ -67,7 +67,7 @@ public class ServerDirectory implements Runnable {
 	/**
 	 * Persistence.
 	 */
-	private final IPersistence persistence;
+	private final Persistence persistence;
 	/**
 	 * Server's socket.
 	 */
@@ -79,7 +79,7 @@ public class ServerDirectory implements Runnable {
 	 * @param socket
 	 *            server's socket
 	 */
-	public ServerDirectory(ServerSocket socket, IPersistence persistence) {
+	public ServerDirectory(ServerSocket socket, Persistence persistence) {
 		this.socket = socket;
 		this.persistence = persistence;
 	}

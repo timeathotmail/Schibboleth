@@ -10,7 +10,7 @@ import common.entities.*;
  * 
  * @author Tim Wiechers
  */
-public interface IGame {
+public interface Game {
 	/*==========================================================
 	 * Login / Logout / Account
 	 *==========================================================*/

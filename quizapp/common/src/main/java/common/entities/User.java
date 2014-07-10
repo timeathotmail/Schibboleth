@@ -47,14 +47,17 @@ public class User {
 
 	/**
 	 * Creates an instance.
-	 * @param name the username
-	 * @param role the user's role
+	 * 
+	 * @param name
+	 *            the username
+	 * @param role
+	 *            the user's role
 	 */
 	public User(String name, Role role) {
 		this.name = name;
 		this.role = role;
 	}
-	
+
 	// === getters & setters ===
 
 	public int getId() {

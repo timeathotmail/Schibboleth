@@ -26,7 +26,7 @@ import com.mygdx.net.Client;
  * 
  * @author Tim Wiechers
  */
-public class QuizGame extends ApplicationAdapter implements IGame {
+public class QuizGame extends ApplicationAdapter implements Game {
 	/**
 	 * Client used for server communication.
 	 */
@@ -129,7 +129,7 @@ public class QuizGame extends ApplicationAdapter implements IGame {
     
 
     // =====================================================================
-	// IGame implementation
+	// Game implementation
     // =====================================================================
 
 	/* (non-Javadoc)

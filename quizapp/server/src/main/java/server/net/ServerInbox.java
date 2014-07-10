@@ -4,8 +4,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
-import server.ServerDirectory;
-import server.persistence.IPersistence;
+import server.persistence.Persistence;
 import common.entities.*;
 import common.net.NetUtils;
 import common.net.requests.*;
@@ -29,7 +28,7 @@ public class ServerInbox implements Runnable {
 	/**
 	 * Database access.
 	 */
-	private static IPersistence persistence;
+	private static Persistence persistence;
 
 	/**
 	 * Creates an instance.
@@ -42,7 +41,7 @@ public class ServerInbox implements Runnable {
 	 *            persistence instance
 	 */
 	public ServerInbox(final Socket client, ServerDirectory _serverDir,
-			IPersistence _persistence) {
+			Persistence _persistence) {
 		this.client = client;
 
 		if (serverDir == null) {
@@ -86,7 +85,7 @@ public class ServerInbox implements Runnable {
 			waitingClient = client;
 			waitingRevision = revision;
 		} else {
-			// assert that both clients have the question locally available
+			// assert that both clients have the questions locally available
 			List<Question> questions = persistence.getQuestions(Math.max(
 					waitingRevision, revision));
 			List<Integer> questionIds = getQuestionIds(questions);

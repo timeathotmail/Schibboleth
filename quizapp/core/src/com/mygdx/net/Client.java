@@ -4,7 +4,7 @@ import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.mygdx.game.IGame;
+import com.mygdx.game.Game;
 
 import common.net.NetUtils;
 import common.net.requests.AnswerSubmitRequest;
@@ -40,7 +40,7 @@ public class Client {
 	 * 
 	 * @param game
 	 */
-	public Client(IGame game) {
+	public Client(Game game) {
 		try {
 			serverSocket = new Socket(NetUtils.IP, NetUtils.PORT);
 			new Thread(new ClientInbox(game, serverSocket)).start();

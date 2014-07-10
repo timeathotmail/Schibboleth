@@ -26,30 +26,38 @@ public class Match {
 	 * Second player's points.
 	 */
 	private int points2;
-	
+
 	/**
 	 * Constructor for JSON deserialization and persistence framework.
 	 */
 	@Deprecated
 	public Match() {
 	}
-	
+
 	/**
 	 * Creates an instance.
-	 * @param user1 first player
-	 * @param user2 second player
+	 * 
+	 * @param user1
+	 *            first player
+	 * @param user2
+	 *            second player
 	 */
 	public Match(User user1, User user2) {
 		this.user1 = user1;
 		this.user2 = user2;
 	}
-	
+
 	/**
 	 * Creates an instance.
-	 * @param user1 first player
-	 * @param user2 second player
-	 * @param points1 first player's points
-	 * @param points2 second player's points
+	 * 
+	 * @param user1
+	 *            first player
+	 * @param user2
+	 *            second player
+	 * @param points1
+	 *            first player's points
+	 * @param points2
+	 *            second player's points
 	 */
 	public Match(User user1, User user2, int points1, int points2) {
 		this.user1 = user1;
@@ -57,7 +65,7 @@ public class Match {
 		this.points1 = points1;
 		this.points2 = points2;
 	}
-	
+
 	// === getters & setters ===
 
 	public int getId() {

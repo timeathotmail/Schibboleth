@@ -2,7 +2,7 @@ package com.mygdx.net;
 
 import java.net.Socket;
 
-import com.mygdx.game.IGame;
+import com.mygdx.game.Game;
 
 import common.net.NetUtils;
 import common.net.responses.*;
@@ -20,7 +20,7 @@ public class ClientInbox implements Runnable {
 	/**
 	 * Client's game instance.
 	 */
-	private final IGame game;
+	private final Game game;
 
 	/**
 	 * Creates an instance.
@@ -30,7 +30,7 @@ public class ClientInbox implements Runnable {
 	 * @param serverSocket
 	 *            server socket
 	 */
-	public ClientInbox(IGame game, Socket serverSocket) {
+	public ClientInbox(Game game, Socket serverSocket) {
 		this.game = game;
 		this.serverSocket = serverSocket;
 	}
