@@ -283,9 +283,9 @@ public class DataTest {
 		boolean exceptionThrown = false;
 		//parameter null
 		try{
-			Question question = new Question("", "", "", "", "", Category.science);
+			Question question = new Question("", "", "", "", "", 0, Category.science);
 			Data.getInstance().addQuestion(question);
-			Question question1 = new Question(null, null, null, null, null, Category.science);
+			Question question1 = new Question(null, null, null, null, null, 0, Category.science);
 			Data.getInstance().addQuestion(question1);
 		}catch(Exception e){
 			exceptionThrown = true;
@@ -293,7 +293,7 @@ public class DataTest {
 		assertEquals(true, exceptionThrown);
 		//default
 		try{
-			Question question = new Question("To be", "or", "not", "to", "be", Category.science);
+			Question question = new Question("To be", "or", "not", "to", "be", 0, Category.science);
 			assertEquals(true, Data.getInstance().addQuestion(question));
 		}catch(Exception e){
 			e.printStackTrace();
@@ -314,7 +314,7 @@ public class DataTest {
 		try{
 			Data.getInstance().addQuestion(null);
 			
-			Question question = new Question("To be", "or", "not", "to", "be", Category.science);
+			Question question = new Question("To be", "or", "not", "to", "be", 0, Category.science);
 			assertEquals(true, Data.getInstance().updateQuestion(question));
 		}catch(Exception e){
 			e.printStackTrace();
@@ -332,7 +332,7 @@ public class DataTest {
 	@Test
 	public void testRemoveQuestion() {
 		boolean exceptionThrown = false;
-		Question question = new Question("To be", "or", "not", "to", "be", Category.science);
+		Question question = new Question("To be", "or", "not", "to", "be", 0, Category.science);
 		
 		try{
 			Data.getInstance().removeQuestion(question);
@@ -362,9 +362,9 @@ public class DataTest {
 	public void testGetQuestions() {
 		
 		try{
-			Question question = new Question("To be", "or", "not", "to", "be", Category.science);
-			Question question1 = new Question("1To be", "or", "not", "to", "be", Category.science);
-			Question question2 = new Question("2To be", "or", "not", "to", "be", Category.science);
+			Question question = new Question("To be", "or", "not", "to", "be", 0, Category.science);
+			Question question1 = new Question("1To be", "or", "not", "to", "be", 0, Category.science);
+			Question question2 = new Question("2To be", "or", "not", "to", "be", 0, Category.science);
 			
 			Data.getInstance().addQuestion(question);
 			Data.getInstance().addQuestion(question1);

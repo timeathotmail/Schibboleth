@@ -1,8 +1,9 @@
 package com.mygdx.net;
 
 import java.net.Socket;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import com.badlogic.gdx.Gdx;
 import com.mygdx.game.IGame;
 
 import common.net.NetUtils;
@@ -25,6 +26,10 @@ import common.net.requests.UserLogoutRequest;
  */
 public class Client {
 	/**
+	 * Logger.
+	 */
+	private static final Logger logger = Logger.getLogger("Client");
+	/**
 	 * The server's socket
 	 */
 	private Socket serverSocket;
@@ -40,7 +45,7 @@ public class Client {
 			serverSocket = new Socket(NetUtils.IP, NetUtils.PORT);
 			new Thread(new ClientInbox(game, serverSocket)).start();
 		} catch (Exception e) {
-			Gdx.app.error("Client", "couldn't connect to server", e);
+			logger.log(Level.SEVERE, "couldn't connect to server", e);
 			game.onNoConnection();
 		}
 	}

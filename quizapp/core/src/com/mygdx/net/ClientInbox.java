@@ -64,7 +64,77 @@ public class ClientInbox implements Runnable {
 					}
 				}
 
-				// TODO: rest
+				{ // ============================================================
+					ChallengeDeniedResponse obj = NetUtils.fromJson(json,
+							ChallengeDeniedResponse.class);
+					if (obj != null) {
+						game.onChallengeDenied(obj.getUser());
+						continue;
+					}
+				}
+
+				{ // ============================================================
+					ChallengeReceivedResponse obj = NetUtils.fromJson(json,
+							ChallengeReceivedResponse.class);
+					if (obj != null) {
+						game.onChallengeReceived(obj.getUser());
+						continue;
+					}
+				}
+
+				{ // ============================================================
+					ErrorResponse obj = NetUtils.fromJson(json,
+							ErrorResponse.class);
+					if (obj != null) {
+						game.onError(obj.getMessage());
+						continue;
+					}
+				}
+
+				{ // ============================================================
+					MatchCreatedResponse obj = NetUtils.fromJson(json,
+							MatchCreatedResponse.class);
+					if (obj != null) {
+						game.onMatchStarted(obj.getUser(), obj.getQuestionIds());
+						continue;
+					}
+				}
+
+				{ // ============================================================
+					MatchSearchCancelledResponse obj = NetUtils.fromJson(json,
+							MatchSearchCancelledResponse.class);
+					if (obj != null) {
+						game.onSearchCancelled();
+						continue;
+					}
+				}
+
+				{ // ============================================================
+					OpponentAnswerResponse obj = NetUtils.fromJson(json,
+							OpponentAnswerResponse.class);
+					if (obj != null) {
+						game.onOpponentAnswered(obj.getIndex());
+						continue;
+					}
+				}
+
+				{ // ============================================================
+					OpponentLeftResponse obj = NetUtils.fromJson(json,
+							OpponentLeftResponse.class);
+					if (obj != null) {
+						game.onOpponentLeft();
+						continue;
+					}
+				}
+
+				{ // ============================================================
+					RankingsResponse obj = NetUtils.fromJson(json,
+							RankingsResponse.class);
+					if (obj != null) {
+						game.onRankingsReceived(obj.getUsers());
+						continue;
+					}
+				}
 			}
 		} catch (RuntimeException e) {
 			game.onConnectionLost();

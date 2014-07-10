@@ -1,6 +1,7 @@
 package com.mygdx.game;
 
 import java.util.Collection;
+import java.util.List;
 
 import common.entities.*;
 
@@ -175,15 +176,9 @@ public interface IGame {
 	 * Called if opponent found.
 	 * Display match start screen.
 	 * @param user found opponent
+	 * @param questionIds list of the questions' ids
 	 */
-	void onMatchFound(User user);
-	
-	/**
-	 * Called on accepted challenge.
-	 * Display match start screen.
-	 * @param user opponent
-	 */
-	void onChallengeAccepted(User user);
+	void onMatchStarted(User user, List<Integer> questionIds);
 	
 	/**
 	 * Called on denied challenge.
@@ -211,4 +206,21 @@ public interface IGame {
 	 * @param opponentAnswer opponent's answer
 	 */
 	void onOpponentAnswered(int opponentAnswer);
+	
+	/**
+	 * Called when a request couldn't be processed on the server.
+	 * @param message the error message
+	 */
+	void onError(String message);
+	
+	/**
+	 * Called when the search for match was cancelled before a match could be found.
+	 */
+	void onSearchCancelled();
+	
+	/**
+	 * Called when the server sends a section of the leaderboard.
+	 * @param users the ranked users
+	 */
+	void onRankingsReceived(List<User> users);
 }
