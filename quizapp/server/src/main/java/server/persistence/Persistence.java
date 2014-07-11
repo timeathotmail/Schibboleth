@@ -1,5 +1,6 @@
 package server.persistence;
 
+import java.sql.SQLException;
 import java.util.List;
 
 import common.entities.*;
@@ -48,7 +49,7 @@ public interface Persistence {
 	 * @param username user's name
 	 * @return the user on success, null else
 	 */
-	User getUser(String username);
+	User getUser(String username) throws SQLException;
 	
 	/**
 	 * @return a list of all users in the database

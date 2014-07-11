@@ -16,6 +16,8 @@ import org.apache.commons.dbutils.handlers.BeanListHandler;
 import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
 
 import server.ServerProperties;
+import server.persistence.constraints.Constraint;
+import server.persistence.constraints.EqualConstraint;
 import common.entities.*;
 import common.entities.annotations.*;
 
@@ -93,6 +95,12 @@ public class Data implements Persistence {
 			dataSource.setUrl(DB_URL);
 			run = new QueryRunner(dataSource);
 			checkDatabaseStructure();
+
+			// TODO nur zum Testen
+			insert(new User("bob", false));
+			User houde = getUser("bob");
+			System.out.println(houde);
+
 		} catch (ClassNotFoundException e) {
 			logger.log(Level.SEVERE, "Database driver error!", e);
 			throw new SQLException("Couldn't register JDBC driver!");
@@ -108,7 +116,7 @@ public class Data implements Persistence {
 	private void checkDatabaseStructure() throws SQLException {
 		logger.info("checking database structure...");
 
-		run.update("DROP DATABASE " + DB_NAME);
+		run.update("DROP DATABASE " + DB_NAME); // TODO nur zum Testen
 		run.update("CREATE DATABASE IF NOT EXISTS " + DB_NAME);
 		dataSource.setUrl(DB_URL + DB_NAME);
 
@@ -131,27 +139,11 @@ public class Data implements Persistence {
 		run.update("CREATE TABLE IF NOT EXISTS MATCH__("
 				+ "id      INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,"
 				+ "user1   INT UNSIGNED,"
-				+ "user2   INT UNSIGNED," // FIXME users can be equal
+				+ "user2   INT UNSIGNED," // FIXME nutzer können gleich sein
 				+ "points1 INT UNSIGNED NOT NULL,"
 				+ "points2 INT UNSIGNED NOT NULL,"
 				+ "FOREIGN KEY(user1) REFERENCES USER(id) ON DELETE CASCADE,"
 				+ "FOREIGN KEY(user2) REFERENCES USER(id) ON DELETE CASCADE)");
-
-		User user = new User("Bob", true);
-		User user2 = new User("Patrick", false);
-		insert(user);
-		insert(user2);
-		User sameUser = getUser(user.getId());
-
-		Match match = new Match(user, user2, 1, 5);
-		insert(match);
-		match = new Match(user, user2, 7, 2);
-		insert(match);
-		match = new Match(user2, user, 7, 2);
-		insert(match);
-
-		sameUser = getUser(user.getId());
-		System.out.println(sameUser);
 	}
 
 	// =====================================================================
@@ -201,12 +193,12 @@ public class Data implements Persistence {
 	}
 
 	@Override
-	public User getUser(String username) {
+	public User getUser(String username) throws SQLException {
 		if (username == null || username.isEmpty()) {
 			throw new IllegalArgumentException("empty username");
 		}
-		// TODO Auto-generated method stub
-		return null;
+
+		return getUser(new EqualConstraint("name", username));
 	}
 
 	@Override
@@ -300,7 +292,7 @@ public class Data implements Persistence {
 	}
 
 	// =====================================================================
-	// Utils
+	// Database utils
 	// =====================================================================
 
 	private void insert(Object obj) throws SQLException {
@@ -391,8 +383,8 @@ public class Data implements Persistence {
 		}
 	}
 
-	private User getUser(int id) throws SQLException {
-		User user = get(id, User.class);
+	private User getUser(Constraint... constraints) throws SQLException {
+		User user = get(User.class, constraints);
 
 		// set user's stats
 		String sql = String
@@ -431,9 +423,10 @@ public class Data implements Persistence {
 		return user;
 	}
 
-	private <T> T get(int id, Class<T> clazz) throws SQLException {
-		List<T> results = run.query(String.format(
-				"SELECT * FROM %s WHERE id=%d", getTable(clazz), id),
+	private <T> T get(Class<T> clazz, Constraint... constraints)
+			throws SQLException {
+		List<T> results = run.query(String.format("SELECT * FROM %s %s",
+				getTable(clazz), getWhereClause(constraints)),
 				new BeanListHandler<T>(clazz));
 
 		if (results.size() == 1) {
@@ -445,7 +438,16 @@ public class Data implements Persistence {
 		}
 	}
 
-	private <T> String getTable(Class<T> clazz) {
+	private int getNewestRevision() {
+		// TODO
+		return 0;
+	}
+
+	// =====================================================================
+	// Helpers
+	// =====================================================================
+
+	private static <T> String getTable(Class<T> clazz) {
 		TableAlias alias = clazz.getAnnotation(TableAlias.class);
 
 		if (alias != null) {
@@ -455,12 +457,18 @@ public class Data implements Persistence {
 		return clazz.getSimpleName().toUpperCase();
 	}
 
-	private String getTable(Object obj) {
+	private static String getTable(Object obj) {
 		return getTable(obj.getClass());
 	}
 
-	private int getNewestRevision() {
-		// TODO
-		return 0;
+	private static <T extends Constraint> String getWhereClause(
+			T... constraints) {
+		StringBuilder sb = new StringBuilder(" WHERE ");
+
+		for (T constraint : constraints) {
+			sb.append(constraint + " AND ");
+		}
+
+		return sb.substring(0, sb.length() - 5);
 	}
 }
