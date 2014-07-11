@@ -1,10 +1,10 @@
 package server.persistence.constraints;
 
-public class EqualConstraint extends Constraint {
+public class LessEqualConstraint extends Constraint {
 	private final String field;
 	private final Object obj;
 	
-	public EqualConstraint(String field, Object obj) {
+	public LessEqualConstraint(String field, Object obj) {
 		this.field = field;
 		this.obj = obj;
 	}

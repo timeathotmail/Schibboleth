@@ -3,6 +3,7 @@ package server.net;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.sql.SQLException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -219,7 +220,11 @@ public class ServerDirectory implements Runnable {
 
 		if (factory.isFinished()) {
 			Match match = factory.getMatch();
-			persistence.saveMatch(match);
+			try {
+				persistence.saveMatch(match);
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+			}
 			matches.remove(match.getUser1(), match.getUser2());
 		}
 	}
@@ -234,7 +239,11 @@ public class ServerDirectory implements Runnable {
 				factory.forfeit(user);
 
 				Match match = factory.getMatch();
-				persistence.saveMatch(match);
+				try {
+					persistence.saveMatch(match);
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+				}
 				matches.remove(match.getUser1(), match.getUser2());
 			}
 		}

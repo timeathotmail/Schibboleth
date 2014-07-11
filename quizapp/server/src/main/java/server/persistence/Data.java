@@ -18,6 +18,10 @@ import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
 import server.ServerProperties;
 import server.persistence.constraints.Constraint;
 import server.persistence.constraints.EqualConstraint;
+import server.persistence.constraints.LessEqualConstraint;
+import server.persistence.utils.InsertQueryBuilder;
+import server.persistence.utils.QueryBuilder;
+import server.persistence.utils.UpdateQueryBuilder;
 import common.entities.*;
 import common.entities.annotations.*;
 
@@ -98,8 +102,15 @@ public class Data implements Persistence {
 
 			// TODO nur zum Testen
 			insert(new User("bob", false));
-			User houde = getUser("bob");
-			System.out.println(houde);
+			User bob = getUser("bob");
+			System.out.println(bob);
+
+			System.out.println(getUsers().get(0));
+
+			bob.setName("adolf");
+			update(bob);
+			bob = getUser("adolf");
+			System.out.println(bob);
 
 		} catch (ClassNotFoundException e) {
 			logger.log(Level.SEVERE, "Database driver error!", e);
@@ -147,49 +158,69 @@ public class Data implements Persistence {
 	}
 
 	// =====================================================================
-	// Persistence implementation
+	// Users
 	// =====================================================================
 
 	@Override
-	public User loginUser(String username, String password) {
+	public User loginUser(String username, String password) throws SQLException {
 		if (username == null || username.isEmpty()) {
 			throw new IllegalArgumentException("empty username");
 		}
 		if (password == null || password.isEmpty()) {
 			throw new IllegalArgumentException("empty password");
 		}
-		// TODO Auto-generated method stub
-		return null;
+		// TODO check password
+		return getUser(new EqualConstraint("name", username));
 	}
 
 	@Override
-	public User registerUser(String username, String password) {
+	public User registerUser(String username, String password)
+			throws SQLException {
 		if (username == null || username.isEmpty()) {
 			throw new IllegalArgumentException("empty username");
 		}
 		if (password == null || password.isEmpty()) {
 			throw new IllegalArgumentException("empty password");
 		}
-		// TODO Auto-generated method stub
-		return null;
+
+		// TODO insert password
+		User user = new User(username, false);
+		insert(user);
+		return user;
+	}
+	
+	@Override
+	public void changeUserCredentials(String username, String password,
+			String confirmation) throws SQLException, IllegalArgumentException {
+		if ((username == null || username.isEmpty())
+				&& (password == null || password.isEmpty())) {
+			throw new IllegalArgumentException(
+					"neither new username nor password");
+		}
+		if (confirmation == null || confirmation.isEmpty()
+				|| !password.equals(confirmation)) {
+			throw new IllegalArgumentException("new password not confirmed");
+		}
+
+		User user = getUser(username);
+		// TODO set password
 	}
 
 	@Override
-	public boolean updateUser(User user) {
+	public void updateUser(User user) throws SQLException {
+		if (user == null) {
+			throw new IllegalArgumentException("null user");
+		}
+
+		update(user);
+	}
+
+	@Override
+	public void removeUser(User user) throws SQLException {
 		if (user == null) {
 			throw new IllegalArgumentException("null user");
 		}
 		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean removeUser(User user) {
-		if (user == null) {
-			throw new IllegalArgumentException("null user");
-		}
-		// TODO Auto-generated method stub
-		return false;
 	}
 
 	@Override
@@ -202,9 +233,8 @@ public class Data implements Persistence {
 	}
 
 	@Override
-	public List<User> getUsers() {
-		// TODO Auto-generated method stub
-		return null;
+	public List<User> getUsers() throws SQLException {
+		return getMany(User.class);
 	}
 
 	@Override
@@ -219,170 +249,73 @@ public class Data implements Persistence {
 		return null;
 	}
 
+	// =====================================================================
+	// Questions
+	// =====================================================================
+	
 	@Override
-	public boolean addQuestion(Question question) {
+	public void addQuestion(Question question) throws SQLException {
+		if (question == null) {
+			throw new IllegalArgumentException("null question");
+		}
+
+		insert(question);
+	}
+
+	@Override
+	public void updateQuestion(Question question) throws SQLException {
+		if (question == null) {
+			throw new IllegalArgumentException("null question");
+		}
+
+		update(question);
+	}
+
+	@Override
+	public void removeQuestion(Question question) throws SQLException {
 		if (question == null) {
 			throw new IllegalArgumentException("null question");
 		}
 		// TODO Auto-generated method stub
-		return false;
 	}
 
 	@Override
-	public boolean updateQuestion(Question question) {
-		if (question == null) {
-			throw new IllegalArgumentException("null question");
-		}
-		// TODO Auto-generated method stub
-		return false;
+	public List<Question> getQuestions() throws SQLException {
+		return getMany(Question.class);
 	}
 
 	@Override
-	public boolean removeQuestion(Question question) {
-		if (question == null) {
-			throw new IllegalArgumentException("null question");
-		}
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public List<Question> getQuestions() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public boolean saveMatch(Match match) {
-		if (match == null) {
-			throw new IllegalArgumentException("null matchn");
-		}
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean changeUserCredentials(String username, String password,
-			String confirmation) {
-		if ((username == null || username.isEmpty())
-				&& (password == null || password.isEmpty())) {
-			throw new IllegalArgumentException(
-					"neither new username nor password");
-		}
-		if (password != null && !password.isEmpty()) {
-			if (confirmation == null || confirmation.isEmpty()) {
-				throw new IllegalArgumentException("new password not confirmed");
-			} else if (!password.equals(confirmation)) {
-				return false;
-			}
-		}
-
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public List<Question> getQuestions(int revision) {
+	public List<Question> getQuestions(int revision) throws SQLException {
 		if (revision < 0 || revision > getNewestRevision()) {
 			throw new IllegalArgumentException("invalid revision");
 		}
 
-		// TODO Auto-generated method stub
-		return null;
+		return getMany(Question.class, new LessEqualConstraint("revision",
+				revision));
 	}
-
+	
 	// =====================================================================
-	// Database utils
+	// Matches
 	// =====================================================================
-
-	private void insert(Object obj) throws SQLException {
-		StringBuilder fields = new StringBuilder(String.format(
-				"INSERT INTO %s (", getTable(obj)));
-		StringBuilder values = new StringBuilder("VALUES (");
-		Field id = null;
-		int numberOfFields = 0;
-
-		for (Field f : obj.getClass().getDeclaredFields()) {
-			f.setAccessible(true);
-
-			// id field
-			if (f.getName().equals("id")) {
-				id = f;
-				continue;
-			}
-
-			// unpersisted field
-			if (f.getAnnotation(NotPersisted.class) != null) {
-				continue;
-			}
-
-			// persisted field
-			ColumnAlias alias;
-			if ((alias = f.getAnnotation(ColumnAlias.class)) != null) {
-				fields.append(alias.column());
-			} else {
-				fields.append(f.getName());
-			}
-
-			fields.append(",");
-			numberOfFields++;
-			try {
-				if (!f.getType().equals(boolean.class)) {
-					values.append("'" + f.get(obj) + "'");
-				} else {
-					values.append(f.get(obj));
-				}
-				values.append(",");
-			} catch (Exception e) {
-				logger.log(Level.SEVERE, "insert: couldn't get value of field "
-						+ f.getName(), e);
-				throw new SQLException("Object couldn't be inserted!");
-			}
+	
+	@Override
+	public void saveMatch(Match match) throws SQLException {
+		if (match == null) {
+			throw new IllegalArgumentException("null matchn");
 		}
 
-		if (numberOfFields > 0) {
-			// remove last commas
-			fields.deleteCharAt(fields.length() - 1);
-			values.deleteCharAt(values.length() - 1);
-
-			// close statement parts
-			fields.append(") ");
-			values.append(")");
-
-			String sqlInsert = fields.toString() + values.toString();
-			logger.info(sqlInsert);
-
-			Connection conn = dataSource.getConnection();
-			PreparedStatement stmt = conn.prepareStatement(sqlInsert,
-					Statement.RETURN_GENERATED_KEYS);
-			stmt.executeUpdate();
-
-			ResultSet generatedKeys = null;
-			try {
-				generatedKeys = stmt.getGeneratedKeys();
-				if (generatedKeys.next()) {
-					int insertId = generatedKeys.getInt(1);
-					id.set(obj, insertId);
-					logger.info(obj + " inserted with id " + insertId);
-				}
-			} catch (Exception e) {
-				logger.log(Level.SEVERE,
-						"insert: object's insert id couldn't be set", e);
-				throw new SQLException("Object's insert id couldn't be set!");
-			} finally {
-				if (generatedKeys != null) {
-					generatedKeys.close();
-				}
-
-				if (stmt != null) {
-					stmt.close();
-				}
-
-				conn.close();
-			}
-		}
+		insert(match);
 	}
-
+	
+	// =====================================================================
+	// Entity utils
+	// =====================================================================
+	
+	private int getNewestRevision() {
+		// TODO
+		return 0;
+	}
+	
 	private User getUser(Constraint... constraints) throws SQLException {
 		User user = get(User.class, constraints);
 
@@ -391,7 +324,7 @@ public class Data implements Persistence {
 				.format("SELECT SUM(_points) AS pointCount, _win AS winCount, COUNT(*) AS matchCount FROM ("
 						+ "SELECT IF(user1=%d, points1, points2) AS _points, "
 						+ "IF((SELECT(_points)) >= points1 AND (SELECT(_points)) >= points2,0,1) AS _win "
-						+ "FROM %s WHERE user1=%d OR user2=%d) AS score",
+						+ "FROM %s WHERE user1=%d OR user2=%d) AS _",
 						user.getId(), getTable(Match.class), user.getId(),
 						user.getId());
 
@@ -422,6 +355,87 @@ public class Data implements Persistence {
 
 		return user;
 	}
+	
+	// =====================================================================
+	// Generic utils
+	// =====================================================================
+
+	private void insert(Object obj) throws SQLException {
+		query(obj, new InsertQueryBuilder(getTable(obj)));
+	}
+
+	private void update(Object obj) throws SQLException {
+		query(obj, new UpdateQueryBuilder(getTable(obj), getId(obj)));
+	}
+
+	private void query(Object obj, QueryBuilder qb) throws SQLException {
+		for (Field f : obj.getClass().getDeclaredFields()) {
+			f.setAccessible(true);
+
+			// unpersisted field
+			if (f.getAnnotation(NotPersisted.class) != null) {
+				continue;
+			}
+
+			// persisted field
+			ColumnAlias alias;
+			String field;
+			if ((alias = f.getAnnotation(ColumnAlias.class)) != null) {
+				field = alias.column();
+			} else {
+				field = f.getName();
+			}
+
+			qb.appendField(field);
+
+			try {
+				if (f.getType().equals(String.class)) {
+					qb.appendValue(String.format("'%s'", f.get(obj).toString()));
+				} else {
+					qb.appendValue(f.get(obj).toString());
+				}
+			} catch (Exception e) {
+				logger.log(Level.SEVERE,
+						"couldn't get value of field " + f.getName(), e);
+				throw new SQLException("Object couldn't be inserted!");
+			}
+		}
+
+		if (qb.hasValues()) {
+			String sql = qb.getQuery();
+			logger.info(sql);
+
+			Connection conn = dataSource.getConnection();
+			PreparedStatement stmt = conn.prepareStatement(sql,
+					Statement.RETURN_GENERATED_KEYS);
+			stmt.executeUpdate();
+
+			if (qb.getClass().equals(InsertQueryBuilder.class)) {
+				ResultSet generatedKeys = null;
+				try {
+					generatedKeys = stmt.getGeneratedKeys();
+					if (generatedKeys.next()) {
+						int insertId = generatedKeys.getInt(1);
+						getIdField(obj).set(obj, insertId);
+						logger.info(obj + " inserted with id " + insertId);
+					}
+				} catch (Exception e) {
+					throw new SQLException(
+							"Object's insert id couldn't be set!");
+				} finally {
+					if (generatedKeys != null) {
+						generatedKeys.close();
+					}
+
+					if (stmt != null) {
+						stmt.close();
+					}
+
+					conn.close();
+				}
+			}
+		}
+	}
 
 	private <T> T get(Class<T> clazz, Constraint... constraints)
 			throws SQLException {
@@ -438,14 +452,33 @@ public class Data implements Persistence {
 		}
 	}
 
-	private int getNewestRevision() {
-		// TODO
-		return 0;
+	private <T> List<T> getMany(Class<T> clazz, Constraint... constraints)
+			throws SQLException {
+		return run.query(String.format("SELECT * FROM %s %s", getTable(clazz),
+				getWhereClause(constraints)), new BeanListHandler<T>(clazz));
 	}
 
 	// =====================================================================
 	// Helpers
 	// =====================================================================
+
+	private Field getIdField(Object obj) throws SQLException {
+		try {
+			Field idField = obj.getClass().getDeclaredField("id");
+			idField.setAccessible(true);
+			return idField;
+		} catch (Exception e) {
+			throw new SQLException("couldn't get object id");
+		}
+	}
+
+	private int getId(Object obj) throws SQLException {
+		try {
+			return getIdField(obj).getInt(obj);
+		} catch (Exception e) {
+			throw new SQLException("couldn't get object id");
+		}
+	}
 
 	private static <T> String getTable(Class<T> clazz) {
 		TableAlias alias = clazz.getAnnotation(TableAlias.class);

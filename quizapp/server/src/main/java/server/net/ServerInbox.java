@@ -1,6 +1,7 @@
 package server.net;
 
 import java.net.Socket;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -86,19 +87,26 @@ public class ServerInbox implements Runnable {
 			waitingRevision = revision;
 		} else {
 			// assert that both clients have the questions locally available
-			List<Question> questions = persistence.getQuestions(Math.max(
-					waitingRevision, revision));
-			List<Integer> questionIds = getQuestionIds(questions);
+			List<Question> questions;
+			try {
+				questions = persistence.getQuestions(Math.max(waitingRevision,
+						revision));
 
-			// connect
-			NetUtils.send(waitingClient, new MatchCreatedResponse(user,
-					questionIds));
-			NetUtils.send(client, new MatchCreatedResponse(waitingUser,
-					questionIds));
-			serverDir.startMatch(client, waitingClient, questions);
+				List<Integer> questionIds = getQuestionIds(questions);
 
-			// clear spot
-			waitingUser = null;
+				// connect
+				NetUtils.send(waitingClient, new MatchCreatedResponse(user,
+						questionIds));
+				NetUtils.send(client, new MatchCreatedResponse(waitingUser,
+						questionIds));
+				serverDir.startMatch(client, waitingClient, questions);
+
+				// clear spot
+				waitingUser = null;
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -123,16 +131,16 @@ public class ServerInbox implements Runnable {
 	 */
 	private void process(UserAuthRequest req) {
 		// login or register user
-		User user;
-		if (req.wantsToRegister()) {
-			user = persistence.registerUser(req.getUsername(),
-					req.getPassword());
-		} else {
-			user = persistence.loginUser(req.getUsername(), req.getPassword());
-		}
+		try {
+			User user;
+			if (req.wantsToRegister()) {
+				user = persistence.registerUser(req.getUsername(),
+						req.getPassword());
+			} else {
+				user = persistence.loginUser(req.getUsername(),
+						req.getPassword());
+			}
 
-		// on success
-		if (user != null) {
 			// send user the list of other users
 			NetUtils.send(client,
 					new AuthResponse(true, serverDir.getActiveUsers()));
@@ -141,7 +149,8 @@ public class ServerInbox implements Runnable {
 					new UserListChangedResponse(true, user));
 			// connect username and socket in the server directory
 			serverDir.idClient(client, user, req.getRevision());
-		} else {
+
+		} catch (SQLException e) {
 			NetUtils.send(client, new AuthResponse(false, null));
 		}
 	}
@@ -165,8 +174,12 @@ public class ServerInbox implements Runnable {
 	 * @param req
 	 */
 	private void process(UserDataChangeRequest req) {
-		if (!persistence.changeUserCredentials(req.getNewUsername(),
-				req.getNewPassword(), req.getNewPasswordConfirm())) {
+		try {
+			persistence.changeUserCredentials(req.getNewUsername(),
+					req.getNewPassword(), req.getNewPasswordConfirm());
+		} catch (IllegalArgumentException e) {
+			NetUtils.send(client, new ErrorResponse("Bad input!"));
+		} catch (SQLException e) {
 			NetUtils.send(client, new ErrorResponse(
 					"User data couldn't be saved!"));
 		}
@@ -204,19 +217,27 @@ public class ServerInbox implements Runnable {
 	private void process(ChallengeAcceptRequest req) {
 		Socket opponent = serverDir.getOpponent(client);
 
-		List<Question> questions = persistence
-				.getQuestions(Math.max(serverDir.getRevision(client),
-						serverDir.getRevision(opponent)));
-		List<Integer> questionIds = getQuestionIds(questions);
+		List<Question> questions;
+		try {
+			questions = persistence.getQuestions(Math.max(
+					serverDir.getRevision(client),
+					serverDir.getRevision(opponent)));
 
-		NetUtils.send(
-				opponent,
-				new MatchCreatedResponse(serverDir.getUser(client), questionIds));
-		NetUtils.send(client,
-				new MatchCreatedResponse(serverDir.getUser(req.getOpponent()),
-						questionIds));
+			List<Integer> questionIds = getQuestionIds(questions);
 
-		serverDir.startMatch(client, opponent, questions);
+			NetUtils.send(opponent,
+					new MatchCreatedResponse(serverDir.getUser(client),
+							questionIds));
+			NetUtils.send(
+					client,
+					new MatchCreatedResponse(serverDir.getUser(req
+							.getOpponent()), questionIds));
+
+			serverDir.startMatch(client, opponent, questions);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	/**
