@@ -188,7 +188,7 @@ public class Data implements Persistence {
 		insert(user);
 		return user;
 	}
-	
+
 	@Override
 	public void changeUserCredentials(String username, String password,
 			String confirmation) throws SQLException, IllegalArgumentException {
@@ -252,7 +252,7 @@ public class Data implements Persistence {
 	// =====================================================================
 	// Questions
 	// =====================================================================
-	
+
 	@Override
 	public void addQuestion(Question question) throws SQLException {
 		if (question == null) {
@@ -293,11 +293,11 @@ public class Data implements Persistence {
 		return getMany(Question.class, new LessEqualConstraint("revision",
 				revision));
 	}
-	
+
 	// =====================================================================
 	// Matches
 	// =====================================================================
-	
+
 	@Override
 	public void saveMatch(Match match) throws SQLException {
 		if (match == null) {
@@ -306,16 +306,16 @@ public class Data implements Persistence {
 
 		insert(match);
 	}
-	
+
 	// =====================================================================
 	// Entity utils
 	// =====================================================================
-	
+
 	private int getNewestRevision() {
 		// TODO
 		return 0;
 	}
-	
+
 	private User getUser(Constraint... constraints) throws SQLException {
 		User user = get(User.class, constraints);
 
@@ -355,17 +355,62 @@ public class Data implements Persistence {
 
 		return user;
 	}
-	
+
 	// =====================================================================
 	// Generic utils
 	// =====================================================================
 
 	private void insert(Object obj) throws SQLException {
-		query(obj, new InsertQueryBuilder(getTable(obj)));
+		InsertQueryBuilder qb = new InsertQueryBuilder(getTable(obj));
+		query(obj, qb);
+
+		if (qb.hasValues()) {
+			String sql = qb.getQuery();
+			logger.info(sql);
+
+			Connection conn = null;
+			PreparedStatement stmt = null;
+			ResultSet generatedKeys = null;
+			try {
+				conn = dataSource.getConnection();
+				stmt = conn.prepareStatement(sql,
+						Statement.RETURN_GENERATED_KEYS);
+				stmt.executeUpdate();
+
+				generatedKeys = stmt.getGeneratedKeys();
+				if (generatedKeys.next()) {
+					int insertId = generatedKeys.getInt(1);
+					getIdField(obj).set(obj, insertId);
+					logger.info(obj + " inserted with id " + insertId);
+				}
+			} catch (Exception e) {
+				throw new SQLException("Object's insert id couldn't be set!");
+			} finally {
+				if (generatedKeys != null) {
+					generatedKeys.close();
+				}
+
+				if (stmt != null) {
+					stmt.close();
+				}
+
+				if(conn != null) {
+					conn.close();
+				}
+			}
+		}
 	}
 
 	private void update(Object obj) throws SQLException {
-		query(obj, new UpdateQueryBuilder(getTable(obj), getId(obj)));
+		UpdateQueryBuilder qb = new UpdateQueryBuilder(getTable(obj),
+				getId(obj));
+		query(obj, qb);
+
+		if (qb.hasValues()) {
+			String sql = qb.getQuery();
+			logger.info(sql);
+			run.update(sql);
+		}
 	}
 
 	private void query(Object obj, QueryBuilder qb) throws SQLException {
@@ -398,41 +443,6 @@ public class Data implements Persistence {
 				logger.log(Level.SEVERE,
 						"couldn't get value of field " + f.getName(), e);
 				throw new SQLException("Object couldn't be inserted!");
-			}
-		}
-
-		if (qb.hasValues()) {
-			String sql = qb.getQuery();
-			logger.info(sql);
-
-			Connection conn = dataSource.getConnection();
-			PreparedStatement stmt = conn.prepareStatement(sql,
-					Statement.RETURN_GENERATED_KEYS);
-			stmt.executeUpdate();
-
-			if (qb.getClass().equals(InsertQueryBuilder.class)) {
-				ResultSet generatedKeys = null;
-				try {
-					generatedKeys = stmt.getGeneratedKeys();
-					if (generatedKeys.next()) {
-						int insertId = generatedKeys.getInt(1);
-						getIdField(obj).set(obj, insertId);
-						logger.info(obj + " inserted with id " + insertId);
-					}
-				} catch (Exception e) {
-					throw new SQLException(
-							"Object's insert id couldn't be set!");
-				} finally {
-					if (generatedKeys != null) {
-						generatedKeys.close();
-					}
-
-					if (stmt != null) {
-						stmt.close();
-					}
-
-					conn.close();
-				}
 			}
 		}
 	}
