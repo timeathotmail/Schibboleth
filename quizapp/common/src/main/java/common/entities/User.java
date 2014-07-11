@@ -28,14 +28,17 @@ public class User {
 	/**
 	 * The amount of matches the user played.
 	 */
+	@NotPersisted
 	private int matchCount;
 	/**
 	 * The amount of matches the user won.
 	 */
+	@NotPersisted
 	private int winCount;
 	/**
 	 * The amount of points the user scored in all of his games.
 	 */
+	@NotPersisted
 	private int pointCount;
 
 	/**

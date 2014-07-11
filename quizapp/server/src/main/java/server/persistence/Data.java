@@ -1,10 +1,10 @@
 package server.persistence;
 
+import java.lang.reflect.Field;
 import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.ResultSet;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.ArrayList;
+import java.sql.Statement;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -15,6 +15,7 @@ import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
 
 import server.ServerProperties;
 import common.entities.*;
+import common.entities.User.Role;
 
 /**
  * Provides database access.
@@ -82,24 +83,17 @@ public class Data implements Persistence {
 	 * @throws SQLException
 	 */
 	private Data() throws SQLException {
-		Connection conn = null;
 
 		try {
 			Class.forName(JDBC_DRIVER);
-			dataSource.setDatabaseName(DB_NAME);
 			dataSource.setUser(DB_USER);
 			dataSource.setPassword(DB_PASS);
 			dataSource.setUrl(DB_URL);
-			conn = dataSource.getConnection();
 			run = new QueryRunner(dataSource);
-			checkDatabaseStructure(conn);
+			checkDatabaseStructure();
 		} catch (ClassNotFoundException e) {
 			logger.log(Level.SEVERE, "Database driver error!", e);
 			throw new SQLException("Couldn't register JDBC driver!");
-		} finally {
-			if (conn != null) {
-				conn.close();
-			}
 		}
 	}
 
@@ -109,45 +103,99 @@ public class Data implements Persistence {
 	 * @param conn
 	 * @throws SQLException
 	 */
-	private void checkDatabaseStructure(Connection conn) throws SQLException {
+	private void checkDatabaseStructure() throws SQLException {
 		logger.info("checking database structure...");
-		ResultSet rs = null;
 
-		try {
-			// check if database exists
-			boolean dbExists = false;
-			rs = conn.getMetaData().getCatalogs();
-			while (rs.next()) {
-				if (DB_NAME.equals(rs.getString(1))) {
-					dbExists = true;
-					break;
+		run.update("DROP DATABASE " + DB_NAME);
+		run.update("CREATE DATABASE IF NOT EXISTS " + DB_NAME);
+		dataSource.setUrl(DB_URL + DB_NAME);
+
+		run.update("CREATE TABLE IF NOT EXISTS USER("
+				+ "id   INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,"
+				+ "role VARCHAR(20)  NOT NULL,"
+				+ "name VARCHAR(30)  NOT NULL UNIQUE)");
+
+		run.update("CREATE TABLE IF NOT EXISTS QUESTION("
+				+ "id           INT UNSIGNED      PRIMARY KEY AUTO_INCREMENT,"
+				+ "category     VARCHAR(50)       NOT NULL,"
+				+ "text         VARCHAR(200)      NOT NULL,"
+				+ "answer1      VARCHAR(30)       NOT NULL,"
+				+ "answer2      VARCHAR(30)       NOT NULL,"
+				+ "answer3      VARCHAR(30)       NOT NULL,"
+				+ "answer4      VARCHAR(30)       NOT NULL,"
+				+ "correctIndex TINYINT UNSIGNED  CHECK(correctIndex < 4),"
+				+ "revision     SMALLINT UNSIGNED NOT NULL)");
+
+		run.update("CREATE TABLE IF NOT EXISTS MATCH_("
+				+ "id      INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,"
+				+ "user1   INT UNSIGNED REFERENCES USER(id) ON DELETE CASCADE,"
+				+ "user2   INT UNSIGNED REFERENCES USER(id) ON DELETE CASCADE,"
+				+ "points1 INT UNSIGNED NOT NULL,"
+				+ "points2 INT UNSIGNED NOT NULL)");
+
+		User user = new User("Bob", Role.Admin);
+		insert(user);
+		System.out.println(user.getId());
+	}
+
+	private void insert(Object obj) throws SQLException {
+		StringBuilder fields = new StringBuilder("INSERT INTO "
+				+ obj.getClass().getSimpleName().toUpperCase() + " (");
+		StringBuilder values = new StringBuilder("VALUES (");
+		Field id = null;
+		int numberOfFields = 0;
+
+		// TODO ist echt gut lesbar nach auto formatieren
+		for (Field f : obj.getClass().getDeclaredFields()) {
+			f.setAccessible(true);
+			if (!f.getName().equals("id")) {
+				if (f.getAnnotation(NotPersisted.class) == null) {
+					fields.append(f.getName() + ",");
+					numberOfFields++;
+					try {
+						values.append("'" + f.get(obj) + "',");
+					} catch (Exception e) {
+						logger.log(
+								Level.SEVERE,
+								"insert: couldn't get value of field "
+										+ f.getName(), e);
+						throw new SQLException("Object couldn't be inserted!");
+					}
 				}
+			} else {
+				id = f;
 			}
-			rs.close();
+		}
 
-			if (!dbExists) {
-				logger.info("no database detected, creating...");
-				run.update("CREATE DATABASE " + DB_NAME);
-				logger.info("database created.");
-			}
+		if (numberOfFields > 0) {
+			// remove last commas
+			fields.deleteCharAt(fields.length() - 1);
+			values.deleteCharAt(values.length() - 1);
 
-			// get existing tables
-			logger.info("checking tables...");
-			List<String> tables = new ArrayList<String>();
-			DatabaseMetaData md = conn.getMetaData();
-			rs = md.getTables(null, null, "%", null);
-			while (rs.next()) {
-				tables.add(rs.getString(3));
-			}
+			// close statement parts
+			fields.append(") ");
+			values.append(")");
 
-			// add missing tables
-			if (!tables.contains("beispiel")) {
-				logger.info("creating table beispiel...");
-				// TODO
-			}
-		} finally {
-			if (rs != null) {
-				rs.close();
+			String sqlInsert = fields.toString() + values.toString();
+			logger.info(sqlInsert);
+
+			Connection conn = dataSource.getConnection();
+			PreparedStatement stmt = conn.prepareStatement(sqlInsert,
+					Statement.RETURN_GENERATED_KEYS);
+			int insertId = stmt.executeUpdate();
+
+			try {
+				id.set(obj, insertId);
+			} catch (Exception e) {
+				logger.log(Level.SEVERE,
+						"insert: object's insert id couldn't be set", e);
+				throw new SQLException("Object's insert id couldn't be set!");
+			} finally {
+				if (stmt != null) {
+					stmt.close();
+				}
+
+				conn.close();
 			}
 		}
 	}
