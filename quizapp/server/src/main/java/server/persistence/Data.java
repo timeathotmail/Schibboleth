@@ -3,6 +3,7 @@ package server.persistence;
 import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
@@ -16,6 +17,7 @@ import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
 
 import server.ServerProperties;
 import common.entities.*;
+import common.entities.annotations.*;
 
 /**
  * Provides database access.
@@ -116,29 +118,40 @@ public class Data implements Persistence {
 				+ "name VARCHAR(30)  NOT NULL UNIQUE)");
 
 		run.update("CREATE TABLE IF NOT EXISTS QUESTION("
-				+ "id           INT UNSIGNED      PRIMARY KEY AUTO_INCREMENT,"
-				+ "category     VARCHAR(50)       NOT NULL,"
-				+ "text         VARCHAR(200)      NOT NULL,"
-				+ "answer1      VARCHAR(30)       NOT NULL,"
-				+ "answer2      VARCHAR(30)       NOT NULL,"
-				+ "answer3      VARCHAR(30)       NOT NULL,"
-				+ "answer4      VARCHAR(30)       NOT NULL,"
-				+ "correctIndex TINYINT UNSIGNED  CHECK(correctIndex < 4),"
+				+ "id           INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,"
+				+ "category     VARCHAR(50)  NOT NULL,"
+				+ "text         VARCHAR(200) NOT NULL,"
+				+ "answer1      VARCHAR(30)  NOT NULL,"
+				+ "answer2      VARCHAR(30)  NOT NULL,"
+				+ "answer3      VARCHAR(30)  NOT NULL,"
+				+ "answer4      VARCHAR(30)  NOT NULL,"
+				+ "correctIndex TINYINT UNSIGNED,"
 				+ "revision     SMALLINT UNSIGNED NOT NULL)");
 
-		run.update("CREATE TABLE IF NOT EXISTS MATCH_("
+		run.update("CREATE TABLE IF NOT EXISTS MATCH__("
 				+ "id      INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,"
-				+ "user1   INT UNSIGNED REFERENCES USER(id) ON DELETE CASCADE,"
-				+ "user2   INT UNSIGNED REFERENCES USER(id) ON DELETE CASCADE,"
+				+ "user1   INT UNSIGNED,"
+				+ "user2   INT UNSIGNED," // FIXME users can be equal
 				+ "points1 INT UNSIGNED NOT NULL,"
-				+ "points2 INT UNSIGNED NOT NULL)");
+				+ "points2 INT UNSIGNED NOT NULL,"
+				+ "FOREIGN KEY(user1) REFERENCES USER(id) ON DELETE CASCADE,"
+				+ "FOREIGN KEY(user2) REFERENCES USER(id) ON DELETE CASCADE)");
 
 		User user = new User("Bob", true);
+		User user2 = new User("Patrick", false);
 		insert(user);
-		System.out.println(user.getId());
+		insert(user2);
 		User sameUser = getUser(user.getId());
-		System.out.println(sameUser.getName());
-		System.out.println(sameUser.isAdmin());
+
+		Match match = new Match(user, user2, 1, 5);
+		insert(match);
+		match = new Match(user, user2, 7, 2);
+		insert(match);
+		match = new Match(user2, user, 7, 2);
+		insert(match);
+
+		sameUser = getUser(user.getId());
+		System.out.println(sameUser);
 	}
 
 	// =====================================================================
@@ -291,36 +304,47 @@ public class Data implements Persistence {
 	// =====================================================================
 
 	private void insert(Object obj) throws SQLException {
-		StringBuilder fields = new StringBuilder("INSERT INTO " + getTable(obj)
-				+ " (");
+		StringBuilder fields = new StringBuilder(String.format(
+				"INSERT INTO %s (", getTable(obj)));
 		StringBuilder values = new StringBuilder("VALUES (");
 		Field id = null;
 		int numberOfFields = 0;
 
-		// TODO ist echt gut lesbar nach auto formatieren
 		for (Field f : obj.getClass().getDeclaredFields()) {
 			f.setAccessible(true);
-			if (!f.getName().equals("id")) {
-				if (f.getAnnotation(NotPersisted.class) == null) {
-					fields.append(f.getName() + ",");
-					numberOfFields++;
-					try {
-						if(!f.getType().equals(boolean.class)) {
-							values.append("'" + f.get(obj) + "'");
-						} else {
-							values.append(f.get(obj));
-						}
-						values.append(",");
-					} catch (Exception e) {
-						logger.log(
-								Level.SEVERE,
-								"insert: couldn't get value of field "
-										+ f.getName(), e);
-						throw new SQLException("Object couldn't be inserted!");
-					}
-				}
-			} else {
+
+			// id field
+			if (f.getName().equals("id")) {
 				id = f;
+				continue;
+			}
+
+			// unpersisted field
+			if (f.getAnnotation(NotPersisted.class) != null) {
+				continue;
+			}
+
+			// persisted field
+			ColumnAlias alias;
+			if ((alias = f.getAnnotation(ColumnAlias.class)) != null) {
+				fields.append(alias.column());
+			} else {
+				fields.append(f.getName());
+			}
+
+			fields.append(",");
+			numberOfFields++;
+			try {
+				if (!f.getType().equals(boolean.class)) {
+					values.append("'" + f.get(obj) + "'");
+				} else {
+					values.append(f.get(obj));
+				}
+				values.append(",");
+			} catch (Exception e) {
+				logger.log(Level.SEVERE, "insert: couldn't get value of field "
+						+ f.getName(), e);
+				throw new SQLException("Object couldn't be inserted!");
 			}
 		}
 
@@ -339,15 +363,25 @@ public class Data implements Persistence {
 			Connection conn = dataSource.getConnection();
 			PreparedStatement stmt = conn.prepareStatement(sqlInsert,
 					Statement.RETURN_GENERATED_KEYS);
-			int insertId = stmt.executeUpdate();
+			stmt.executeUpdate();
 
+			ResultSet generatedKeys = null;
 			try {
-				id.set(obj, insertId);
+				generatedKeys = stmt.getGeneratedKeys();
+				if (generatedKeys.next()) {
+					int insertId = generatedKeys.getInt(1);
+					id.set(obj, insertId);
+					logger.info(obj + " inserted with id " + insertId);
+				}
 			} catch (Exception e) {
 				logger.log(Level.SEVERE,
 						"insert: object's insert id couldn't be set", e);
 				throw new SQLException("Object's insert id couldn't be set!");
 			} finally {
+				if (generatedKeys != null) {
+					generatedKeys.close();
+				}
+
 				if (stmt != null) {
 					stmt.close();
 				}
@@ -359,17 +393,52 @@ public class Data implements Persistence {
 
 	private User getUser(int id) throws SQLException {
 		User user = get(id, User.class);
-		// TODO winCount, matchCount, pointCount
+
+		// set user's stats
+		String sql = String
+				.format("SELECT SUM(_points) AS pointCount, _win AS winCount, COUNT(*) AS matchCount FROM ("
+						+ "SELECT IF(user1=%d, points1, points2) AS _points, "
+						+ "IF((SELECT(_points)) >= points1 AND (SELECT(_points)) >= points2,0,1) AS _win "
+						+ "FROM %s WHERE user1=%d OR user2=%d) AS score",
+						user.getId(), getTable(Match.class), user.getId(),
+						user.getId());
+
+		Connection conn = dataSource.getConnection();
+		Statement stmt = null;
+		ResultSet rs = null;
+
+		try {
+			stmt = conn.createStatement();
+			rs = stmt.executeQuery(sql);
+
+			if (rs.next()) {
+				user.setMatchCount(rs.getInt("matchCount"));
+				user.setWinCount(rs.getInt("winCount"));
+				user.setPointCount(rs.getInt("PointCount"));
+			}
+		} finally {
+			if (stmt != null) {
+				stmt.close();
+			}
+
+			if (rs != null) {
+				rs.close();
+			}
+
+			conn.close();
+		}
+
 		return user;
 	}
 
 	private <T> T get(int id, Class<T> clazz) throws SQLException {
-		List<T> results = run.query("SELECT * FROM " + getTable(clazz) + " WHERE id=" + id,
+		List<T> results = run.query(String.format(
+				"SELECT * FROM %s WHERE id=%d", getTable(clazz), id),
 				new BeanListHandler<T>(clazz));
-		
-		if(results.size() == 1) {
+
+		if (results.size() == 1) {
 			return results.get(0);
-		} else if(results.size() > 1) {
+		} else if (results.size() > 1) {
 			throw new SQLException("ambiguous id");
 		} else {
 			throw new SQLException("no result");
@@ -377,13 +446,19 @@ public class Data implements Persistence {
 	}
 
 	private <T> String getTable(Class<T> clazz) {
+		TableAlias alias = clazz.getAnnotation(TableAlias.class);
+
+		if (alias != null) {
+			return alias.table();
+		}
+
 		return clazz.getSimpleName().toUpperCase();
 	}
 
 	private String getTable(Object obj) {
-		return obj.getClass().getSimpleName().toUpperCase();
+		return getTable(obj.getClass());
 	}
-	
+
 	private int getNewestRevision() {
 		// TODO
 		return 0;

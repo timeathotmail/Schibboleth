@@ -1,5 +1,7 @@
 package common.entities;
 
+import common.entities.annotations.NotPersisted;
+
 /**
  * This class represents a registered user in the system.
  * 
@@ -52,6 +54,12 @@ public class User {
 	public User(String name, boolean isAdmin) {
 		this.name = name;
 		this.isAdmin = isAdmin;
+	}
+
+	@Override
+	public String toString() {
+		return String.format("User[%s, matches: %d, wins: %d, points: %d]",
+				name, matchCount, winCount, pointCount);
 	}
 
 	// === getters & setters ===

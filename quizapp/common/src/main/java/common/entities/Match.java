@@ -1,10 +1,13 @@
 package common.entities;
 
+import common.entities.annotations.*;
+
 /**
  * This class represents a finished match between two users.
  * 
  * @author Tim Wiechers
  */
+@TableAlias(table="MATCH__")
 public class Match {
 	/**
 	 * ID for unique identification.
@@ -13,10 +16,12 @@ public class Match {
 	/**
 	 * First player.
 	 */
+	@NotPersisted
 	private User user1;
 	/**
 	 * Second player.
 	 */
+	@NotPersisted
 	private User user2;
 	/**
 	 * First player's points.
@@ -26,6 +31,11 @@ public class Match {
 	 * Second player's points.
 	 */
 	private int points2;
+	
+	@ColumnAlias(column="user1")
+	private int userId1;
+	@ColumnAlias(column="user2")
+	private int userId2;
 
 	/**
 	 * Constructor for JSON deserialization and persistence framework.
@@ -43,8 +53,8 @@ public class Match {
 	 *            second player
 	 */
 	public Match(User user1, User user2) {
-		this.user1 = user1;
-		this.user2 = user2;
+		setUser1(user1);
+		setUser2(user2);
 	}
 
 	/**
@@ -60,8 +70,8 @@ public class Match {
 	 *            second player's points
 	 */
 	public Match(User user1, User user2, int points1, int points2) {
-		this.user1 = user1;
-		this.user2 = user2;
+		setUser1(user1);
+		setUser2(user2);
 		this.points1 = points1;
 		this.points2 = points2;
 	}
@@ -82,6 +92,10 @@ public class Match {
 
 	public void setUser1(User user1) {
 		this.user1 = user1;
+		
+		if(user1 != null) {
+			this.userId1 = user1.getId();
+		}
 	}
 
 	public User getUser2() {
@@ -90,6 +104,10 @@ public class Match {
 
 	public void setUser2(User user2) {
 		this.user2 = user2;
+		
+		if(user2 != null) {
+			this.userId2 = user2.getId();
+		}
 	}
 
 	public int getPoints1() {
