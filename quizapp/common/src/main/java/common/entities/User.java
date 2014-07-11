@@ -7,24 +7,17 @@ package common.entities;
  */
 public class User {
 	/**
-	 * Enum for distinction of user rights.
-	 */
-	public enum Role {
-		Player, Admin
-	}
-
-	/**
 	 * ID for unique identification.
 	 */
 	private int id;
 	/**
+	 * True if admin.
+	 */
+	private boolean isAdmin;
+	/**
 	 * Username.
 	 */
 	private String name;
-	/**
-	 * The user's role in the system.
-	 */
-	private Role role;
 	/**
 	 * The amount of matches the user played.
 	 */
@@ -53,12 +46,12 @@ public class User {
 	 * 
 	 * @param name
 	 *            the username
-	 * @param role
-	 *            the user's role
+	 * @param isAdmin
+	 *            true if admin
 	 */
-	public User(String name, Role role) {
+	public User(String name, boolean isAdmin) {
 		this.name = name;
-		this.role = role;
+		this.isAdmin = isAdmin;
 	}
 
 	// === getters & setters ===
@@ -77,14 +70,6 @@ public class User {
 
 	public void setName(String name) {
 		this.name = name;
-	}
-
-	public Role getRole() {
-		return role;
-	}
-
-	public void setRole(Role role) {
-		this.role = role;
 	}
 
 	public int getMatchCount() {
@@ -109,5 +94,13 @@ public class User {
 
 	public void setPointCount(int pointCount) {
 		this.pointCount = pointCount;
+	}
+
+	public boolean isAdmin() {
+		return isAdmin;
+	}
+
+	public void setAdmin(boolean isAdmin) {
+		this.isAdmin = isAdmin;
 	}
 }

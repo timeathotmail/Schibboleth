@@ -10,12 +10,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.apache.commons.dbutils.QueryRunner;
+import org.apache.commons.dbutils.handlers.BeanListHandler;
 
 import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
 
 import server.ServerProperties;
 import common.entities.*;
-import common.entities.User.Role;
 
 /**
  * Provides database access.
@@ -112,7 +112,7 @@ public class Data implements Persistence {
 
 		run.update("CREATE TABLE IF NOT EXISTS USER("
 				+ "id   INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,"
-				+ "role VARCHAR(20)  NOT NULL,"
+				+ "isAdmin BOOLEAN  NOT NULL," // FIXME immer false
 				+ "name VARCHAR(30)  NOT NULL UNIQUE)");
 
 		run.update("CREATE TABLE IF NOT EXISTS QUESTION("
@@ -133,71 +133,12 @@ public class Data implements Persistence {
 				+ "points1 INT UNSIGNED NOT NULL,"
 				+ "points2 INT UNSIGNED NOT NULL)");
 
-		User user = new User("Bob", Role.Admin);
+		User user = new User("Bob", true);
 		insert(user);
 		System.out.println(user.getId());
-	}
-
-	private void insert(Object obj) throws SQLException {
-		StringBuilder fields = new StringBuilder("INSERT INTO "
-				+ obj.getClass().getSimpleName().toUpperCase() + " (");
-		StringBuilder values = new StringBuilder("VALUES (");
-		Field id = null;
-		int numberOfFields = 0;
-
-		// TODO ist echt gut lesbar nach auto formatieren
-		for (Field f : obj.getClass().getDeclaredFields()) {
-			f.setAccessible(true);
-			if (!f.getName().equals("id")) {
-				if (f.getAnnotation(NotPersisted.class) == null) {
-					fields.append(f.getName() + ",");
-					numberOfFields++;
-					try {
-						values.append("'" + f.get(obj) + "',");
-					} catch (Exception e) {
-						logger.log(
-								Level.SEVERE,
-								"insert: couldn't get value of field "
-										+ f.getName(), e);
-						throw new SQLException("Object couldn't be inserted!");
-					}
-				}
-			} else {
-				id = f;
-			}
-		}
-
-		if (numberOfFields > 0) {
-			// remove last commas
-			fields.deleteCharAt(fields.length() - 1);
-			values.deleteCharAt(values.length() - 1);
-
-			// close statement parts
-			fields.append(") ");
-			values.append(")");
-
-			String sqlInsert = fields.toString() + values.toString();
-			logger.info(sqlInsert);
-
-			Connection conn = dataSource.getConnection();
-			PreparedStatement stmt = conn.prepareStatement(sqlInsert,
-					Statement.RETURN_GENERATED_KEYS);
-			int insertId = stmt.executeUpdate();
-
-			try {
-				id.set(obj, insertId);
-			} catch (Exception e) {
-				logger.log(Level.SEVERE,
-						"insert: object's insert id couldn't be set", e);
-				throw new SQLException("Object's insert id couldn't be set!");
-			} finally {
-				if (stmt != null) {
-					stmt.close();
-				}
-
-				conn.close();
-			}
-		}
+		User sameUser = getUser(user.getId());
+		System.out.println(sameUser.getName());
+		System.out.println(sameUser.isAdmin());
 	}
 
 	// =====================================================================
@@ -349,6 +290,100 @@ public class Data implements Persistence {
 	// Utils
 	// =====================================================================
 
+	private void insert(Object obj) throws SQLException {
+		StringBuilder fields = new StringBuilder("INSERT INTO " + getTable(obj)
+				+ " (");
+		StringBuilder values = new StringBuilder("VALUES (");
+		Field id = null;
+		int numberOfFields = 0;
+
+		// TODO ist echt gut lesbar nach auto formatieren
+		for (Field f : obj.getClass().getDeclaredFields()) {
+			f.setAccessible(true);
+			if (!f.getName().equals("id")) {
+				if (f.getAnnotation(NotPersisted.class) == null) {
+					fields.append(f.getName() + ",");
+					numberOfFields++;
+					try {
+						if(!f.getType().equals(boolean.class)) {
+							values.append("'" + f.get(obj) + "'");
+						} else {
+							values.append(f.get(obj));
+						}
+						values.append(",");
+					} catch (Exception e) {
+						logger.log(
+								Level.SEVERE,
+								"insert: couldn't get value of field "
+										+ f.getName(), e);
+						throw new SQLException("Object couldn't be inserted!");
+					}
+				}
+			} else {
+				id = f;
+			}
+		}
+
+		if (numberOfFields > 0) {
+			// remove last commas
+			fields.deleteCharAt(fields.length() - 1);
+			values.deleteCharAt(values.length() - 1);
+
+			// close statement parts
+			fields.append(") ");
+			values.append(")");
+
+			String sqlInsert = fields.toString() + values.toString();
+			logger.info(sqlInsert);
+
+			Connection conn = dataSource.getConnection();
+			PreparedStatement stmt = conn.prepareStatement(sqlInsert,
+					Statement.RETURN_GENERATED_KEYS);
+			int insertId = stmt.executeUpdate();
+
+			try {
+				id.set(obj, insertId);
+			} catch (Exception e) {
+				logger.log(Level.SEVERE,
+						"insert: object's insert id couldn't be set", e);
+				throw new SQLException("Object's insert id couldn't be set!");
+			} finally {
+				if (stmt != null) {
+					stmt.close();
+				}
+
+				conn.close();
+			}
+		}
+	}
+
+	private User getUser(int id) throws SQLException {
+		User user = get(id, User.class);
+		// TODO winCount, matchCount, pointCount
+		return user;
+	}
+
+	private <T> T get(int id, Class<T> clazz) throws SQLException {
+		List<T> results = run.query("SELECT * FROM " + getTable(clazz) + " WHERE id=" + id,
+				new BeanListHandler<T>(clazz));
+		
+		if(results.size() == 1) {
+			return results.get(0);
+		} else if(results.size() > 1) {
+			throw new SQLException("ambiguous id");
+		} else {
+			throw new SQLException("no result");
+		}
+	}
+
+	private <T> String getTable(Class<T> clazz) {
+		return clazz.getSimpleName().toUpperCase();
+	}
+
+	private String getTable(Object obj) {
+		return obj.getClass().getSimpleName().toUpperCase();
+	}
+	
 	private int getNewestRevision() {
 		// TODO
 		return 0;

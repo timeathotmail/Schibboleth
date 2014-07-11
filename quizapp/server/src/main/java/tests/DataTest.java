@@ -14,7 +14,6 @@ import common.entities.Match;
 import common.entities.Question;
 import common.entities.User;
 import common.entities.Question.Category;
-import common.entities.User.Role;
 
 /**
  * DieKommentare aus dem Interface IPersistance wuerden fuer Bequemlichkeit kopiert.
@@ -35,10 +34,10 @@ public class DataTest {
 	 */
 	@Test
 	public void testLoginUser() {
-		User user = new User("Bob", Role.Player);
+		User user = new User("Bob", false);
 		
 		
-		User user1 = new User("Bib", Role.Admin);
+		User user1 = new User("Bib", true);
 		
 	}
 
@@ -144,7 +143,7 @@ public class DataTest {
 	 */
 	@Test
 	public void testUpdateUser() {
-		User user = new User("Bob", Role.Player);
+		User user = new User("Bob", false);
 		//null
 		try{
 			assertEquals(false, Data.getInstance().updateUser(null));
@@ -169,7 +168,7 @@ public class DataTest {
 	 */
 	@Test
 	public void testRemoveUser() {
-		User user = new User("Bob", Role.Player);
+		User user = new User("Bob", false);
 		//no such user
 		try{						
 			assertEquals(false, Data.getInstance().removeUser(user));
@@ -211,7 +210,7 @@ public class DataTest {
 	 */
 	@Test
 	public void testGetUser() {
-		User user = new User("Bob", Role.Player);
+		User user = new User("Bob", false);
 		boolean exceptionThrown = false;
 		
 		//parameter null
@@ -389,8 +388,8 @@ public class DataTest {
 	@Test
 	public void testSaveMatch() {
 		try{
-			User user1 = new User("Bob", Role.Player);
-			User user2 = new User("Kate", Role.Player);
+			User user1 = new User("Bob", false);
+			User user2 = new User("Kate", false);
 			Match match = new Match(user1, user2, 0, 2);
 			Data.getInstance().saveMatch(match);
 		}catch(Exception e){
