@@ -16,9 +16,8 @@ import org.apache.commons.dbutils.handlers.BeanListHandler;
 import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
 
 import server.ServerProperties;
-import server.persistence.constraints.Constraint;
-import server.persistence.constraints.EqualConstraint;
-import server.persistence.constraints.LessEqualConstraint;
+import server.persistence.constraints.*;
+import server.persistence.constraints.OrderByConstraint.Order;
 import server.persistence.utils.InsertQueryBuilder;
 import server.persistence.utils.QueryBuilder;
 import server.persistence.utils.UpdateQueryBuilder;
@@ -112,6 +111,24 @@ public class Data implements Persistence {
 			saveMatch(new Match(pat, bob, 4, 3));
 			saveMatch(new Match(pat, bob, 10, 3));
 
+			System.out.println("users unsortiert:");
+			for (User u : getUsers()) {
+				System.out.println(u);
+			}
+
+			System.out.println("users sortiert:");
+			for (User u : getRankedUsers(0, 20)) {
+				System.out.println(u);
+			}
+
+			remove(pat);
+
+			try {
+				getUser("patrick");
+			} catch (SQLException e) {
+				System.out.println(" patrick gelöscht");
+			}
+
 			for (User u : getUsers()) {
 				System.out.println(u);
 			}
@@ -157,8 +174,9 @@ public class Data implements Persistence {
 				+ "user2   INT UNSIGNED," // FIXME nutzer können gleich sein
 				+ "points1 INT UNSIGNED NOT NULL,"
 				+ "points2 INT UNSIGNED NOT NULL,"
-				+ "FOREIGN KEY(user1) REFERENCES USER(id) ON DELETE CASCADE,"
-				+ "FOREIGN KEY(user2) REFERENCES USER(id) ON DELETE CASCADE)");
+				+ "FOREIGN KEY(user1) REFERENCES USER(id) ON DELETE SET NULL,"
+				+ "FOREIGN KEY(user2) REFERENCES USER(id) ON DELETE SET NULL)");
+		// TODO zeile löschen wenn beide null
 	}
 
 	// =====================================================================
@@ -174,7 +192,8 @@ public class Data implements Persistence {
 			throw new IllegalArgumentException("empty password");
 		}
 		// TODO check password
-		return getUser(new EqualConstraint("name", username));
+		return getUser(new HavingConstraint(new EqualConstraint("name",
+				username)));
 	}
 
 	@Override
@@ -224,7 +243,7 @@ public class Data implements Persistence {
 		if (user == null) {
 			throw new IllegalArgumentException("null user");
 		}
-		// TODO Auto-generated method stub
+		remove(user);
 	}
 
 	@Override
@@ -233,7 +252,8 @@ public class Data implements Persistence {
 			throw new IllegalArgumentException("empty username");
 		}
 
-		return getUser(new EqualConstraint("name", username));
+		return getUser(new HavingConstraint(new EqualConstraint("name",
+				username)));
 	}
 
 	@Override
@@ -242,15 +262,16 @@ public class Data implements Persistence {
 	}
 
 	@Override
-	public List<User> getRankedUsers(int offset, int length) {
+	public List<User> getRankedUsers(int offset, int length)
+			throws SQLException {
 		if (offset < 0) {
 			throw new IllegalArgumentException("invalid offset");
 		}
 		if (length < 0) {
 			throw new IllegalArgumentException("invalid length");
 		}
-		// TODO Auto-generated method stub
-		return null;
+		return _getUsers(new OrderByConstraint(Order.DESC, "winCount"),
+				new LimitedConstraint(length, offset));
 	}
 
 	// =====================================================================
@@ -280,7 +301,7 @@ public class Data implements Persistence {
 		if (question == null) {
 			throw new IllegalArgumentException("null question");
 		}
-		// TODO Auto-generated method stub
+		remove(question);
 	}
 
 	@Override
@@ -294,8 +315,8 @@ public class Data implements Persistence {
 			throw new IllegalArgumentException("invalid revision");
 		}
 
-		return getMany(Question.class, new LessEqualConstraint("revision",
-				revision));
+		return getMany(Question.class, new HavingConstraint(
+				new LessEqualConstraint("revision", revision)));
 	}
 
 	// =====================================================================
@@ -305,7 +326,7 @@ public class Data implements Persistence {
 	@Override
 	public void saveMatch(Match match) throws SQLException {
 		if (match == null) {
-			throw new IllegalArgumentException("null matchn");
+			throw new IllegalArgumentException("null match");
 		}
 
 		insert(match);
@@ -315,9 +336,11 @@ public class Data implements Persistence {
 	// Entity utils
 	// =====================================================================
 
-	private int getNewestRevision() {
-		// TODO
-		return 0;
+	private int getNewestRevision() throws SQLException {
+		List<Integer> result = run.query("SELECT MAX(revision) FROM "
+				+ getTable(Question.class), new BeanListHandler<Integer>(
+				Integer.class));
+		return result.size() > 0 ? result.get(0) : 0;
 	}
 
 	private User getUser(Constraint... constraints) throws SQLException {
@@ -333,7 +356,6 @@ public class Data implements Persistence {
 	}
 
 	private List<User> _getUsers(Constraint... constraints) throws SQLException {
-
 		return run
 				.query(String
 						.format("SELECT u.*, COUNT(m.points) matchCount, SUM(m.points+m2.points)/2 pointCount, SUM(m.won+m2.won)/2 winCount FROM %s u "
@@ -341,7 +363,7 @@ public class Data implements Persistence {
 								+ "LEFT JOIN (SELECT user2 user, points2 points, points2>points1 won FROM %s) m2 ON u.id = m2.user ",
 								getTable(User.class), getTable(Match.class),
 								getTable(Match.class))
-						+ getWhereClause(constraints) + " GROUP BY u.id",
+						+ " GROUP BY u.id" + constraintsToString(constraints),
 						new BeanListHandler<User>(User.class));
 	}
 
@@ -436,10 +458,18 @@ public class Data implements Persistence {
 		}
 	}
 
+	private void remove(Object obj, Constraint... constraints)
+			throws SQLException {
+		if (0 == run.update(String.format("DELETE FROM %s WHERE id=%d",
+				getTable(obj), getId(obj)))) {
+			throw new SQLException("no row updated");
+		}
+	}
+
 	private <T> T get(Class<T> clazz, Constraint... constraints)
 			throws SQLException {
 		List<T> results = run.query(String.format("SELECT * FROM %s %s",
-				getTable(clazz), getWhereClause(constraints)),
+				getTable(clazz), constraintsToString(constraints)),
 				new BeanListHandler<T>(clazz));
 
 		if (results.size() == 1) {
@@ -454,7 +484,8 @@ public class Data implements Persistence {
 	private <T> List<T> getMany(Class<T> clazz, Constraint... constraints)
 			throws SQLException {
 		return run.query(String.format("SELECT * FROM %s %s", getTable(clazz),
-				getWhereClause(constraints)), new BeanListHandler<T>(clazz));
+				constraintsToString(constraints)),
+				new BeanListHandler<T>(clazz));
 	}
 
 	// =====================================================================
@@ -493,17 +524,18 @@ public class Data implements Persistence {
 		return getTable(obj.getClass());
 	}
 
-	private static <T extends Constraint> String getWhereClause(
+	private static <T extends Constraint> String constraintsToString(
 			T... constraints) {
-		if(constraints.length == 0)
+
+		if (constraints.length == 0)
 			return "";
-		
-		StringBuilder sb = new StringBuilder(" WHERE ");
+
+		StringBuilder sb = new StringBuilder();
 
 		for (T constraint : constraints) {
-			sb.append(constraint + " AND ");
+			sb.append(constraint);
 		}
 
-		return sb.substring(0, sb.length() - 5);
+		return sb.toString();
 	}
 }

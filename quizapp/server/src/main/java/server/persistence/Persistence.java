@@ -78,7 +78,7 @@ public interface Persistence {
 	 *            amount of users to return
 	 * @return a section of the ranking
 	 */
-	List<User> getRankedUsers(int offset, int length);
+	List<User> getRankedUsers(int offset, int length) throws SQLException;
 
 	/**
 	 * Adds a new question to the database.

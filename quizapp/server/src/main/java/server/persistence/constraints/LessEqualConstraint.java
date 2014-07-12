@@ -1,16 +1,13 @@
 package server.persistence.constraints;
 
-public class LessEqualConstraint extends Constraint {
-	private final String field;
-	private final Object obj;
-	
-	public LessEqualConstraint(String field, Object obj) {
-		this.field = field;
-		this.obj = obj;
+public class LessEqualConstraint extends OperatorConstraint {
+
+	public LessEqualConstraint(Object ... objects) {
+		super(objects);
 	}
 	
 	@Override
-	public String toString() {
-		return String.format(" %s='%s' ", field, obj);
+	protected String getOperator() {
+		return "<=";
 	}
 }
