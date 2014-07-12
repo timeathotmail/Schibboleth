@@ -238,8 +238,7 @@ public class Data implements Persistence {
 
 	@Override
 	public List<User> getUsers() throws SQLException {
-		return run.query(userSelectQuery + "GROUP BY u.id",
-				new BeanListHandler<User>(User.class));
+		return _getUsers();
 	}
 
 	@Override
@@ -316,22 +315,14 @@ public class Data implements Persistence {
 	// Entity utils
 	// =====================================================================
 
-	private static final String userSelectQuery = String
-			.format("SELECT u.*, COUNT(m.points) matchCount, SUM(m.points+m2.points)/2 pointCount, SUM(m.won+m2.won)/2 winCount FROM %s u "
-					+ "LEFT JOIN (SELECT user1 user, points1 points, points1>points2 won FROM %s) m ON u.id = m.user "
-					+ "LEFT JOIN (SELECT user2 user, points2 points, points2>points1 won FROM %s) m2 ON u.id = m2.user ",
-					getTable(User.class), getTable(Match.class),
-					getTable(Match.class));
-	
 	private int getNewestRevision() {
 		// TODO
 		return 0;
 	}
 
 	private User getUser(Constraint... constraints) throws SQLException {
-		List<User> results = run.query(userSelectQuery+getWhereClause(constraints),
-				new BeanListHandler<User>(User.class));
-		
+		List<User> results = _getUsers(constraints);
+
 		if (results.size() == 1) {
 			return results.get(0);
 		} else if (results.size() > 1) {
@@ -339,6 +330,19 @@ public class Data implements Persistence {
 		} else {
 			throw new SQLException("no result");
 		}
+	}
+
+	private List<User> _getUsers(Constraint... constraints) throws SQLException {
+
+		return run
+				.query(String
+						.format("SELECT u.*, COUNT(m.points) matchCount, SUM(m.points+m2.points)/2 pointCount, SUM(m.won+m2.won)/2 winCount FROM %s u "
+								+ "LEFT JOIN (SELECT user1 user, points1 points, points1>points2 won FROM %s) m ON u.id = m.user "
+								+ "LEFT JOIN (SELECT user2 user, points2 points, points2>points1 won FROM %s) m2 ON u.id = m2.user ",
+								getTable(User.class), getTable(Match.class),
+								getTable(Match.class))
+						+ getWhereClause(constraints) + " GROUP BY u.id",
+						new BeanListHandler<User>(User.class));
 	}
 
 	// =====================================================================
@@ -491,6 +495,9 @@ public class Data implements Persistence {
 
 	private static <T extends Constraint> String getWhereClause(
 			T... constraints) {
+		if(constraints.length == 0)
+			return "";
+		
 		StringBuilder sb = new StringBuilder(" WHERE ");
 
 		for (T constraint : constraints) {
