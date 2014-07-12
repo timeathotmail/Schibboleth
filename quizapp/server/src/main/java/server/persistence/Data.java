@@ -104,13 +104,17 @@ public class Data implements Persistence {
 			insert(new User("bob", false));
 			User bob = getUser("bob");
 			System.out.println(bob);
+			insert(new User("patrick", false));
+			User pat = getUser("patrick");
+			System.out.println(pat);
+			saveMatch(new Match(bob, pat, 10, 7));
+			saveMatch(new Match(bob, pat, 2, 3));
+			saveMatch(new Match(pat, bob, 4, 3));
+			saveMatch(new Match(pat, bob, 10, 3));
 
-			System.out.println(getUsers().get(0));
-
-			bob.setName("adolf");
-			update(bob);
-			bob = getUser("adolf");
-			System.out.println(bob);
+			for (User u : getUsers()) {
+				System.out.println(u);
+			}
 
 		} catch (ClassNotFoundException e) {
 			logger.log(Level.SEVERE, "Database driver error!", e);
@@ -234,7 +238,8 @@ public class Data implements Persistence {
 
 	@Override
 	public List<User> getUsers() throws SQLException {
-		return getMany(User.class);
+		return run.query(userSelectQuery + "GROUP BY u.id",
+				new BeanListHandler<User>(User.class));
 	}
 
 	@Override
@@ -311,49 +316,29 @@ public class Data implements Persistence {
 	// Entity utils
 	// =====================================================================
 
+	private static final String userSelectQuery = String
+			.format("SELECT u.*, COUNT(m.points) matchCount, SUM(m.points+m2.points)/2 pointCount, SUM(m.won+m2.won)/2 winCount FROM %s u "
+					+ "LEFT JOIN (SELECT user1 user, points1 points, points1>points2 won FROM %s) m ON u.id = m.user "
+					+ "LEFT JOIN (SELECT user2 user, points2 points, points2>points1 won FROM %s) m2 ON u.id = m2.user ",
+					getTable(User.class), getTable(Match.class),
+					getTable(Match.class));
+	
 	private int getNewestRevision() {
 		// TODO
 		return 0;
 	}
 
 	private User getUser(Constraint... constraints) throws SQLException {
-		User user = get(User.class, constraints);
-
-		// set user's stats
-		String sql = String
-				.format("SELECT SUM(_points) AS pointCount, _win AS winCount, COUNT(*) AS matchCount FROM ("
-						+ "SELECT IF(user1=%d, points1, points2) AS _points, "
-						+ "IF((SELECT(_points)) >= points1 AND (SELECT(_points)) >= points2,0,1) AS _win "
-						+ "FROM %s WHERE user1=%d OR user2=%d) AS _",
-						user.getId(), getTable(Match.class), user.getId(),
-						user.getId());
-
-		Connection conn = dataSource.getConnection();
-		Statement stmt = null;
-		ResultSet rs = null;
-
-		try {
-			stmt = conn.createStatement();
-			rs = stmt.executeQuery(sql);
-
-			if (rs.next()) {
-				user.setMatchCount(rs.getInt("matchCount"));
-				user.setWinCount(rs.getInt("winCount"));
-				user.setPointCount(rs.getInt("PointCount"));
-			}
-		} finally {
-			if (stmt != null) {
-				stmt.close();
-			}
-
-			if (rs != null) {
-				rs.close();
-			}
-
-			conn.close();
+		List<User> results = run.query(userSelectQuery+getWhereClause(constraints),
+				new BeanListHandler<User>(User.class));
+		
+		if (results.size() == 1) {
+			return results.get(0);
+		} else if (results.size() > 1) {
+			throw new SQLException("ambiguous id");
+		} else {
+			throw new SQLException("no result");
 		}
-
-		return user;
 	}
 
 	// =====================================================================
@@ -394,7 +379,7 @@ public class Data implements Persistence {
 					stmt.close();
 				}
 
-				if(conn != null) {
+				if (conn != null) {
 					conn.close();
 				}
 			}
