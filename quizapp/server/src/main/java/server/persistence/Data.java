@@ -98,6 +98,7 @@ public class Data implements Persistence {
 			dataSource.setUrl(DB_URL);
 			run = new QueryRunner(dataSource);
 			checkDatabaseStructure();
+			
 		} catch (ClassNotFoundException e) {
 			throw new SQLException("Couldn't register JDBC driver!", e);
 		}
@@ -112,6 +113,7 @@ public class Data implements Persistence {
 	private void checkDatabaseStructure() throws SQLException {
 		logger.info("checking database structure...");
 
+		run.update("DROP DATABASE "+DB_NAME); // FIXME alternative zum Testen?!
 		run.update("CREATE DATABASE IF NOT EXISTS " + DB_NAME);
 		dataSource.setUrl(DB_URL + DB_NAME);
 

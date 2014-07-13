@@ -58,8 +58,25 @@ public class User {
 
 	@Override
 	public String toString() {
-		return String.format("User[%s, matches: %d, wins: %d, points: %d]",
-				name, matchCount, winCount, pointCount);
+		return String.format(
+				"User[%s, id: %d, matches: %d, wins: %d, points: %d]", name,
+				id, matchCount, winCount, pointCount);
+	}
+
+	@Override
+	public boolean equals(Object other) {
+		if (other == null)
+			return false;
+		if (other == this)
+			return true;
+		if (!(other instanceof User))
+			return false;
+		User otherUser = (User) other;
+		return this.id == otherUser.id && this.name.equals(otherUser.name)
+				&& this.matchCount == otherUser.matchCount
+				&& this.winCount == otherUser.matchCount
+				&& this.pointCount == otherUser.pointCount
+				&& this.isAdmin == otherUser.isAdmin;
 	}
 
 	// === getters & setters ===

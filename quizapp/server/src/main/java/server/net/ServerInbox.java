@@ -141,6 +141,11 @@ public class ServerInbox implements Runnable {
 						req.getPassword());
 			}
 
+			if(user == null) {
+				NetUtils.send(client, new AuthResponse(false, null));
+				return;
+			}
+			
 			// send user the list of other users
 			NetUtils.send(client,
 					new AuthResponse(true, serverDir.getActiveUsers()));
