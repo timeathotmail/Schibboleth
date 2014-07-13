@@ -132,10 +132,15 @@ public class Data implements Persistence {
 			for (User u : getUsers()) {
 				System.out.println(u);
 			}
+			
+			try {
+				saveMatch(new Match(bob, bob, 10, 7));
+			} catch (SQLException e) {
+				System.out.println("user eines Matches können nicht gleich sein");
+			}
 
 		} catch (ClassNotFoundException e) {
-			logger.log(Level.SEVERE, "Database driver error!", e);
-			throw new SQLException("Couldn't register JDBC driver!");
+			throw new SQLException("Couldn't register JDBC driver!", e);
 		}
 	}
 
@@ -171,12 +176,19 @@ public class Data implements Persistence {
 		run.update("CREATE TABLE IF NOT EXISTS MATCH__("
 				+ "id      INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,"
 				+ "user1   INT UNSIGNED,"
-				+ "user2   INT UNSIGNED," // FIXME nutzer können gleich sein
+				+ "user2   INT UNSIGNED,"
 				+ "points1 INT UNSIGNED NOT NULL,"
 				+ "points2 INT UNSIGNED NOT NULL,"
 				+ "FOREIGN KEY(user1) REFERENCES USER(id) ON DELETE SET NULL,"
 				+ "FOREIGN KEY(user2) REFERENCES USER(id) ON DELETE SET NULL)");
-		// TODO zeile löschen wenn beide null
+
+		run.update("DROP TRIGGER IF EXISTS matchval");
+		run.update("CREATE TRIGGER matchval "
+				+ "BEFORE INSERT ON MATCH__ FOR EACH ROW "
+				+ "BEGIN IF NEW.user1 = NEW.user2 "
+				+ "THEN SIGNAL SQLSTATE '45000' "
+				+ "SET MESSAGE_TEXT = 'Cannot add or update match: same users'; "
+				+ "END IF; END;");
 	}
 
 	// =====================================================================
@@ -394,8 +406,10 @@ public class Data implements Persistence {
 					getIdField(obj).set(obj, insertId);
 					logger.info(obj + " inserted with id " + insertId);
 				}
+			} catch(SQLException e) {
+				throw e;
 			} catch (Exception e) {
-				throw new SQLException("Object's insert id couldn't be set!");
+				throw new SQLException("Object's insert id couldn't be set!", e);
 			} finally {
 				if (generatedKeys != null) {
 					generatedKeys.close();
@@ -453,7 +467,7 @@ public class Data implements Persistence {
 			} catch (Exception e) {
 				logger.log(Level.SEVERE,
 						"couldn't get value of field " + f.getName(), e);
-				throw new SQLException("Object couldn't be inserted!");
+				throw new SQLException("Object couldn't be inserted!", e);
 			}
 		}
 	}
@@ -498,7 +512,7 @@ public class Data implements Persistence {
 			idField.setAccessible(true);
 			return idField;
 		} catch (Exception e) {
-			throw new SQLException("couldn't get object id");
+			throw new SQLException("couldn't get object id", e);
 		}
 	}
 
@@ -506,7 +520,7 @@ public class Data implements Persistence {
 		try {
 			return getIdField(obj).getInt(obj);
 		} catch (Exception e) {
-			throw new SQLException("couldn't get object id");
+			throw new SQLException("couldn't get object id", e);
 		}
 	}
 
@@ -526,7 +540,6 @@ public class Data implements Persistence {
 
 	private static <T extends Constraint> String constraintsToString(
 			T... constraints) {
-
 		if (constraints.length == 0)
 			return "";
 
