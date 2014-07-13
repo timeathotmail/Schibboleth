@@ -8,11 +8,23 @@ public abstract class QueryBuilder {
 		this.values = new StringBuilder(values);
 	}
 
-	public void appendValue(String value) {
+	/*public void appendValue(String value) {
 		hasValues = true;
 		values.append(value + ",");
-	}
+	}*/
 
+	public void appendValue(Object value) {
+		hasValues = true;
+		
+		if (value.getClass().equals(String.class)) {
+			values.append(String.format("'%s'", value));
+		} else {
+			values.append(value);
+		}
+		
+		values.append(",");
+	}
+	
 	public boolean hasValues() {
 		return hasValues;
 	}

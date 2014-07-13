@@ -98,47 +98,6 @@ public class Data implements Persistence {
 			dataSource.setUrl(DB_URL);
 			run = new QueryRunner(dataSource);
 			checkDatabaseStructure();
-
-			// TODO nur zum Testen
-			insert(new User("bob", false));
-			User bob = getUser("bob");
-			System.out.println(bob);
-			insert(new User("patrick", false));
-			User pat = getUser("patrick");
-			System.out.println(pat);
-			saveMatch(new Match(bob, pat, 10, 7));
-			saveMatch(new Match(bob, pat, 2, 3));
-			saveMatch(new Match(pat, bob, 4, 3));
-			saveMatch(new Match(pat, bob, 10, 3));
-
-			System.out.println("users unsortiert:");
-			for (User u : getUsers()) {
-				System.out.println(u);
-			}
-
-			System.out.println("users sortiert:");
-			for (User u : getRankedUsers(0, 20)) {
-				System.out.println(u);
-			}
-
-			remove(pat);
-
-			try {
-				getUser("patrick");
-			} catch (SQLException e) {
-				System.out.println(" patrick gelöscht");
-			}
-
-			for (User u : getUsers()) {
-				System.out.println(u);
-			}
-			
-			try {
-				saveMatch(new Match(bob, bob, 10, 7));
-			} catch (SQLException e) {
-				System.out.println("user eines Matches können nicht gleich sein");
-			}
-
 		} catch (ClassNotFoundException e) {
 			throw new SQLException("Couldn't register JDBC driver!", e);
 		}
@@ -153,13 +112,13 @@ public class Data implements Persistence {
 	private void checkDatabaseStructure() throws SQLException {
 		logger.info("checking database structure...");
 
-		run.update("DROP DATABASE " + DB_NAME); // TODO nur zum Testen
 		run.update("CREATE DATABASE IF NOT EXISTS " + DB_NAME);
 		dataSource.setUrl(DB_URL + DB_NAME);
 
 		run.update("CREATE TABLE IF NOT EXISTS USER("
 				+ "id   INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,"
 				+ "isAdmin BOOLEAN  NOT NULL," // FIXME immer false
+				+ "password VARCHAR (30) NOT NULL, "
 				+ "name VARCHAR(30)  NOT NULL UNIQUE)");
 
 		run.update("CREATE TABLE IF NOT EXISTS QUESTION("
@@ -203,9 +162,9 @@ public class Data implements Persistence {
 		if (password == null || password.isEmpty()) {
 			throw new IllegalArgumentException("empty password");
 		}
-		// TODO check password
+
 		return getUser(new HavingConstraint(new EqualConstraint("name",
-				username)));
+				username, "password", password)));
 	}
 
 	@Override
@@ -218,14 +177,13 @@ public class Data implements Persistence {
 			throw new IllegalArgumentException("empty password");
 		}
 
-		// TODO insert password
 		User user = new User(username, false);
-		insert(user);
+		insert(user, "password", password);
 		return user;
 	}
 
 	@Override
-	public void changeUserCredentials(String username, String password,
+	public void changeUserCredentials(User user, String username, String password,
 			String confirmation) throws SQLException, IllegalArgumentException {
 		if ((username == null || username.isEmpty())
 				&& (password == null || password.isEmpty())) {
@@ -237,8 +195,8 @@ public class Data implements Persistence {
 			throw new IllegalArgumentException("new password not confirmed");
 		}
 
-		User user = getUser(username);
-		// TODO set password
+		user.setName(username);
+		update(user, "password", password);
 	}
 
 	@Override
@@ -363,7 +321,7 @@ public class Data implements Persistence {
 		} else if (results.size() > 1) {
 			throw new SQLException("ambiguous id");
 		} else {
-			throw new SQLException("no result");
+			return null;
 		}
 	}
 
@@ -383,9 +341,9 @@ public class Data implements Persistence {
 	// Generic utils
 	// =====================================================================
 
-	private void insert(Object obj) throws SQLException {
+	private void insert(Object obj, Object ...objects) throws SQLException {
 		InsertQueryBuilder qb = new InsertQueryBuilder(getTable(obj));
-		query(obj, qb);
+		query(obj, qb, objects);
 
 		if (qb.hasValues()) {
 			String sql = qb.getQuery();
@@ -426,10 +384,10 @@ public class Data implements Persistence {
 		}
 	}
 
-	private void update(Object obj) throws SQLException {
+	private void update(Object obj, Object ...objects) throws SQLException {
 		UpdateQueryBuilder qb = new UpdateQueryBuilder(getTable(obj),
 				getId(obj));
-		query(obj, qb);
+		query(obj, qb, objects);
 
 		if (qb.hasValues()) {
 			String sql = qb.getQuery();
@@ -438,7 +396,12 @@ public class Data implements Persistence {
 		}
 	}
 
-	private void query(Object obj, QueryBuilder qb) throws SQLException {
+	private void query(Object obj, QueryBuilder qb, Object ...objects) throws SQLException {
+		for(int i = 0, j = 0; j < objects.length / 2; i += 2, j++) {
+			qb.appendField(objects[i].toString());
+			qb.appendValue(objects[i+1]);
+		}
+		
 		for (Field f : obj.getClass().getDeclaredFields()) {
 			f.setAccessible(true);
 
@@ -459,11 +422,7 @@ public class Data implements Persistence {
 			qb.appendField(field);
 
 			try {
-				if (f.getType().equals(String.class)) {
-					qb.appendValue(String.format("'%s'", f.get(obj).toString()));
-				} else {
-					qb.appendValue(f.get(obj).toString());
-				}
+				qb.appendValue(f.get(obj));
 			} catch (Exception e) {
 				logger.log(Level.SEVERE,
 						"couldn't get value of field " + f.getName(), e);

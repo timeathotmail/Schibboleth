@@ -23,11 +23,10 @@ public abstract class OperatorConstraint {
 		StringBuilder sb = new StringBuilder();
 		
 		for(int i = 0; i < fields.length; i++) {
-			sb.append(String.format("%s%s'%s',", fields[i], getOperator(), values[i]));
+			sb.append(String.format("%s%s'%s' AND ", fields[i], getOperator(), values[i]));
 		}
 		
-		sb.deleteCharAt(sb.length()-1);
-		return sb.toString();
+		return sb.substring(0, sb.length()-5);
 	}
 	
 	abstract protected String getOperator();

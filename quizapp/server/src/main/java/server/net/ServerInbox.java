@@ -175,8 +175,9 @@ public class ServerInbox implements Runnable {
 	 */
 	private void process(UserDataChangeRequest req) {
 		try {
-			persistence.changeUserCredentials(req.getNewUsername(),
-					req.getNewPassword(), req.getNewPasswordConfirm());
+			persistence.changeUserCredentials(serverDir.getUser(client),
+					req.getNewUsername(), req.getNewPassword(),
+					req.getNewPasswordConfirm());
 		} catch (IllegalArgumentException e) {
 			NetUtils.send(client, new ErrorResponse("Bad input!"));
 		} catch (SQLException e) {
@@ -235,8 +236,8 @@ public class ServerInbox implements Runnable {
 
 			serverDir.startMatch(client, opponent, questions);
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			NetUtils.send(client, new ErrorResponse(
+					"Challenge couldn't be accepted!"));
 		}
 	}
 
@@ -246,10 +247,14 @@ public class ServerInbox implements Runnable {
 	 * @param req
 	 */
 	private void process(GetRankingsRequest req) {
-		NetUtils.send(
-				client,
-				new RankingsResponse(persistence.getRankedUsers(
-						req.getOffset(), req.getLength())));
+		try {
+			NetUtils.send(
+					client,
+					new RankingsResponse(persistence.getRankedUsers(
+							req.getOffset(), req.getLength())));
+		} catch (Exception e) {
+			NetUtils.send(client, new ErrorResponse("Can't get rankings!"));
+		}
 	}
 
 	/**
