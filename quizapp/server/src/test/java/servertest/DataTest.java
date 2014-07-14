@@ -96,6 +96,7 @@ public class DataTest {
 		
 		for (int i = 0; i < users.length; i++) {
 			users[i] = persistence.getUser(users[i].getName());
+			System.out.println(users[i]);
 		}
 
 		assertTrue(users[0].getPointCount() == 7 && users[0].getWinCount() == 0

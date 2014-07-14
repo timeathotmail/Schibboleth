@@ -350,7 +350,7 @@ public class Data implements Persistence {
 			throws SQLException {
 
 		String sql = String
-				.format("SELECT u.*, COUNT(m.points) matchCount, SUM(m.points+m2.points)/2 pointCount, SUM(m.won+m2.won)/2 winCount FROM %s u "
+				.format("SELECT u.*, COUNT(m.points) matchCount, SUM(m.points+m2.points)pointCount, SUM(m.won+m2.won) winCount FROM %s u "
 						+ "LEFT JOIN (SELECT user1 user, points1 points, points1>points2 won FROM %s) m ON u.id = m.user "
 						+ "LEFT JOIN (SELECT user2 user, points2 points, points2>points1 won FROM %s) m2 ON u.id = m2.user ",
 						getTable(User.class), getTable(Match.class),

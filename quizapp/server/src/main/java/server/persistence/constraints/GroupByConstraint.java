@@ -1,14 +1,21 @@
 package server.persistence.constraints;
 
 public class GroupByConstraint extends Constraint {
-	private final String groupByField;
+	private final String[] groupByFields;
 
-	public GroupByConstraint(String groupByField) {
-		this.groupByField = groupByField;
+	public GroupByConstraint(String ... groupByFields) {
+		this.groupByFields = groupByFields;
 	}
 
 	@Override
 	public String toString() {
-		return String.format(" GROUP BY %s", groupByField);
+		StringBuilder sb = new StringBuilder(" GROUP BY ");
+		
+		for(String field : groupByFields) {
+			sb.append(field);
+			sb.append(",");
+		}
+		
+		return sb.substring(0, sb.length()-1) + " ";
 	}
 }
