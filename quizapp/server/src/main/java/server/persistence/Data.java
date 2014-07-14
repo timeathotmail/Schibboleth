@@ -155,11 +155,11 @@ public class Data implements Persistence {
 				+ "update match: same users'; END IF; END;",
 				getTable(Match.class)));
 
-		run.update("DROP TRIGGER IF EXISTS matchcleaner");
+		/*run.update("DROP TRIGGER IF EXISTS matchcleaner");
 		run.update(String.format("CREATE TRIGGER matchcleaner "
 				+ "AFTER DELETE ON %s FOR EACH ROW BEGIN "
 				+ "DELETE FROM %s WHERE user1 IS NULL AND user2 IS NULL; "
-				+ "END;", getTable(User.class), getTable(Match.class)));
+				+ "END;", getTable(User.class), getTable(Match.class)));*/
 	}
 
 	// =====================================================================
@@ -175,7 +175,7 @@ public class Data implements Persistence {
 			throw new IllegalArgumentException("empty password");
 		}
 
-		return getUser(new HavingConstraint(new EqualConstraint("name",
+		return __getUser(new HavingConstraint(new EqualConstraint("name",
 				username, "password", password)));
 	}
 
@@ -243,7 +243,7 @@ public class Data implements Persistence {
 			throw new IllegalArgumentException("empty username");
 		}
 
-		return getUser(new HavingConstraint(new EqualConstraint("name",
+		return __getUser(new HavingConstraint(new EqualConstraint("name",
 				username)));
 	}
 
@@ -334,7 +334,7 @@ public class Data implements Persistence {
 		return result.size() > 0 ? result.get(0) : 0;
 	}
 
-	private User getUser(Constraint... constraints) throws SQLException {
+	private User __getUser(Constraint... constraints) throws SQLException {
 		List<User> results = __getUsers(constraints);
 
 		if (results.size() == 1) {
@@ -350,9 +350,12 @@ public class Data implements Persistence {
 			throws SQLException {
 
 		String sql = String
-				.format("SELECT u.*, COUNT(m.points) matchCount, SUM(m.points+m2.points)pointCount, SUM(m.won+m2.won) winCount FROM %s u "
-						+ "LEFT JOIN (SELECT user1 user, points1 points, points1>points2 won FROM %s) m ON u.id = m.user "
-						+ "LEFT JOIN (SELECT user2 user, points2 points, points2>points1 won FROM %s) m2 ON u.id = m2.user ",
+				.format("SELECT u.*, "
+						+ "COUNT(m.id) matchCount, "
+						+ "SUM(IF(u.id=user1,points1,points2)) pointCount, "
+						+ "SUM(IF(u.id=user1,points1>points2,points2>points1)) winCount "
+						+ "FROM USER u "
+						+ "LEFT JOIN MATCH__ m ON u.id = user1 OR u.id = user2 ",
 						getTable(User.class), getTable(Match.class),
 						getTable(Match.class));
 
@@ -472,6 +475,9 @@ public class Data implements Persistence {
 
 	private <T> List<T> getMany(String sql, Class<T> clazz,
 			Constraint... constraints) throws SQLException {
+		
+		//System.out.println(sql + Constraint.toString(constraints));
+		
 		return run.query(sql + Constraint.toString(constraints),
 				new BeanListHandler<T>(clazz));
 	}

@@ -59,8 +59,8 @@ public class User {
 	@Override
 	public String toString() {
 		return String.format(
-				"User[%s, id: %d, matches: %d, wins: %d, points: %d]", name,
-				id, matchCount, winCount, pointCount);
+				"User[%s, id: %d, admin: %s, matches: %d, wins: %d, points: %d]", name,
+				id, isAdmin ? "yes" : "no", matchCount, winCount, pointCount);
 	}
 
 	@Override
@@ -74,7 +74,7 @@ public class User {
 		User otherUser = (User) other;
 		return this.id == otherUser.id && this.name.equals(otherUser.name)
 				&& this.matchCount == otherUser.matchCount
-				&& this.winCount == otherUser.matchCount
+				&& this.winCount == otherUser.winCount
 				&& this.pointCount == otherUser.pointCount
 				&& this.isAdmin == otherUser.isAdmin;
 	}

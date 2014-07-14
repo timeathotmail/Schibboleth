@@ -8,12 +8,15 @@ import java.util.List;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.runners.MethodSorters;
 
 import common.entities.Match;
 import common.entities.User;
 import server.persistence.Data;
 
+@FixMethodOrder(MethodSorters.JVM)
 public class DataTest {
 	private static final String PW = "passwort";
 	private static final User[] users = new User[] { new User("EINS", false),
@@ -49,6 +52,13 @@ public class DataTest {
 	}
 
 	@Test
+	public void testGetUser() throws SQLException {
+		for (User user : users) {
+			assertEquals(user, persistence.getUser(user.getName()));
+		}
+	}
+
+	@Test
 	public void testLoginUser() throws SQLException {
 		for (User user : users) {
 			assertEquals(user, persistence.loginUser(user.getName(), PW));
@@ -56,7 +66,8 @@ public class DataTest {
 	}
 
 	@Test
-	public void testUpdateUser() throws IllegalArgumentException, SQLException {
+	public void testUpdateUser() throws IllegalArgumentException,
+			SQLException {
 		for (User user : users) {
 			String newName = user.getName() + "_";
 			persistence.changeUserCredentials(user, newName, "_", "_");
@@ -75,13 +86,6 @@ public class DataTest {
 	}
 
 	@Test
-	public void testGetUser() throws SQLException {
-		for (User user : users) {
-			assertEquals(user, persistence.getUser(user.getName()));
-		}
-	}
-
-	@Test
 	public void testGetUsers() throws SQLException {
 		assertEquals(Arrays.asList(users), persistence.getUsers());
 	}
@@ -93,16 +97,15 @@ public class DataTest {
 		persistence.saveMatch(new Match(users[1], users[2], 1, 0));
 		persistence.saveMatch(new Match(users[3], users[2], 7, 3));
 		persistence.saveMatch(new Match(users[2], users[3], 5, 2));
-		
+
 		for (int i = 0; i < users.length; i++) {
 			users[i] = persistence.getUser(users[i].getName());
-			System.out.println(users[i]);
 		}
 
 		assertTrue(users[0].getPointCount() == 7 && users[0].getWinCount() == 0
 				&& users[0].getMatchCount() == 2);
-		assertTrue(users[1].getPointCount() == 17 && users[1].getWinCount() == 3
-				&& users[1].getMatchCount() == 3);
+		assertTrue(users[1].getPointCount() == 17
+				&& users[1].getWinCount() == 3 && users[1].getMatchCount() == 3);
 		assertTrue(users[2].getPointCount() == 8 && users[2].getWinCount() == 1
 				&& users[2].getMatchCount() == 3);
 		assertTrue(users[3].getPointCount() == 9 && users[3].getWinCount() == 1
