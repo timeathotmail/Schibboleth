@@ -17,6 +17,7 @@ import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
 
 import server.ServerProperties;
 import server.persistence.constraints.*;
+import server.persistence.constraints.Constraint.AppendAt;
 import server.persistence.constraints.OrderByConstraint.Order;
 import server.persistence.utils.InsertQueryBuilder;
 import server.persistence.utils.QueryBuilder;
@@ -98,7 +99,7 @@ public class Data implements Persistence {
 			dataSource.setUrl(DB_URL);
 			run = new QueryRunner(dataSource);
 			checkDatabaseStructure();
-			
+
 		} catch (ClassNotFoundException e) {
 			throw new SQLException("Couldn't register JDBC driver!", e);
 		}
@@ -113,17 +114,17 @@ public class Data implements Persistence {
 	private void checkDatabaseStructure() throws SQLException {
 		logger.info("checking database structure...");
 
-		run.update("DROP DATABASE "+DB_NAME); // FIXME alternative zum Testen?!
+		run.update("DROP DATABASE " + DB_NAME);
 		run.update("CREATE DATABASE IF NOT EXISTS " + DB_NAME);
 		dataSource.setUrl(DB_URL + DB_NAME);
 
-		run.update("CREATE TABLE IF NOT EXISTS USER("
+		run.update(String.format("CREATE TABLE IF NOT EXISTS %s("
 				+ "id   INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,"
 				+ "isAdmin BOOLEAN  NOT NULL," // FIXME immer false
 				+ "password VARCHAR (30) NOT NULL, "
-				+ "name VARCHAR(30)  NOT NULL UNIQUE)");
+				+ "name VARCHAR(30)  NOT NULL UNIQUE)", getTable(User.class)));
 
-		run.update("CREATE TABLE IF NOT EXISTS QUESTION("
+		run.update(String.format("CREATE TABLE IF NOT EXISTS %s("
 				+ "id           INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,"
 				+ "category     VARCHAR(50)  NOT NULL,"
 				+ "text         VARCHAR(200) NOT NULL,"
@@ -132,24 +133,33 @@ public class Data implements Persistence {
 				+ "answer3      VARCHAR(30)  NOT NULL,"
 				+ "answer4      VARCHAR(30)  NOT NULL,"
 				+ "correctIndex TINYINT UNSIGNED,"
-				+ "revision     SMALLINT UNSIGNED NOT NULL)");
+				+ "revision     SMALLINT UNSIGNED NOT NULL)",
+				getTable(Question.class)));
 
-		run.update("CREATE TABLE IF NOT EXISTS MATCH__("
+		run.update(String.format("CREATE TABLE IF NOT EXISTS %s("
 				+ "id      INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,"
-				+ "user1   INT UNSIGNED,"
-				+ "user2   INT UNSIGNED,"
+				+ "user1   INT UNSIGNED," + "user2   INT UNSIGNED,"
 				+ "points1 INT UNSIGNED NOT NULL,"
 				+ "points2 INT UNSIGNED NOT NULL,"
-				+ "FOREIGN KEY(user1) REFERENCES USER(id) ON DELETE SET NULL,"
-				+ "FOREIGN KEY(user2) REFERENCES USER(id) ON DELETE SET NULL)");
+				+ "FOREIGN KEY(user1) REFERENCES USER(id) "
+				+ "ON DELETE SET NULL,"
+				+ "FOREIGN KEY(user2) REFERENCES USER(id) "
+				+ "ON DELETE SET NULL)", getTable(Match.class)));
 
 		run.update("DROP TRIGGER IF EXISTS matchval");
-		run.update("CREATE TRIGGER matchval "
-				+ "BEFORE INSERT ON MATCH__ FOR EACH ROW "
-				+ "BEGIN IF NEW.user1 = NEW.user2 "
+		run.update(String.format("CREATE TRIGGER matchval "
+				+ "BEFORE INSERT ON %s FOR EACH ROW BEGIN "
+				+ "IF NEW.user1 = NEW.user2 "
 				+ "THEN SIGNAL SQLSTATE '45000' "
-				+ "SET MESSAGE_TEXT = 'Cannot add or update match: same users'; "
-				+ "END IF; END;");
+				+ "SET MESSAGE_TEXT = 'Cannot add or "
+				+ "update match: same users'; END IF; END;",
+				getTable(Match.class)));
+
+		run.update("DROP TRIGGER IF EXISTS matchcleaner");
+		run.update(String.format("CREATE TRIGGER matchcleaner "
+				+ "AFTER DELETE ON %s FOR EACH ROW BEGIN "
+				+ "DELETE FROM %s WHERE user1 IS NULL AND user2 IS NULL; "
+				+ "END;", getTable(User.class), getTable(Match.class)));
 	}
 
 	// =====================================================================
@@ -185,20 +195,29 @@ public class Data implements Persistence {
 	}
 
 	@Override
-	public void changeUserCredentials(User user, String username, String password,
-			String confirmation) throws SQLException, IllegalArgumentException {
+	public void changeUserCredentials(User user, String username,
+			String password, String confirmation) throws SQLException,
+			IllegalArgumentException {
 		if ((username == null || username.isEmpty())
 				&& (password == null || password.isEmpty())) {
 			throw new IllegalArgumentException(
 					"neither new username nor password");
 		}
-		if (confirmation == null || confirmation.isEmpty()
-				|| !password.equals(confirmation)) {
-			throw new IllegalArgumentException("new password not confirmed");
+
+		if (username != null && !username.isEmpty()) {
+			user.setName(username);
 		}
 
-		user.setName(username);
-		update(user, "password", password);
+		if (password != null && !password.isEmpty()) {
+			if (confirmation == null || confirmation.isEmpty()
+					|| !password.equals(confirmation)) {
+				throw new IllegalArgumentException("new password not confirmed");
+			}
+
+			update(user, "password", password);
+		} else {
+			update(user);
+		}
 	}
 
 	@Override
@@ -230,7 +249,7 @@ public class Data implements Persistence {
 
 	@Override
 	public List<User> getUsers() throws SQLException {
-		return _getUsers();
+		return __getUsers();
 	}
 
 	@Override
@@ -242,7 +261,7 @@ public class Data implements Persistence {
 		if (length < 0) {
 			throw new IllegalArgumentException("invalid length");
 		}
-		return _getUsers(new OrderByConstraint(Order.DESC, "winCount"),
+		return __getUsers(new OrderByConstraint(Order.DESC, "winCount"),
 				new LimitedConstraint(length, offset));
 	}
 
@@ -316,7 +335,7 @@ public class Data implements Persistence {
 	}
 
 	private User getUser(Constraint... constraints) throws SQLException {
-		List<User> results = _getUsers(constraints);
+		List<User> results = __getUsers(constraints);
 
 		if (results.size() == 1) {
 			return results.get(0);
@@ -327,25 +346,27 @@ public class Data implements Persistence {
 		}
 	}
 
-	private List<User> _getUsers(Constraint... constraints) throws SQLException {
-		return run
-				.query(String
-						.format("SELECT u.*, COUNT(m.points) matchCount, SUM(m.points+m2.points)/2 pointCount, SUM(m.won+m2.won)/2 winCount FROM %s u "
-								+ "LEFT JOIN (SELECT user1 user, points1 points, points1>points2 won FROM %s) m ON u.id = m.user "
-								+ "LEFT JOIN (SELECT user2 user, points2 points, points2>points1 won FROM %s) m2 ON u.id = m2.user ",
-								getTable(User.class), getTable(Match.class),
-								getTable(Match.class))
-						+ " GROUP BY u.id" + constraintsToString(constraints),
-						new BeanListHandler<User>(User.class));
+	private List<User> __getUsers(Constraint... constraints)
+			throws SQLException {
+
+		String sql = String
+				.format("SELECT u.*, COUNT(m.points) matchCount, SUM(m.points+m2.points)/2 pointCount, SUM(m.won+m2.won)/2 winCount FROM %s u "
+						+ "LEFT JOIN (SELECT user1 user, points1 points, points1>points2 won FROM %s) m ON u.id = m.user "
+						+ "LEFT JOIN (SELECT user2 user, points2 points, points2>points1 won FROM %s) m2 ON u.id = m2.user ",
+						getTable(User.class), getTable(Match.class),
+						getTable(Match.class));
+
+		return getMany(sql, User.class, Constraint.append(constraints,
+				new GroupByConstraint("u.id"), AppendAt.FRONT));
 	}
 
 	// =====================================================================
 	// Generic utils
 	// =====================================================================
 
-	private void insert(Object obj, Object ...objects) throws SQLException {
+	private void insert(Object obj, Object... objects) throws SQLException {
 		InsertQueryBuilder qb = new InsertQueryBuilder(getTable(obj));
-		query(obj, qb, objects);
+		buildQuery(obj, qb, objects);
 
 		if (qb.hasValues()) {
 			String sql = qb.getQuery();
@@ -366,7 +387,7 @@ public class Data implements Persistence {
 					getIdField(obj).set(obj, insertId);
 					logger.info(obj + " inserted with id " + insertId);
 				}
-			} catch(SQLException e) {
+			} catch (SQLException e) {
 				throw e;
 			} catch (Exception e) {
 				throw new SQLException("Object's insert id couldn't be set!", e);
@@ -386,10 +407,10 @@ public class Data implements Persistence {
 		}
 	}
 
-	private void update(Object obj, Object ...objects) throws SQLException {
+	private void update(Object obj, Object... objects) throws SQLException {
 		UpdateQueryBuilder qb = new UpdateQueryBuilder(getTable(obj),
 				getId(obj));
-		query(obj, qb, objects);
+		buildQuery(obj, qb, objects);
 
 		if (qb.hasValues()) {
 			String sql = qb.getQuery();
@@ -398,12 +419,13 @@ public class Data implements Persistence {
 		}
 	}
 
-	private void query(Object obj, QueryBuilder qb, Object ...objects) throws SQLException {
-		for(int i = 0, j = 0; j < objects.length / 2; i += 2, j++) {
+	private void buildQuery(Object obj, QueryBuilder qb, Object... objects)
+			throws SQLException {
+		for (int i = 0, j = 0; j < objects.length / 2; i += 2, j++) {
 			qb.appendField(objects[i].toString());
-			qb.appendValue(objects[i+1]);
+			qb.appendValue(objects[i + 1]);
 		}
-		
+
 		for (Field f : obj.getClass().getDeclaredFields()) {
 			f.setAccessible(true);
 
@@ -441,25 +463,16 @@ public class Data implements Persistence {
 		}
 	}
 
-	private <T> T get(Class<T> clazz, Constraint... constraints)
-			throws SQLException {
-		List<T> results = run.query(String.format("SELECT * FROM %s %s",
-				getTable(clazz), constraintsToString(constraints)),
-				new BeanListHandler<T>(clazz));
-
-		if (results.size() == 1) {
-			return results.get(0);
-		} else if (results.size() > 1) {
-			throw new SQLException("ambiguous id");
-		} else {
-			throw new SQLException("no result");
-		}
-	}
-
 	private <T> List<T> getMany(Class<T> clazz, Constraint... constraints)
 			throws SQLException {
 		return run.query(String.format("SELECT * FROM %s %s", getTable(clazz),
-				constraintsToString(constraints)),
+				Constraint.toString(constraints)),
+				new BeanListHandler<T>(clazz));
+	}
+
+	private <T> List<T> getMany(String sql, Class<T> clazz,
+			Constraint... constraints) throws SQLException {
+		return run.query(sql + Constraint.toString(constraints),
 				new BeanListHandler<T>(clazz));
 	}
 
@@ -497,19 +510,5 @@ public class Data implements Persistence {
 
 	private static String getTable(Object obj) {
 		return getTable(obj.getClass());
-	}
-
-	private static <T extends Constraint> String constraintsToString(
-			T... constraints) {
-		if (constraints.length == 0)
-			return "";
-
-		StringBuilder sb = new StringBuilder();
-
-		for (T constraint : constraints) {
-			sb.append(constraint);
-		}
-
-		return sb.toString();
 	}
 }
