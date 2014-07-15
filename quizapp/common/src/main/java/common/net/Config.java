@@ -1,5 +1,6 @@
 package common.net;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -10,6 +11,7 @@ import java.util.logging.Logger;
 import javax.naming.ConfigurationException;
 
 public class Config {
+
 	/**
 	 * Name of property files.
 	 */
@@ -23,27 +25,36 @@ public class Config {
 	 */
 	private final Properties prop = new Properties();
 
+	private static Config instance;
+	
 	/**
-	 * Tries to load a property file in the current working directory.
-	 * 
 	 * @return a Config instance
 	 * @throws ConfigurationException
 	 */
 	public static Config get() throws ConfigurationException {
-		return new Config();
+		File f = new File(System.getProperty("user.dir"));
+		
+		// common properties always loaded
+		if(instance == null) {
+			instance = new Config();
+			instance.load(f.getParent()+"/common");
+		}
+		
+		if(f.getName().equals("server")) { // server
+			instance.load(f.getAbsolutePath());
+		} else { // client
+			instance.load(f.getParent()+"/core");
+		}
+
+		return instance;
 	}
 
-	/**
-	 * Creates an instance.
-	 * 
-	 * @throws ConfigurationException
-	 */
-	private Config() throws ConfigurationException {
+	private void load(String dir) throws ConfigurationException {
 		InputStream input = null;
 
 		try {
-			input = new FileInputStream(FILE);
-			prop.load(input);
+			input = new FileInputStream(dir+"/"+FILE);
+			instance.prop.load(input);
 		} catch (IOException e) {
 			throw new ConfigurationException(String.format(
 					"No %s file in current working dir!", FILE));
