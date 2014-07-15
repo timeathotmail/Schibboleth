@@ -4,6 +4,8 @@ import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.naming.ConfigurationException;
+
 import com.mygdx.game.Game;
 
 import common.net.NetUtils;
@@ -34,20 +36,24 @@ public class Client {
 	 */
 	private Socket serverSocket;
 
+	private final NetUtils net;
+
 	/**
 	 * Creates an instance. Opens a socket connection and initiiates a thread
 	 * running a ClientInbox.
 	 * 
 	 * @param game
+	 * @throws ConfigurationException 
 	 */
-	public Client(Game game) {
+	public Client(Game game) throws ConfigurationException {
+		net = NetUtils.getInstance();
 		try {
-			serverSocket = new Socket(NetUtils.IP, NetUtils.PORT);
-			new Thread(new ClientInbox(game, serverSocket)).start();
+			serverSocket = new Socket(net.IP, net.PORT);
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "couldn't connect to server", e);
 			game.onNoConnection();
 		}
+		new Thread(new ClientInbox(game, net, serverSocket)).start();
 	}
 
 	/**
@@ -59,7 +65,7 @@ public class Client {
 	 *            desired password
 	 */
 	public void register(String username, String password, int revision) {
-		NetUtils.send(serverSocket, new UserAuthRequest(username, password,
+		net.send(serverSocket, new UserAuthRequest(username, password,
 				true, revision));
 	}
 
@@ -72,7 +78,7 @@ public class Client {
 	 *            password
 	 */
 	public void login(String username, String password, int revision) {
-		NetUtils.send(serverSocket, new UserAuthRequest(username, password,
+		net.send(serverSocket, new UserAuthRequest(username, password,
 				false, revision));
 	}
 
@@ -83,7 +89,7 @@ public class Client {
 	 *            username
 	 */
 	public void logout() {
-		NetUtils.send(serverSocket, new UserLogoutRequest());
+		net.send(serverSocket, new UserLogoutRequest());
 	}
 
 	/**
@@ -97,7 +103,7 @@ public class Client {
 	 *            new password confirmation
 	 */
 	public void changeUserData(String username, String pw1, String pw2) {
-		NetUtils.send(serverSocket, new UserDataChangeRequest(username, pw1,
+		net.send(serverSocket, new UserDataChangeRequest(username, pw1,
 				pw2));
 	}
 
@@ -105,14 +111,14 @@ public class Client {
 	 * Requests the server to search for a match.
 	 */
 	public void searchMatch() {
-		NetUtils.send(serverSocket, new MatchSearchStartRequest());
+		net.send(serverSocket, new MatchSearchStartRequest());
 	}
 
 	/**
 	 * Requests the server to cancel the search for a match.
 	 */
 	public void cancelSearch() {
-		NetUtils.send(serverSocket, new MatchSearchCancelRequest());
+		net.send(serverSocket, new MatchSearchCancelRequest());
 	}
 
 	/**
@@ -122,7 +128,7 @@ public class Client {
 	 *            receiving user
 	 */
 	public void sendChallenge(String opponent) {
-		NetUtils.send(serverSocket, new ChallengeSendRequest(opponent));
+		net.send(serverSocket, new ChallengeSendRequest(opponent));
 	}
 
 	/**
@@ -134,7 +140,7 @@ public class Client {
 	 *            the first question's id
 	 */
 	public void acceptChallenge(String opponent, int questionId) {
-		NetUtils.send(serverSocket, new ChallengeAcceptRequest(opponent,
+		net.send(serverSocket, new ChallengeAcceptRequest(opponent,
 				questionId));
 	}
 
@@ -145,7 +151,7 @@ public class Client {
 	 *            denied user
 	 */
 	public void denyChallenge(String opponent) {
-		NetUtils.send(serverSocket, new ChallengeDenyRequest(opponent));
+		net.send(serverSocket, new ChallengeDenyRequest(opponent));
 	}
 
 	/**
@@ -157,7 +163,7 @@ public class Client {
 	 *            amount of users
 	 */
 	public void requestRankings(int offset, int length) {
-		NetUtils.send(serverSocket, new GetRankingsRequest(offset, length));
+		net.send(serverSocket, new GetRankingsRequest(offset, length));
 	}
 
 	/**
@@ -167,7 +173,7 @@ public class Client {
 	 *            answer's index
 	 */
 	public void submitAnswer(int answer, int nextQuestionId) {
-		NetUtils.send(serverSocket, new AnswerSubmitRequest(answer));
+		net.send(serverSocket, new AnswerSubmitRequest(answer));
 	}
 
 	/**
@@ -175,6 +181,6 @@ public class Client {
 	 * the game.
 	 */
 	public void leaveMatch() {
-		NetUtils.send(serverSocket, new MatchLeaveRequest());
+		net.send(serverSocket, new MatchLeaveRequest());
 	}
 }

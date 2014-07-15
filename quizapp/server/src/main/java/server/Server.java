@@ -6,9 +6,12 @@ import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.naming.ConfigurationException;
+
 import server.net.ServerDirectory;
 import server.persistence.Data;
 import server.persistence.Persistence;
+import common.net.Config;
 import common.net.NetUtils;
 
 /**
@@ -32,15 +35,18 @@ public class Server {
 	 * @param args
 	 *            unused
 	 */
-	public static void main(String[] args) {	
+	public static void main(String[] args) {
 		try {
 			persistence = Data.getInstance();
-			new Thread(new ServerDirectory(new ServerSocket(NetUtils.PORT),
-					persistence)).start();
+			new Thread(new ServerDirectory(new ServerSocket(Config.get()
+					.getInt("PORT")), persistence, NetUtils.getInstance()))
+					.start();
 		} catch (IOException e) {
-			logger.log(Level.SEVERE, "error creating server socket", e);
+			logger.log(Level.SEVERE, "Error creating server socket!", e);
 		} catch (SQLException e) {
-			logger.log(Level.SEVERE, "error connecting to database", e);
+			logger.log(Level.SEVERE, "Error connecting to database!", e);
+		} catch (ConfigurationException e) {
+			logger.log(Level.SEVERE, "Server is misconfigured!", e);
 		}
 	}
 }

@@ -10,6 +10,8 @@ import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.naming.ConfigurationException;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
@@ -19,18 +21,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 public class NetUtils {
 	/**
-	 * The server's IP.
-	 */
-	public static final String IP = "127.0.0.1";
-	/**
-	 * The port on which the sever is listening.
-	 */
-	public static final int PORT = 11111;
-	/**
-	 * Read-buffer capacity and max. length of a message.
-	 */
-	private static final int MSG_LENGTH = 1024;
-	/**
 	 * Logger.
 	 */
 	private static final Logger logger = Logger.getLogger("Net");
@@ -38,7 +28,45 @@ public class NetUtils {
 	 * Maps objects to JSON and vice versa.
 	 */
 	private static final ObjectMapper mapper = new ObjectMapper();
+	/**
+	 * Singelton instance.
+	 */
+	private static NetUtils instance;
+	/**
+	 * The server's IP.
+	 */
+	public final String IP;
+	/**
+	 * The port on which the sever is listening.
+	 */
+	public final int PORT;
+	/**
+	 * Read-buffer capacity and max. length of a message.
+	 */
+	private final int MSG_LENGTH;
 
+	/**
+	 * @return the NetUtils instance
+	 * @throws ConfigurationException
+	 */
+	public static NetUtils getInstance() throws ConfigurationException {
+		if(instance == null) {
+			instance = new NetUtils();
+		}
+		return instance;
+	}
+	
+	/**
+	 * Creates an instance.
+	 * @throws ConfigurationException
+	 */
+	private NetUtils() throws ConfigurationException {
+		Config cfg = Config.get();
+		IP = cfg.get("IP");
+		PORT = cfg.getInt("PORT");
+		MSG_LENGTH = cfg.getInt("MSG_LENGTH");
+	}
+	
 	/**
 	 * Waits for an incoming message and returns it.
 	 * 
@@ -48,7 +76,7 @@ public class NetUtils {
 	 * @throws RuntimeException
 	 *             in case the socket was closed
 	 */
-	public static String read(Socket socket) throws RuntimeException {
+	public String read(Socket socket) throws RuntimeException {
 		if(socket == null) {
 			return "";
 		}
@@ -82,7 +110,7 @@ public class NetUtils {
 	 * @throws RuntimeException
 	 *             in case the message was too long
 	 */
-	public static boolean send(Socket socket, Object obj)
+	public boolean send(Socket socket, Object obj)
 			throws RuntimeException {
 		if(socket == null || obj == null) {
 			return false;
@@ -116,7 +144,7 @@ public class NetUtils {
 	 * @param obj
 	 *            the object to send
 	 */
-	public static void send(Collection<Socket> sockets, Object obj) {
+	public void send(Collection<Socket> sockets, Object obj) {
 		for (Socket socket : sockets) {
 			send(socket, obj);
 		}
@@ -131,7 +159,7 @@ public class NetUtils {
 	 *            the class to map to
 	 * @return the object if successful, else null
 	 */
-	public static <T> T fromJson(String json, Class<T> classOf) {
+	public <T> T fromJson(String json, Class<T> classOf) {
 		try {
 			return mapper.readValue(json, classOf);
 		} catch (IllegalArgumentException e) {

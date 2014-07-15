@@ -1,4 +1,4 @@
-package server.persistence.utils;
+package server.persistence.query;
 
 public abstract class QueryBuilder {
 	protected boolean hasValues;

@@ -16,6 +16,7 @@ import server.persistence.Persistence;
 import common.entities.Match;
 import common.entities.Question;
 import common.entities.User;
+import common.net.NetUtils;
 
 /**
  * Runnable managing clients.
@@ -74,15 +75,18 @@ public class ServerDirectory implements Runnable {
 	 */
 	private final ServerSocket socket;
 	
+	private final NetUtils net;
+	
 	/**
 	 * Creates an instance.
 	 * 
 	 * @param socket
 	 *            server's socket
 	 */
-	public ServerDirectory(ServerSocket socket, Persistence persistence) {
+	public ServerDirectory(ServerSocket socket, Persistence persistence, NetUtils net) {
 		this.socket = socket;
 		this.persistence = persistence;
+		this.net = net;
 	}
 
 	// =====================================================================
@@ -123,7 +127,7 @@ public class ServerDirectory implements Runnable {
 		while (true) {
 			try {
 				final Socket client = socket.accept(); // wait for new client
-				Thread thread = new Thread(new ServerInbox(client, this,
+				Thread thread = new Thread(new ServerInbox(net, client, this,
 						persistence));
 				thread.start();
 				threads.put(client, thread);

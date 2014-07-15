@@ -22,6 +22,8 @@ public class ClientInbox implements Runnable {
 	 */
 	private final Game game;
 
+	private final NetUtils net;
+	
 	/**
 	 * Creates an instance.
 	 * 
@@ -30,8 +32,9 @@ public class ClientInbox implements Runnable {
 	 * @param serverSocket
 	 *            server socket
 	 */
-	public ClientInbox(Game game, Socket serverSocket) {
+	public ClientInbox(Game game, NetUtils net, Socket serverSocket) {
 		this.game = game;
+		this.net = net;
 		this.serverSocket = serverSocket;
 	}
 
@@ -42,11 +45,11 @@ public class ClientInbox implements Runnable {
 	public void run() {
 		try {
 			while (true) {
-				String json = NetUtils.read(serverSocket);
+				String json = net.read(serverSocket);
 
 				// Matching...
 				{ // ============================================================
-					AuthResponse obj = NetUtils.fromJson(json,
+					AuthResponse obj = net.fromJson(json,
 							AuthResponse.class);
 					if (obj != null) {
 						game.onLogin(obj.isSuccess(), obj.getUsers());
@@ -55,7 +58,7 @@ public class ClientInbox implements Runnable {
 				}
 
 				{ // ============================================================
-					UserListChangedResponse obj = NetUtils.fromJson(json,
+					UserListChangedResponse obj = net.fromJson(json,
 							UserListChangedResponse.class);
 					if (obj != null) {
 						game.onUserListChanged(obj.hasConnected(),
@@ -65,7 +68,7 @@ public class ClientInbox implements Runnable {
 				}
 
 				{ // ============================================================
-					ChallengeDeniedResponse obj = NetUtils.fromJson(json,
+					ChallengeDeniedResponse obj = net.fromJson(json,
 							ChallengeDeniedResponse.class);
 					if (obj != null) {
 						game.onChallengeDenied(obj.getUser());
@@ -74,7 +77,7 @@ public class ClientInbox implements Runnable {
 				}
 
 				{ // ============================================================
-					ChallengeReceivedResponse obj = NetUtils.fromJson(json,
+					ChallengeReceivedResponse obj = net.fromJson(json,
 							ChallengeReceivedResponse.class);
 					if (obj != null) {
 						game.onChallengeReceived(obj.getUser());
@@ -83,7 +86,7 @@ public class ClientInbox implements Runnable {
 				}
 
 				{ // ============================================================
-					ErrorResponse obj = NetUtils.fromJson(json,
+					ErrorResponse obj = net.fromJson(json,
 							ErrorResponse.class);
 					if (obj != null) {
 						game.onError(obj.getMessage());
@@ -92,7 +95,7 @@ public class ClientInbox implements Runnable {
 				}
 
 				{ // ============================================================
-					MatchCreatedResponse obj = NetUtils.fromJson(json,
+					MatchCreatedResponse obj = net.fromJson(json,
 							MatchCreatedResponse.class);
 					if (obj != null) {
 						game.onMatchStarted(obj.getUser(), obj.getQuestionIds());
@@ -101,7 +104,7 @@ public class ClientInbox implements Runnable {
 				}
 
 				{ // ============================================================
-					MatchSearchCancelledResponse obj = NetUtils.fromJson(json,
+					MatchSearchCancelledResponse obj = net.fromJson(json,
 							MatchSearchCancelledResponse.class);
 					if (obj != null) {
 						game.onSearchCancelled();
@@ -110,7 +113,7 @@ public class ClientInbox implements Runnable {
 				}
 
 				{ // ============================================================
-					OpponentAnswerResponse obj = NetUtils.fromJson(json,
+					OpponentAnswerResponse obj = net.fromJson(json,
 							OpponentAnswerResponse.class);
 					if (obj != null) {
 						game.onOpponentAnswered(obj.getIndex());
@@ -119,7 +122,7 @@ public class ClientInbox implements Runnable {
 				}
 
 				{ // ============================================================
-					OpponentLeftResponse obj = NetUtils.fromJson(json,
+					OpponentLeftResponse obj = net.fromJson(json,
 							OpponentLeftResponse.class);
 					if (obj != null) {
 						game.onOpponentLeft();
@@ -128,7 +131,7 @@ public class ClientInbox implements Runnable {
 				}
 
 				{ // ============================================================
-					RankingsResponse obj = NetUtils.fromJson(json,
+					RankingsResponse obj = net.fromJson(json,
 							RankingsResponse.class);
 					if (obj != null) {
 						game.onRankingsReceived(obj.getUsers());

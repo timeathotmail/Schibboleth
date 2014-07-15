@@ -7,7 +7,7 @@ import common.entities.annotations.*;
  * 
  * @author Tim Wiechers
  */
-@TableAlias(table="MATCH__")
+@TableAlias(table = "MATCH__")
 public class Match {
 	/**
 	 * ID for unique identification.
@@ -24,6 +24,16 @@ public class Match {
 	@NotPersisted
 	private User user2;
 	/**
+	 * First player's id.
+	 */
+	@ColumnAlias(column = "user1")
+	private int userId1;
+	/**
+	 * Second player's id.
+	 */
+	@ColumnAlias(column = "user2")
+	private int userId2;
+	/**
 	 * First player's points.
 	 */
 	private int points1;
@@ -31,11 +41,6 @@ public class Match {
 	 * Second player's points.
 	 */
 	private int points2;
-	
-	@ColumnAlias(column="user1")
-	private int userId1;
-	@ColumnAlias(column="user2")
-	private int userId2;
 
 	/**
 	 * Constructor for JSON deserialization and persistence framework.
@@ -92,8 +97,8 @@ public class Match {
 
 	public void setUser1(User user1) {
 		this.user1 = user1;
-		
-		if(user1 != null) {
+
+		if (user1 != null) {
 			this.userId1 = user1.getId();
 		}
 	}
@@ -104,8 +109,8 @@ public class Match {
 
 	public void setUser2(User user2) {
 		this.user2 = user2;
-		
-		if(user2 != null) {
+
+		if (user2 != null) {
 			this.userId2 = user2.getId();
 		}
 	}
@@ -124,5 +129,60 @@ public class Match {
 
 	public void setPoints2(int points2) {
 		this.points2 = points2;
+	}
+
+	// === special methods ===
+
+	@Override
+	public String toString() {
+		return "Match [id=" + id + ", userId1=" + userId1 + ", userId2="
+				+ userId2 + ", points1=" + points1 + ", points2=" + points2
+				+ "]";
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + id;
+		result = prime * result + points1;
+		result = prime * result + points2;
+		result = prime * result + ((user1 == null) ? 0 : user1.hashCode());
+		result = prime * result + ((user2 == null) ? 0 : user2.hashCode());
+		result = prime * result + userId1;
+		result = prime * result + userId2;
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Match other = (Match) obj;
+		if (id != other.id)
+			return false;
+		if (points1 != other.points1)
+			return false;
+		if (points2 != other.points2)
+			return false;
+		if (user1 == null) {
+			if (other.user1 != null)
+				return false;
+		} else if (!user1.equals(other.user1))
+			return false;
+		if (user2 == null) {
+			if (other.user2 != null)
+				return false;
+		} else if (!user2.equals(other.user2))
+			return false;
+		if (userId1 != other.userId1)
+			return false;
+		if (userId2 != other.userId2)
+			return false;
+		return true;
 	}
 }

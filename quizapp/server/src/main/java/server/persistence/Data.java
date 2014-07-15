@@ -10,20 +10,22 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.naming.ConfigurationException;
+
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.handlers.BeanListHandler;
 
 import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
 
-import server.ServerProperties;
 import server.persistence.constraints.*;
 import server.persistence.constraints.Constraint.AppendAt;
 import server.persistence.constraints.OrderByConstraint.Order;
-import server.persistence.utils.InsertQueryBuilder;
-import server.persistence.utils.QueryBuilder;
-import server.persistence.utils.UpdateQueryBuilder;
+import server.persistence.query.InsertQueryBuilder;
+import server.persistence.query.QueryBuilder;
+import server.persistence.query.UpdateQueryBuilder;
 import common.entities.*;
 import common.entities.annotations.*;
+import common.net.Config;
 
 /**
  * Provides database access.
@@ -32,31 +34,33 @@ import common.entities.annotations.*;
  */
 public class Data implements Persistence {
 	/**
-	 * 
-	 */
-	private static final String JDBC_DRIVER = ServerProperties
-			.get("JDBC_DRIVER");
-	/**
-	 * 
-	 */
-	private static final String DB_URL = ServerProperties.get("DB_URL");
-	/**
-	 * 
-	 */
-	private static final String DB_NAME = ServerProperties.get("DB_NAME");
-	/**
-	 * 
-	 */
-	private static final String DB_USER = ServerProperties.get("DB_USER");
-	/**
-	 * 
-	 */
-	private static final String DB_PASS = ServerProperties.get("DB_PASS");
-
-	/**
 	 * Logger.
 	 */
 	private static final Logger logger = Logger.getLogger("Data");
+	/**
+	 * 
+	 */
+	private static Config cfg;
+	/**
+	 * JDBC driver class.
+	 */
+	private static String JDBC_DRIVER;
+	/**
+	 * Database location.
+	 */
+	private static String DB_URL;
+	/**
+	 * Database name.
+	 */
+	private static String DB_NAME;
+	/**
+	 * MySQL user.
+	 */
+	private static String MYSQL_USER;
+	/**
+	 * MySQL password.
+	 */
+	private static String MYSQL_PASS;
 	/**
 	 * Singleton instance
 	 */
@@ -73,14 +77,27 @@ public class Data implements Persistence {
 	// =====================================================================
 	// Init database connection
 	// =====================================================================
-
+	
 	/**
 	 * @return the singleton instance
 	 * @throws SQLException
 	 */
 	public static Data getInstance() throws SQLException {
-		if (instance == null)
+		if (instance == null) {
+			
+			try {
+				cfg = Config.get();
+				JDBC_DRIVER = cfg.get("JDBC_DRIVER");
+				DB_URL = cfg.get("DB_URL");
+				DB_NAME = cfg.get("DB_NAME");
+				MYSQL_USER = cfg.get("MYSQL_USER");
+				MYSQL_PASS = cfg.get("MYSQL_PASS");
+			} catch (ConfigurationException e) {
+				throw new SQLException("Server is misconfigured!", e);
+			}
+			
 			instance = new Data();
+		}
 
 		return instance;
 	}
@@ -94,8 +111,8 @@ public class Data implements Persistence {
 
 		try {
 			Class.forName(JDBC_DRIVER);
-			dataSource.setUser(DB_USER);
-			dataSource.setPassword(DB_PASS);
+			dataSource.setUser(MYSQL_USER);
+			dataSource.setPassword(MYSQL_PASS);
 			dataSource.setUrl(DB_URL);
 			run = new QueryRunner(dataSource);
 			checkDatabaseStructure();
@@ -149,17 +166,16 @@ public class Data implements Persistence {
 		run.update("DROP TRIGGER IF EXISTS matchval");
 		run.update(String.format("CREATE TRIGGER matchval "
 				+ "BEFORE INSERT ON %s FOR EACH ROW BEGIN "
-				+ "IF NEW.user1 = NEW.user2 "
-				+ "THEN SIGNAL SQLSTATE '45000' "
+				+ "IF NEW.user1 = NEW.user2 " + "THEN SIGNAL SQLSTATE '45000' "
 				+ "SET MESSAGE_TEXT = 'Cannot add or "
 				+ "update match: same users'; END IF; END;",
 				getTable(Match.class)));
 
-		/*run.update("DROP TRIGGER IF EXISTS matchcleaner");
+		run.update("DROP TRIGGER IF EXISTS matchcleaner");
 		run.update(String.format("CREATE TRIGGER matchcleaner "
 				+ "AFTER DELETE ON %s FOR EACH ROW BEGIN "
 				+ "DELETE FROM %s WHERE user1 IS NULL AND user2 IS NULL; "
-				+ "END;", getTable(User.class), getTable(Match.class)));*/
+				+ "END;", getTable(User.class), getTable(Match.class)));
 	}
 
 	// =====================================================================
@@ -475,9 +491,9 @@ public class Data implements Persistence {
 
 	private <T> List<T> getMany(String sql, Class<T> clazz,
 			Constraint... constraints) throws SQLException {
-		
-		//System.out.println(sql + Constraint.toString(constraints));
-		
+
+		// System.out.println(sql + Constraint.toString(constraints));
+
 		return run.query(sql + Constraint.toString(constraints),
 				new BeanListHandler<T>(clazz));
 	}

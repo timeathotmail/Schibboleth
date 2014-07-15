@@ -23,6 +23,10 @@ public class ServerInbox implements Runnable {
 	 */
 	private final Socket client;
 	/**
+	 * NetUtils instance.
+	 */
+	private static NetUtils net;
+	/**
 	 * Server's directory.
 	 */
 	private static ServerDirectory serverDir;
@@ -41,9 +45,13 @@ public class ServerInbox implements Runnable {
 	 * @param persistence
 	 *            persistence instance
 	 */
-	public ServerInbox(final Socket client, ServerDirectory _serverDir,
+	public ServerInbox(NetUtils _net, final Socket client, ServerDirectory _serverDir,
 			Persistence _persistence) {
 		this.client = client;
+		
+		if(net == null) {
+			net = _net;
+		}
 
 		if (serverDir == null) {
 			serverDir = _serverDir;
@@ -95,9 +103,9 @@ public class ServerInbox implements Runnable {
 				List<Integer> questionIds = getQuestionIds(questions);
 
 				// connect
-				NetUtils.send(waitingClient, new MatchCreatedResponse(user,
+				net.send(waitingClient, new MatchCreatedResponse(user,
 						questionIds));
-				NetUtils.send(client, new MatchCreatedResponse(waitingUser,
+				net.send(client, new MatchCreatedResponse(waitingUser,
 						questionIds));
 				serverDir.startMatch(client, waitingClient, questions);
 
@@ -116,7 +124,7 @@ public class ServerInbox implements Runnable {
 	 * @param req
 	 */
 	public static synchronized void process(MatchSearchCancelRequest req) {
-		NetUtils.send(waitingClient, new MatchSearchCancelledResponse());
+		net.send(waitingClient, new MatchSearchCancelledResponse());
 		waitingClient = null;
 	}
 
@@ -142,21 +150,21 @@ public class ServerInbox implements Runnable {
 			}
 
 			if(user == null) {
-				NetUtils.send(client, new AuthResponse(false, null));
+				net.send(client, new AuthResponse(false, null));
 				return;
 			}
 			
 			// send user the list of other users
-			NetUtils.send(client,
+			net.send(client,
 					new AuthResponse(true, serverDir.getActiveUsers()));
 			// inform other users about the new client
-			NetUtils.send(serverDir.getActiveSockets(),
+			net.send(serverDir.getActiveSockets(),
 					new UserListChangedResponse(true, user));
 			// connect username and socket in the server directory
 			serverDir.idClient(client, user, req.getRevision());
 
 		} catch (SQLException e) {
-			NetUtils.send(client, new AuthResponse(false, null));
+			net.send(client, new AuthResponse(false, null));
 		}
 	}
 
@@ -169,7 +177,7 @@ public class ServerInbox implements Runnable {
 	private void process(UserLogoutRequest req) {
 		User disconnectedUser = serverDir.getUser(client);
 		serverDir.removeClient(client);
-		NetUtils.send(serverDir.getActiveSockets(),
+		net.send(serverDir.getActiveSockets(),
 				new UserListChangedResponse(false, disconnectedUser));
 	}
 
@@ -184,9 +192,9 @@ public class ServerInbox implements Runnable {
 					req.getNewUsername(), req.getNewPassword(),
 					req.getNewPasswordConfirm());
 		} catch (IllegalArgumentException e) {
-			NetUtils.send(client, new ErrorResponse("Bad input!"));
+			net.send(client, new ErrorResponse("Bad input!"));
 		} catch (SQLException e) {
-			NetUtils.send(client, new ErrorResponse(
+			net.send(client, new ErrorResponse(
 					"User data couldn't be saved!"));
 		}
 	}
@@ -198,9 +206,9 @@ public class ServerInbox implements Runnable {
 	 */
 	private void process(ChallengeSendRequest req) {
 		User sendTo = serverDir.getUser(req.getOpponent());
-		if (!NetUtils.send(serverDir.getSocket(sendTo),
+		if (!net.send(serverDir.getSocket(sendTo),
 				new ChallengeReceivedResponse(sendTo))) {
-			NetUtils.send(client, new ErrorResponse("Couldn't send challenge!"));
+			net.send(client, new ErrorResponse("Couldn't send challenge!"));
 		}
 	}
 
@@ -211,7 +219,7 @@ public class ServerInbox implements Runnable {
 	 */
 	private void process(ChallengeDenyRequest req) {
 		User sendTo = serverDir.getUser(req.getOpponent());
-		NetUtils.send(serverDir.getSocket(sendTo), new ChallengeDeniedResponse(
+		net.send(serverDir.getSocket(sendTo), new ChallengeDeniedResponse(
 				sendTo));
 	}
 
@@ -231,17 +239,17 @@ public class ServerInbox implements Runnable {
 
 			List<Integer> questionIds = getQuestionIds(questions);
 
-			NetUtils.send(opponent,
+			net.send(opponent,
 					new MatchCreatedResponse(serverDir.getUser(client),
 							questionIds));
-			NetUtils.send(
+			net.send(
 					client,
 					new MatchCreatedResponse(serverDir.getUser(req
 							.getOpponent()), questionIds));
 
 			serverDir.startMatch(client, opponent, questions);
 		} catch (SQLException e) {
-			NetUtils.send(client, new ErrorResponse(
+			net.send(client, new ErrorResponse(
 					"Challenge couldn't be accepted!"));
 		}
 	}
@@ -253,12 +261,12 @@ public class ServerInbox implements Runnable {
 	 */
 	private void process(GetRankingsRequest req) {
 		try {
-			NetUtils.send(
+			net.send(
 					client,
 					new RankingsResponse(persistence.getRankedUsers(
 							req.getOffset(), req.getLength())));
 		} catch (Exception e) {
-			NetUtils.send(client, new ErrorResponse("Can't get rankings!"));
+			net.send(client, new ErrorResponse("Can't get rankings!"));
 		}
 	}
 
@@ -269,7 +277,7 @@ public class ServerInbox implements Runnable {
 	 */
 	private void process(AnswerSubmitRequest req) {
 		serverDir.saveAnswer(client, req.getIndex());
-		NetUtils.send(serverDir.getOpponent(client),
+		net.send(serverDir.getOpponent(client),
 				new OpponentAnswerResponse(req.getIndex()));
 	}
 
@@ -280,7 +288,7 @@ public class ServerInbox implements Runnable {
 	 */
 	private void process(MatchLeaveRequest req) {
 		serverDir.endMatch(client);
-		NetUtils.send(client, new OpponentLeftResponse());
+		net.send(client, new OpponentLeftResponse());
 	}
 
 	// =====================================================================
@@ -305,11 +313,11 @@ public class ServerInbox implements Runnable {
 	public void run() {
 		try {
 			while (true) {
-				String json = NetUtils.read(client);
+				String json = net.read(client);
 
 				// Matching...
 				{ // ============================================================
-					UserAuthRequest obj = NetUtils.fromJson(json,
+					UserAuthRequest obj = net.fromJson(json,
 							UserAuthRequest.class);
 					if (obj != null) {
 						process(obj);
@@ -318,7 +326,7 @@ public class ServerInbox implements Runnable {
 				}
 
 				{ // ============================================================
-					UserLogoutRequest obj = NetUtils.fromJson(json,
+					UserLogoutRequest obj = net.fromJson(json,
 							UserLogoutRequest.class);
 					if (obj != null) {
 						process(obj);
@@ -327,7 +335,7 @@ public class ServerInbox implements Runnable {
 				}
 
 				{ // ============================================================
-					UserDataChangeRequest obj = NetUtils.fromJson(json,
+					UserDataChangeRequest obj = net.fromJson(json,
 							UserDataChangeRequest.class);
 					if (obj != null) {
 						process(obj);
@@ -336,7 +344,7 @@ public class ServerInbox implements Runnable {
 				}
 
 				{ // ============================================================
-					MatchSearchStartRequest obj = NetUtils.fromJson(json,
+					MatchSearchStartRequest obj = net.fromJson(json,
 							MatchSearchStartRequest.class);
 					if (obj != null) {
 						process(obj, client);
@@ -345,7 +353,7 @@ public class ServerInbox implements Runnable {
 				}
 
 				{ // ============================================================
-					MatchSearchCancelRequest obj = NetUtils.fromJson(json,
+					MatchSearchCancelRequest obj = net.fromJson(json,
 							MatchSearchCancelRequest.class);
 					if (obj != null) {
 						process(obj);
@@ -354,7 +362,7 @@ public class ServerInbox implements Runnable {
 				}
 
 				{ // ============================================================
-					ChallengeSendRequest obj = NetUtils.fromJson(json,
+					ChallengeSendRequest obj = net.fromJson(json,
 							ChallengeSendRequest.class);
 					if (obj != null) {
 						process(obj);
@@ -363,7 +371,7 @@ public class ServerInbox implements Runnable {
 				}
 
 				{ // ============================================================
-					ChallengeAcceptRequest obj = NetUtils.fromJson(json,
+					ChallengeAcceptRequest obj = net.fromJson(json,
 							ChallengeAcceptRequest.class);
 					if (obj != null) {
 						process(obj);
@@ -372,7 +380,7 @@ public class ServerInbox implements Runnable {
 				}
 
 				{ // ============================================================
-					ChallengeDenyRequest obj = NetUtils.fromJson(json,
+					ChallengeDenyRequest obj = net.fromJson(json,
 							ChallengeDenyRequest.class);
 					if (obj != null) {
 						process(obj);
@@ -381,7 +389,7 @@ public class ServerInbox implements Runnable {
 				}
 
 				{ // ============================================================
-					GetRankingsRequest obj = NetUtils.fromJson(json,
+					GetRankingsRequest obj = net.fromJson(json,
 							GetRankingsRequest.class);
 					if (obj != null) {
 						process(obj);
@@ -390,7 +398,7 @@ public class ServerInbox implements Runnable {
 				}
 
 				{ // ============================================================
-					AnswerSubmitRequest obj = NetUtils.fromJson(json,
+					AnswerSubmitRequest obj = net.fromJson(json,
 							AnswerSubmitRequest.class);
 					if (obj != null) {
 						process(obj);
@@ -399,7 +407,7 @@ public class ServerInbox implements Runnable {
 				}
 
 				{ // ============================================================
-					MatchLeaveRequest obj = NetUtils.fromJson(json,
+					MatchLeaveRequest obj = net.fromJson(json,
 							MatchLeaveRequest.class);
 					if (obj != null) {
 						process(obj);

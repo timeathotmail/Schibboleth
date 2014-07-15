@@ -1,4 +1,4 @@
-package server.persistence.utils;
+package server.persistence.query;
 
 public class InsertQueryBuilder extends QueryBuilder {
 	private final StringBuilder fields;

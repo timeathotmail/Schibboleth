@@ -56,29 +56,6 @@ public class User {
 		this.isAdmin = isAdmin;
 	}
 
-	@Override
-	public String toString() {
-		return String.format(
-				"User[%s, id: %d, admin: %s, matches: %d, wins: %d, points: %d]", name,
-				id, isAdmin ? "yes" : "no", matchCount, winCount, pointCount);
-	}
-
-	@Override
-	public boolean equals(Object other) {
-		if (other == null)
-			return false;
-		if (other == this)
-			return true;
-		if (!(other instanceof User))
-			return false;
-		User otherUser = (User) other;
-		return this.id == otherUser.id && this.name.equals(otherUser.name)
-				&& this.matchCount == otherUser.matchCount
-				&& this.winCount == otherUser.winCount
-				&& this.pointCount == otherUser.pointCount
-				&& this.isAdmin == otherUser.isAdmin;
-	}
-
 	// === getters & setters ===
 
 	public int getId() {
@@ -127,5 +104,54 @@ public class User {
 
 	public void setAdmin(boolean isAdmin) {
 		this.isAdmin = isAdmin;
+	}
+
+	// === special methods ===
+
+	@Override
+	public String toString() {
+		return "User [id=" + id + ", isAdmin=" + isAdmin + ", name=" + name
+				+ ", matchCount=" + matchCount + ", winCount=" + winCount
+				+ ", pointCount=" + pointCount + "]";
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + id;
+		result = prime * result + (isAdmin ? 1231 : 1237);
+		result = prime * result + matchCount;
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		result = prime * result + pointCount;
+		result = prime * result + winCount;
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		User other = (User) obj;
+		if (id != other.id)
+			return false;
+		if (isAdmin != other.isAdmin)
+			return false;
+		if (matchCount != other.matchCount)
+			return false;
+		if (name == null) {
+			if (other.name != null)
+				return false;
+		} else if (!name.equals(other.name))
+			return false;
+		if (pointCount != other.pointCount)
+			return false;
+		if (winCount != other.winCount)
+			return false;
+		return true;
 	}
 }

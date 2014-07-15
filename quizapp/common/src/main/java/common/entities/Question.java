@@ -162,4 +162,76 @@ public class Question {
 		this.revision = revision;
 	}
 
+	// === special methods ===
+
+	@Override
+	public String toString() {
+		return "Question [id=" + id + ", revision=" + revision + ", text="
+				+ text + ", answer1=" + answer1 + ", answer2=" + answer2
+				+ ", answer3=" + answer3 + ", answer4=" + answer4
+				+ ", correctIndex=" + correctIndex + ", category=" + category
+				+ "]";
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((answer1 == null) ? 0 : answer1.hashCode());
+		result = prime * result + ((answer2 == null) ? 0 : answer2.hashCode());
+		result = prime * result + ((answer3 == null) ? 0 : answer3.hashCode());
+		result = prime * result + ((answer4 == null) ? 0 : answer4.hashCode());
+		result = prime * result
+				+ ((category == null) ? 0 : category.hashCode());
+		result = prime * result + correctIndex;
+		result = prime * result + id;
+		result = prime * result + revision;
+		result = prime * result + ((text == null) ? 0 : text.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Question other = (Question) obj;
+		if (answer1 == null) {
+			if (other.answer1 != null)
+				return false;
+		} else if (!answer1.equals(other.answer1))
+			return false;
+		if (answer2 == null) {
+			if (other.answer2 != null)
+				return false;
+		} else if (!answer2.equals(other.answer2))
+			return false;
+		if (answer3 == null) {
+			if (other.answer3 != null)
+				return false;
+		} else if (!answer3.equals(other.answer3))
+			return false;
+		if (answer4 == null) {
+			if (other.answer4 != null)
+				return false;
+		} else if (!answer4.equals(other.answer4))
+			return false;
+		if (category != other.category)
+			return false;
+		if (correctIndex != other.correctIndex)
+			return false;
+		if (id != other.id)
+			return false;
+		if (revision != other.revision)
+			return false;
+		if (text == null) {
+			if (other.text != null)
+				return false;
+		} else if (!text.equals(other.text))
+			return false;
+		return true;
+	}
 }

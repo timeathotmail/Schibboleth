@@ -1,4 +1,4 @@
-package server.persistence.utils;
+package server.persistence.query;
 
 public class UpdateQueryBuilder extends QueryBuilder {
 	private final int id;
