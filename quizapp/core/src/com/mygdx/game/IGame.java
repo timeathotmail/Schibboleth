@@ -10,7 +10,7 @@ import common.entities.*;
  * 
  * @author Tim Wiechers
  */
-public interface Game {
+public interface IGame {
 	/*==========================================================
 	 * Login / Logout / Account
 	 *==========================================================*/
@@ -19,7 +19,7 @@ public interface Game {
 	 * Auto-login with saved credentials. 
 	 * Enter main menu.
 	 */
-	void autoLogin();
+	boolean autoLogin();
 	
 	/**
 	 * Login with provided username and password.
@@ -143,12 +143,6 @@ public interface Game {
 	/*==========================================================
 	 * Server notifications
 	 *==========================================================*/
-	
-	/**
-	 * Called if login not avaiable. 
-	 * Display error message.
-	 */
-	void onNoConnection();
 	
 	/**
 	 * Called on login response. 

@@ -1,6 +1,6 @@
 package server.persistence.constraints;
 
-public abstract class OperatorConstraint {
+public abstract class OperatorConstraint extends Constraint {
 	private final Object[] fields;
 	private final Object[] values;
 	

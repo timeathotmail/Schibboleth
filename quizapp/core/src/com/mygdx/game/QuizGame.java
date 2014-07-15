@@ -7,57 +7,35 @@ import java.util.logging.Logger;
 
 import javax.naming.ConfigurationException;
 
-import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.Window;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.Scaling;
+import com.badlogic.gdx.Game;
 
 import common.entities.*;
 
 import com.mygdx.net.Client;
+import com.mygdx.net.NoConnectionException;
 
 /**
  * Game class.
  * 
  * @author Tim Wiechers
  */
-public class QuizGame extends ApplicationAdapter implements Game {
+public class QuizGame extends Game implements IGame {
 	/**
 	 * Client used for server communication.
 	 */
-	private final Client client;
-	/**
-	 * 
-	 */
-	private SpriteBatch batch;
-	/**
-	 * 
-	 */
-	private Skin skin;
-	/**
-     * 
-     */
-	private Stage stage;
-
+	private Client client;
+	private LoginScreen loginScreen;
+	
 	public QuizGame() {
-		Client c = null;
+		Logger logger = Logger.getLogger("QuizGame");
 		try {
-			c = new Client(this);
+			client = new Client(this);
 		} catch (ConfigurationException e) {
-			Logger.getLogger("QuizGame").log(Level.SEVERE,
-					"Client misconfigured!", e);
+			logger.log(Level.SEVERE, "Client misconfigured!", e);
+		} catch (NoConnectionException e) {
+			logger.log(Level.INFO, "No connection.", e);
 		}
-
-		client = c;
 	}
 
 	/*
@@ -67,96 +45,12 @@ public class QuizGame extends ApplicationAdapter implements Game {
 	 */
 	@Override
 	public void create() {
-		batch = new SpriteBatch();
-		skin = new Skin(Gdx.files.internal("uiskin.json"));
-		stage = new Stage();
-
-		Window window = new Window("Dialogtitel", skin);
-		Label label = new Label(
-				"Etwas Text hier um dem User zu sagen, was Sache ist", skin);
-		final TextButton button = new TextButton("Drück mich", skin, "default");
-
-		button.addListener(new ClickListener() {
-			@Override
-			public void clicked(InputEvent event, float x, float y) {
-				button.setText("Du hast den Button gedrückt");
-			}
-		});
-
-		window.getButtonTable().add(new TextButton("X", skin))
-				.height(window.getPadTop());
-		window.setPosition(0, 0);
-		window.setCenterPosition(Gdx.graphics.getWidth() / 2,
-				Gdx.graphics.getHeight() / 2);
-		window.row();
-		window.add(label);
-		window.row();
-		window.add(button);
-		window.pack();
-
-		stage.addActor(window);
-		Gdx.input.setInputProcessor(stage);
-
-		if (client != null)
-			client.login("username", "password", 0);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.badlogic.gdx.ApplicationAdapter#dispose()
-	 */
-	@Override
-	public void dispose() {
-		batch.dispose();
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.badlogic.gdx.ApplicationAdapter#render()
-	 */
-	@Override
-	public void render() {
-		Gdx.gl.glClearColor(0.75f, 0.75f, 0.75f, 1);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		batch.begin();
-		stage.draw();
-		batch.end();
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.badlogic.gdx.ApplicationAdapter#resize(int, int)
-	 */
-	@Override
-	public void resize(int width, int height) {
-		Vector2 size = Scaling.fit.apply(480, 800, width, height);
-		int viewportX = (int) (width - size.x) / 2;
-		int viewportY = (int) (height - size.y) / 2;
-		int viewportWidth = (int) size.x;
-		int viewportHeight = (int) size.y;
-		Gdx.gl.glViewport(viewportX, viewportY, viewportWidth, viewportHeight);
-		stage.getViewport().update(480, 800);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.badlogic.gdx.ApplicationAdapter#pause()
-	 */
-	@Override
-	public void pause() {
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.badlogic.gdx.ApplicationAdapter#resume()
-	 */
-	@Override
-	public void resume() {
+		if(client == null) {
+			playOffline();
+		} else if (!autoLogin()) {
+			loginScreen = new LoginScreen(this);
+			setScreen(loginScreen);
+		}
 	}
 
 	// =====================================================================
@@ -169,9 +63,10 @@ public class QuizGame extends ApplicationAdapter implements Game {
 	 * @see com.mygdx.game.IGame#autoLogin()
 	 */
 	@Override
-	public void autoLogin() {
+	public boolean autoLogin() {
 		// TODO Auto-generated method stub
-
+		//client.login("username", "password", 0);
+		return false;
 	}
 
 	/*
@@ -368,17 +263,6 @@ public class QuizGame extends ApplicationAdapter implements Game {
 	 */
 	@Override
 	public void endMatch() {
-		// TODO Auto-generated method stub
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.mygdx.game.IGame#onNoConnection()
-	 */
-	@Override
-	public void onNoConnection() {
 		// TODO Auto-generated method stub
 
 	}
