@@ -1,25 +1,21 @@
 package com.mygdx.game;
 
-import java.util.Collection;
+
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import common.entities.User;
 
-public class MainScreen implements Screen {
+public class OfflineScreen implements Screen {
 
 	private QuizGame game;
 	private Stage stage;
 	private Skin skin;
-	
-	private final Collection<User> users;
 
-	public MainScreen(QuizGame game, Collection<User> users) {
+	public OfflineScreen(QuizGame game) {
 		this.game = game;
-		this.users = users;
 	}
 
 	@Override

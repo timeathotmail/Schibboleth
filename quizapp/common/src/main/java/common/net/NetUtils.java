@@ -33,14 +33,6 @@ public class NetUtils {
 	 */
 	private static NetUtils instance;
 	/**
-	 * The server's IP.
-	 */
-	public final String IP;
-	/**
-	 * The port on which the sever is listening.
-	 */
-	public final int PORT;
-	/**
 	 * Read-buffer capacity and max. length of a message.
 	 */
 	private final int MSG_LENGTH;
@@ -61,10 +53,7 @@ public class NetUtils {
 	 * @throws ConfigurationException
 	 */
 	private NetUtils() throws ConfigurationException {
-		Config cfg = Config.get();
-		IP = cfg.get("IP");
-		PORT = cfg.getInt("PORT");
-		MSG_LENGTH = cfg.getInt("MSG_LENGTH");
+		MSG_LENGTH = Config.get().getInt("MSG_LENGTH");
 	}
 	
 	/**
@@ -76,7 +65,7 @@ public class NetUtils {
 	 * @throws RuntimeException
 	 *             in case the socket was closed
 	 */
-	public String read(Socket socket) throws RuntimeException {
+	public String read(Socket socket) throws SocketReadException {
 		if(socket == null) {
 			return "";
 		}
@@ -89,11 +78,11 @@ public class NetUtils {
 					new InputStreamReader(socket.getInputStream()));
 			charCount = bufferedReader.read(buffer, 0, MSG_LENGTH);
 		} catch (IOException e) {
-			logger.log(Level.SEVERE, "error reading message", e);
+			throw new SocketReadException(false, e);
 		}
 
 		if (charCount < 0) {
-			throw new RuntimeException("end of input stream");
+			throw new SocketReadException(true, "end of input stream");
 		}
 
 		return new String(buffer, 0, charCount);
@@ -110,8 +99,7 @@ public class NetUtils {
 	 * @throws RuntimeException
 	 *             in case the message was too long
 	 */
-	public boolean send(Socket socket, Object obj)
-			throws RuntimeException {
+	public boolean send(Socket socket, Object obj) {
 		if(socket == null || obj == null) {
 			return false;
 		}
@@ -121,7 +109,7 @@ public class NetUtils {
 					socket.getOutputStream()));
 			String json = mapper.writeValueAsString(obj);
 
-			if (json.length() > MSG_LENGTH)
+			if (json.length() > MSG_LENGTH) // TODO andere exception?
 				throw new RuntimeException(
 						"message too long for server's read-buffer ("
 								+ MSG_LENGTH + ")");

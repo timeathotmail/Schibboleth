@@ -4,6 +4,7 @@ import java.net.Socket;
 
 import com.mygdx.game.IGame;
 
+import common.net.SocketReadException;
 import common.net.NetUtils;
 import common.net.responses.*;
 
@@ -45,7 +46,17 @@ public class ClientInbox implements Runnable {
 	public void run() {
 		try {
 			while (true) {
-				String json = net.read(serverSocket);
+				String json;
+				try {
+					json = net.read(serverSocket);
+				} catch(SocketReadException e) {
+					if(!e.isSocketClosed()) {
+						throw e;
+					} else {
+						// TODO missed message
+						continue;
+					}
+				}
 
 				// Matching...
 				{ // ============================================================
@@ -139,7 +150,7 @@ public class ClientInbox implements Runnable {
 					}
 				}
 			}
-		} catch (RuntimeException e) {
+		} catch (SocketReadException e) {
 			game.onConnectionLost();
 		}
 	}

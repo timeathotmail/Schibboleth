@@ -7,6 +7,7 @@ import java.util.List;
 
 import server.persistence.Persistence;
 import common.entities.*;
+import common.net.SocketReadException;
 import common.net.NetUtils;
 import common.net.requests.*;
 import common.net.responses.*;
@@ -314,7 +315,17 @@ public class ServerInbox implements Runnable {
 	public void run() {
 		try {
 			while (true) {
-				String json = net.read(client);
+				String json;
+				try {
+					json = net.read(client);
+				} catch(SocketReadException e) {
+					if(!e.isSocketClosed()) {
+						throw e;
+					} else {
+						// TODO missed message
+						continue;
+					}
+				}
 
 				// Matching...
 				{ // ============================================================
@@ -416,7 +427,7 @@ public class ServerInbox implements Runnable {
 					}
 				}
 			}
-		} catch (RuntimeException e) {
+		} catch (SocketReadException e) {
 			serverDir.removeClient(client);
 		}
 	}

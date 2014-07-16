@@ -38,15 +38,17 @@ public class Client {
 	 * @param game
 	 * @throws ConfigurationException
 	 */
-	public Client(IGame game) throws ConfigurationException,
-			NoConnectionException {
+	public Client(IGame game, String ip, int port)
+			throws ConfigurationException, NoConnectionException {
 		net = NetUtils.getInstance();
+
 		try {
-			serverSocket = new Socket(net.IP, net.PORT);
-			new Thread(new ClientInbox(game, net, serverSocket)).start();
+			serverSocket = new Socket(ip, port);
 		} catch (Exception e) {
-			throw new NoConnectionException("", e);
+			throw new NoConnectionException(e);
 		}
+
+		new Thread(new ClientInbox(game, net, serverSocket)).start();
 	}
 
 	/**

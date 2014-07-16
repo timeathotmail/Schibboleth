@@ -10,6 +10,7 @@ import javax.naming.ConfigurationException;
 import com.badlogic.gdx.Game;
 
 import common.entities.*;
+import common.net.Config;
 
 import com.mygdx.net.Client;
 import com.mygdx.net.NoConnectionException;
@@ -24,16 +25,20 @@ public class QuizGame extends Game implements IGame {
 	 * Client used for server communication.
 	 */
 	private Client client;
+	private int revision;
+
 	private LoginScreen loginScreen;
 	private MainScreen mainScreen;
-	private int revision; // TODO
+	private OfflineScreen offlineScreen;
 
 	public QuizGame() {
 		Logger logger = Logger.getLogger("QuizGame");
 		try {
-			client = new Client(this);
+			Config cfg = Config.get();
+			revision = cfg.getInt("revision");
+			client = new Client(this, cfg.get("IP"), cfg.getInt("PORT"));
 		} catch (ConfigurationException e) {
-			logger.log(Level.SEVERE, "Client misconfigured!", e);
+			throw new RuntimeException(e);
 		} catch (NoConnectionException e) {
 			logger.log(Level.INFO, "No connection.", e);
 		}
@@ -82,11 +87,7 @@ public class QuizGame extends Game implements IGame {
 		} else if (password.isEmpty()) {
 			loginScreen.showErrorMsg("enter a password");
 		} else {
-			try {
-				client.login(username, password, revision);
-			} catch (RuntimeException e) {
-				// TODO
-			}
+			client.login(username, password, revision);
 		}
 	}
 
@@ -105,11 +106,7 @@ public class QuizGame extends Game implements IGame {
 		} else if (!password.equals(confirmation)) {
 			loginScreen.showErrorMsg("passwords do not match");
 		} else {
-			try {
-				client.register(username, password, revision);
-			} catch (RuntimeException e) {
-				// TODO
-			}
+			client.register(username, password, revision);
 		}
 	}
 
@@ -143,8 +140,8 @@ public class QuizGame extends Game implements IGame {
 	 */
 	@Override
 	public void playOffline() {
-		// TODO Auto-generated method stub
-
+		offlineScreen = new OfflineScreen(this);
+		setScreen(offlineScreen);
 	}
 
 	/*
@@ -312,7 +309,8 @@ public class QuizGame extends Game implements IGame {
 			mainScreen = new MainScreen(this, users);
 			setScreen(mainScreen);
 		} else {
-			loginScreen.showErrorMsg("user or password wrong");
+			loginScreen.showErrorMsg("something went wrong");
+			// TODO wrong name/pw, name is taken, bad password etc.
 		}
 	}
 
