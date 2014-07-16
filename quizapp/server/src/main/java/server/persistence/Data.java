@@ -77,14 +77,14 @@ public class Data implements Persistence {
 	// =====================================================================
 	// Init database connection
 	// =====================================================================
-	
+
 	/**
 	 * @return the singleton instance
 	 * @throws SQLException
 	 */
 	public static Data getInstance() throws SQLException {
 		if (instance == null) {
-			
+
 			try {
 				cfg = Config.get();
 				JDBC_DRIVER = cfg.get("JDBC_DRIVER");
@@ -95,7 +95,7 @@ public class Data implements Persistence {
 			} catch (ConfigurationException e) {
 				throw new SQLException("Server is misconfigured!", e);
 			}
-			
+
 			instance = new Data();
 		}
 
@@ -197,7 +197,8 @@ public class Data implements Persistence {
 
 	@Override
 	public User registerUser(String username, String password)
-			throws SQLException {
+			throws SQLException, IllegalArgumentException {
+		logger.info(username+" wants to register.");
 		if (username == null || username.isEmpty()) {
 			throw new IllegalArgumentException("empty username");
 		}
@@ -205,6 +206,8 @@ public class Data implements Persistence {
 			throw new IllegalArgumentException("empty password");
 		}
 
+		logger.info(username+" wants to register.");
+		
 		User user = new User(username, false);
 		insert(user, "password", password);
 		return user;

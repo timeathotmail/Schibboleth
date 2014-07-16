@@ -30,6 +30,8 @@ public interface IGame {
 	 */
 	void login(String username, String password);
 	
+	void register(String username, String password, String confirmation);
+	
 	/**
 	 * Log out of active account.
 	 * Remove credentials for auto-login.

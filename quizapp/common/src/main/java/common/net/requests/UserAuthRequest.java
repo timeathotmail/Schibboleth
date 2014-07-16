@@ -60,7 +60,7 @@ public class UserAuthRequest {
 		return password;
 	}
 
-	public boolean wantsToRegister() {
+	public boolean getRegister() {
 		return register;
 	}
 

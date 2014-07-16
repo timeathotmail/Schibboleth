@@ -32,7 +32,8 @@ public interface Persistence {
 	 *            user's password
 	 * @return the user on success, null else
 	 */
-	User registerUser(String username, String password) throws SQLException;
+	User registerUser(String username, String password) throws SQLException,
+			IllegalArgumentException;
 
 	void changeUserCredentials(User user, String username, String password,
 			String confirmation) throws SQLException, IllegalArgumentException;

@@ -45,11 +45,11 @@ public class ServerInbox implements Runnable {
 	 * @param persistence
 	 *            persistence instance
 	 */
-	public ServerInbox(NetUtils _net, final Socket client, ServerDirectory _serverDir,
-			Persistence _persistence) {
+	public ServerInbox(NetUtils _net, final Socket client,
+			ServerDirectory _serverDir, Persistence _persistence) {
 		this.client = client;
-		
-		if(net == null) {
+
+		if (net == null) {
 			net = _net;
 		}
 
@@ -140,26 +140,28 @@ public class ServerInbox implements Runnable {
 	private void process(UserAuthRequest req) {
 		// login or register user
 		try {
-			User user;
-			if (req.wantsToRegister()) {
-				user = persistence.registerUser(req.getUsername(),
-						req.getPassword());
-			} else {
-				user = persistence.loginUser(req.getUsername(),
-						req.getPassword());
+			User user = null;
+			try {
+				if (req.getRegister()) {
+					user = persistence.registerUser(req.getUsername(),
+							req.getPassword());
+				} else {
+					user = persistence.loginUser(req.getUsername(),
+							req.getPassword());
+				}
+			} catch (IllegalArgumentException e) {
 			}
 
-			if(user == null) {
+			if (user == null) {
 				net.send(client, new AuthResponse(false, null));
 				return;
 			}
-			
+
 			// send user the list of other users
-			net.send(client,
-					new AuthResponse(true, serverDir.getActiveUsers()));
+			net.send(client, new AuthResponse(true, serverDir.getActiveUsers()));
 			// inform other users about the new client
-			net.send(serverDir.getActiveSockets(),
-					new UserListChangedResponse(true, user));
+			net.send(serverDir.getActiveSockets(), new UserListChangedResponse(
+					true, user));
 			// connect username and socket in the server directory
 			serverDir.idClient(client, user, req.getRevision());
 
@@ -177,8 +179,8 @@ public class ServerInbox implements Runnable {
 	private void process(UserLogoutRequest req) {
 		User disconnectedUser = serverDir.getUser(client);
 		serverDir.removeClient(client);
-		net.send(serverDir.getActiveSockets(),
-				new UserListChangedResponse(false, disconnectedUser));
+		net.send(serverDir.getActiveSockets(), new UserListChangedResponse(
+				false, disconnectedUser));
 	}
 
 	/**
@@ -194,8 +196,7 @@ public class ServerInbox implements Runnable {
 		} catch (IllegalArgumentException e) {
 			net.send(client, new ErrorResponse("Bad input!"));
 		} catch (SQLException e) {
-			net.send(client, new ErrorResponse(
-					"User data couldn't be saved!"));
+			net.send(client, new ErrorResponse("User data couldn't be saved!"));
 		}
 	}
 

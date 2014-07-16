@@ -7,7 +7,6 @@ import java.util.logging.Logger;
 
 import javax.naming.ConfigurationException;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Game;
 
 import common.entities.*;
@@ -26,7 +25,9 @@ public class QuizGame extends Game implements IGame {
 	 */
 	private Client client;
 	private LoginScreen loginScreen;
-	
+	private MainScreen mainScreen;
+	private int revision; // TODO
+
 	public QuizGame() {
 		Logger logger = Logger.getLogger("QuizGame");
 		try {
@@ -45,7 +46,7 @@ public class QuizGame extends Game implements IGame {
 	 */
 	@Override
 	public void create() {
-		if(client == null) {
+		if (client == null) {
 			playOffline();
 		} else if (!autoLogin()) {
 			loginScreen = new LoginScreen(this);
@@ -65,7 +66,7 @@ public class QuizGame extends Game implements IGame {
 	@Override
 	public boolean autoLogin() {
 		// TODO Auto-generated method stub
-		//client.login("username", "password", 0);
+		// client.login("username", "password", 0);
 		return false;
 	}
 
@@ -76,7 +77,40 @@ public class QuizGame extends Game implements IGame {
 	 */
 	@Override
 	public void login(String username, String password) {
-		// TODO Auto-generated method stub
+		if (username.isEmpty()) {
+			loginScreen.showErrorMsg("enter a username");
+		} else if (password.isEmpty()) {
+			loginScreen.showErrorMsg("enter a password");
+		} else {
+			try {
+				client.login(username, password, revision);
+			} catch (RuntimeException e) {
+				// TODO
+			}
+		}
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.mygdx.game.IGame#login(java.lang.String, java.lang.String)
+	 */
+	@Override
+	public void register(String username, String password, String confirmation) {
+
+		if (username.isEmpty()) {
+			loginScreen.showErrorMsg("enter a username");
+		} else if (password.isEmpty()) {
+			loginScreen.showErrorMsg("enter a password");
+		} else if (!password.equals(confirmation)) {
+			loginScreen.showErrorMsg("passwords do not match");
+		} else {
+			try {
+				client.register(username, password, revision);
+			} catch (RuntimeException e) {
+				// TODO
+			}
+		}
 	}
 
 	/*
@@ -274,12 +308,11 @@ public class QuizGame extends Game implements IGame {
 	 */
 	@Override
 	public void onLogin(boolean success, Collection<User> users) {
-		Gdx.app.log("Game", "login = " + success);
 		if (success) {
-			// TODO add users to list
-			// TODO enter menu
+			mainScreen = new MainScreen(this, users);
+			setScreen(mainScreen);
 		} else {
-			// TODO display error
+			loginScreen.showErrorMsg("user or password wrong");
 		}
 	}
 

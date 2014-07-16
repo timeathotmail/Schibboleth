@@ -36,9 +36,10 @@ public class Client {
 	 * running a ClientInbox.
 	 * 
 	 * @param game
-	 * @throws ConfigurationException 
+	 * @throws ConfigurationException
 	 */
-	public Client(IGame game) throws ConfigurationException, NoConnectionException {
+	public Client(IGame game) throws ConfigurationException,
+			NoConnectionException {
 		net = NetUtils.getInstance();
 		try {
 			serverSocket = new Socket(net.IP, net.PORT);
@@ -57,8 +58,8 @@ public class Client {
 	 *            desired password
 	 */
 	public void register(String username, String password, int revision) {
-		net.send(serverSocket, new UserAuthRequest(username, password,
-				true, revision));
+		net.send(serverSocket, new UserAuthRequest(username, password, true,
+				revision));
 	}
 
 	/**
@@ -69,9 +70,10 @@ public class Client {
 	 * @param password
 	 *            password
 	 */
-	public void login(String username, String password, int revision) {
-		net.send(serverSocket, new UserAuthRequest(username, password,
-				false, revision));
+	public void login(String username, String password, int revision)
+			throws RuntimeException {
+		net.send(serverSocket, new UserAuthRequest(username, password, false,
+				revision));
 	}
 
 	/**
@@ -95,8 +97,7 @@ public class Client {
 	 *            new password confirmation
 	 */
 	public void changeUserData(String username, String pw1, String pw2) {
-		net.send(serverSocket, new UserDataChangeRequest(username, pw1,
-				pw2));
+		net.send(serverSocket, new UserDataChangeRequest(username, pw1, pw2));
 	}
 
 	/**
@@ -132,8 +133,7 @@ public class Client {
 	 *            the first question's id
 	 */
 	public void acceptChallenge(String opponent, int questionId) {
-		net.send(serverSocket, new ChallengeAcceptRequest(opponent,
-				questionId));
+		net.send(serverSocket, new ChallengeAcceptRequest(opponent, questionId));
 	}
 
 	/**
