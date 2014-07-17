@@ -11,8 +11,8 @@ import javax.naming.ConfigurationException;
 import server.net.ServerDirectory;
 import server.persistence.Data;
 import server.persistence.Persistence;
-import common.net.Config;
 import common.net.NetUtils;
+import common.utils.Config;
 
 /**
  * Main server class.

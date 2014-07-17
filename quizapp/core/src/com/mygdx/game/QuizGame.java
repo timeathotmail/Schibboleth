@@ -10,7 +10,8 @@ import javax.naming.ConfigurationException;
 import com.badlogic.gdx.Game;
 
 import common.entities.*;
-import common.net.Config;
+import common.net.SocketWriteException;
+import common.utils.Config;
 
 import com.mygdx.net.Client;
 import com.mygdx.net.NoConnectionException;
@@ -87,7 +88,12 @@ public class QuizGame extends Game implements IGame {
 		} else if (password.isEmpty()) {
 			loginScreen.showErrorMsg("enter a password");
 		} else {
-			client.login(username, password, revision);
+			try {
+				client.login(username, password, revision);
+			} catch (SocketWriteException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -106,7 +112,15 @@ public class QuizGame extends Game implements IGame {
 		} else if (!password.equals(confirmation)) {
 			loginScreen.showErrorMsg("passwords do not match");
 		} else {
-			client.register(username, password, revision);
+			try {
+				client.register(username, password, revision);
+			} catch (IllegalArgumentException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (SocketWriteException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	}
 

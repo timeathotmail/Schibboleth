@@ -9,6 +9,7 @@ import server.persistence.Persistence;
 import common.entities.*;
 import common.net.SocketReadException;
 import common.net.NetUtils;
+import common.net.SocketWriteException;
 import common.net.requests.*;
 import common.net.responses.*;
 
@@ -83,9 +84,12 @@ public class ServerInbox implements Runnable {
 	 * 
 	 * @param req
 	 * @param client
+	 * @throws SocketWriteException
+	 * @throws IllegalArgumentException
 	 */
 	public static synchronized void process(MatchSearchStartRequest req,
-			Socket client) {
+			Socket client) throws IllegalArgumentException,
+			SocketWriteException {
 		User user = serverDir.getUser(client);
 		int revision = serverDir.getRevision(client);
 
@@ -123,8 +127,11 @@ public class ServerInbox implements Runnable {
 	 * Process a MatchSearchCancelRequest.
 	 * 
 	 * @param req
+	 * @throws SocketWriteException
+	 * @throws IllegalArgumentException
 	 */
-	public static synchronized void process(MatchSearchCancelRequest req) {
+	public static synchronized void process(MatchSearchCancelRequest req)
+			throws IllegalArgumentException, SocketWriteException {
 		net.send(waitingClient, new MatchSearchCancelledResponse());
 		waitingClient = null;
 	}
@@ -137,8 +144,11 @@ public class ServerInbox implements Runnable {
 	 * Process a UserAuthRequest.
 	 * 
 	 * @param req
+	 * @throws SocketWriteException
+	 * @throws IllegalArgumentException
 	 */
-	private void process(UserAuthRequest req) {
+	private void process(UserAuthRequest req) throws IllegalArgumentException,
+			SocketWriteException {
 		// login or register user
 		try {
 			User user = null;
@@ -176,8 +186,11 @@ public class ServerInbox implements Runnable {
 	 * directory and online users' player list will be updated.
 	 * 
 	 * @param req
+	 * @throws SocketWriteException
+	 * @throws IllegalArgumentException
 	 */
-	private void process(UserLogoutRequest req) {
+	private void process(UserLogoutRequest req)
+			throws IllegalArgumentException, SocketWriteException {
 		User disconnectedUser = serverDir.getUser(client);
 		serverDir.removeClient(client);
 		net.send(serverDir.getActiveSockets(), new UserListChangedResponse(
@@ -188,8 +201,11 @@ public class ServerInbox implements Runnable {
 	 * Process a UserDataChangeRequest.
 	 * 
 	 * @param req
+	 * @throws SocketWriteException
+	 * @throws IllegalArgumentException
 	 */
-	private void process(UserDataChangeRequest req) {
+	private void process(UserDataChangeRequest req)
+			throws IllegalArgumentException, SocketWriteException {
 		try {
 			persistence.changeUserCredentials(serverDir.getUser(client),
 					req.getNewUsername(), req.getNewPassword(),
@@ -205,21 +221,26 @@ public class ServerInbox implements Runnable {
 	 * Process a ChallengeSendRequest.
 	 * 
 	 * @param req
+	 * @throws SocketWriteException
+	 * @throws IllegalArgumentException
 	 */
-	private void process(ChallengeSendRequest req) {
+	private void process(ChallengeSendRequest req)
+			throws IllegalArgumentException, SocketWriteException {
 		User sendTo = serverDir.getUser(req.getOpponent());
-		if (!net.send(serverDir.getSocket(sendTo),
-				new ChallengeReceivedResponse(sendTo))) {
-			net.send(client, new ErrorResponse("Couldn't send challenge!"));
-		}
+		net.send(serverDir.getSocket(sendTo), new ChallengeReceivedResponse(
+				sendTo));
+
 	}
 
 	/**
 	 * Process a ChallengeDenyRequest.
 	 * 
 	 * @param req
+	 * @throws SocketWriteException
+	 * @throws IllegalArgumentException
 	 */
-	private void process(ChallengeDenyRequest req) {
+	private void process(ChallengeDenyRequest req)
+			throws IllegalArgumentException, SocketWriteException {
 		User sendTo = serverDir.getUser(req.getOpponent());
 		net.send(serverDir.getSocket(sendTo), new ChallengeDeniedResponse(
 				sendTo));
@@ -229,8 +250,11 @@ public class ServerInbox implements Runnable {
 	 * Process a ChallengeAcceptRequest.
 	 * 
 	 * @param req
+	 * @throws SocketWriteException
+	 * @throws IllegalArgumentException
 	 */
-	private void process(ChallengeAcceptRequest req) {
+	private void process(ChallengeAcceptRequest req)
+			throws IllegalArgumentException, SocketWriteException {
 		Socket opponent = serverDir.getOpponent(client);
 
 		List<Question> questions;
@@ -260,8 +284,11 @@ public class ServerInbox implements Runnable {
 	 * Process a GetRankingsRequest.
 	 * 
 	 * @param req
+	 * @throws SocketWriteException
+	 * @throws IllegalArgumentException
 	 */
-	private void process(GetRankingsRequest req) {
+	private void process(GetRankingsRequest req)
+			throws IllegalArgumentException, SocketWriteException {
 		try {
 			net.send(
 					client,
@@ -276,8 +303,11 @@ public class ServerInbox implements Runnable {
 	 * Process a AnswerSubmitRequest.
 	 * 
 	 * @param req
+	 * @throws SocketWriteException
+	 * @throws IllegalArgumentException
 	 */
-	private void process(AnswerSubmitRequest req) {
+	private void process(AnswerSubmitRequest req)
+			throws IllegalArgumentException, SocketWriteException {
 		serverDir.saveAnswer(client, req.getIndex());
 		net.send(serverDir.getOpponent(client),
 				new OpponentAnswerResponse(req.getIndex()));
@@ -287,8 +317,11 @@ public class ServerInbox implements Runnable {
 	 * Process a MatchLeaveRequest.
 	 * 
 	 * @param req
+	 * @throws SocketWriteException
+	 * @throws IllegalArgumentException
 	 */
-	private void process(MatchLeaveRequest req) {
+	private void process(MatchLeaveRequest req)
+			throws IllegalArgumentException, SocketWriteException {
 		serverDir.endMatch(client);
 		net.send(client, new OpponentLeftResponse());
 	}
@@ -313,20 +346,21 @@ public class ServerInbox implements Runnable {
 	 * Waits for a client message, then tries to map and process it.
 	 */
 	public void run() {
-		try {
-			while (true) {
-				String json;
-				try {
-					json = net.read(client);
-				} catch(SocketReadException e) {
-					if(!e.isSocketClosed()) {
-						throw e;
-					} else {
-						// TODO missed message
-						continue;
-					}
+		while (true) {
+			String json;
+			try {
+				json = net.read(client);
+			} catch (SocketReadException e) {
+				if (!e.isSocketClosed()) {
+					serverDir.removeClient(client);
+					return;
+				} else {
+					// TODO missed message
+					continue;
 				}
+			}
 
+			try {
 				// Matching...
 				{ // ============================================================
 					UserAuthRequest obj = net.fromJson(json,
@@ -426,9 +460,9 @@ public class ServerInbox implements Runnable {
 						continue;
 					}
 				}
+			} catch (SocketWriteException e) {
+				// TODO
 			}
-		} catch (SocketReadException e) {
-			serverDir.removeClient(client);
 		}
 	}
 }

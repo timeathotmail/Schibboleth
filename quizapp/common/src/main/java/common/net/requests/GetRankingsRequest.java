@@ -1,14 +1,20 @@
 package common.net.requests;
 
+import java.io.Serializable;
+
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 /**
- * Request to send a client a section of the user ranking.
+ * Request to send a section of the user ranking.
  * 
  * @author Tim Wiechers
  */
 @JsonTypeInfo(use = JsonTypeInfo.Id.MINIMAL_CLASS, include = JsonTypeInfo.As.PROPERTY)
-public class GetRankingsRequest {
+public class GetRankingsRequest implements Serializable {
+	/**
+	 * Version number for serialization.
+	 */
+	private static final long serialVersionUID = -9202879758595015205L;
 	/**
 	 * The ranking offset.
 	 */

@@ -1,5 +1,6 @@
 package common.net.responses;
 
+import java.io.Serializable;
 import java.util.Collection;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
@@ -14,7 +15,11 @@ import common.entities.User;
  * @author Tim Wiechers
  */
 @JsonTypeInfo(use = JsonTypeInfo.Id.MINIMAL_CLASS, include = JsonTypeInfo.As.PROPERTY)
-public class AuthResponse {
+public class AuthResponse implements Serializable {
+	/**
+	 * Version number for serialization.
+	 */
+	private static final long serialVersionUID = 3090285480950044743L;
 	/**
 	 * True if the he registration and/or login was successful.
 	 */

@@ -1,6 +1,9 @@
 package common.net.responses;
 
+import java.io.Serializable;
+
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+
 import common.entities.User;
 
 /**
@@ -9,7 +12,11 @@ import common.entities.User;
  * @author Tim Wiechers
  */
 @JsonTypeInfo(use = JsonTypeInfo.Id.MINIMAL_CLASS, include = JsonTypeInfo.As.PROPERTY)
-public class UserListChangedResponse {
+public class UserListChangedResponse implements Serializable {
+	/**
+	 * Version number for serialization.
+	 */
+	private static final long serialVersionUID = -2285567679731596648L;
 	/**
 	 * True if the user connected.
 	 * False if the user disconnected.

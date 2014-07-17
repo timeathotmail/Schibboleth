@@ -12,7 +12,7 @@ public class Question {
 	public enum Category {
 		science
 	}
-
+	
 	/**
 	 * ID for unique identification.
 	 */

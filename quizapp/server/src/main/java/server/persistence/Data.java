@@ -25,7 +25,7 @@ import server.persistence.query.QueryBuilder;
 import server.persistence.query.UpdateQueryBuilder;
 import common.entities.*;
 import common.entities.annotations.*;
-import common.net.Config;
+import common.utils.Config;
 
 /**
  * Provides database access.

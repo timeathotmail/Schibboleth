@@ -1,5 +1,7 @@
 package common.net.requests;
 
+import java.io.Serializable;
+
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 /**
@@ -8,11 +10,16 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
  * @author Tim Wiechers
  */
 @JsonTypeInfo(use = JsonTypeInfo.Id.MINIMAL_CLASS, include = JsonTypeInfo.As.PROPERTY)
-public class AnswerSubmitRequest {
+public class AnswerSubmitRequest implements Serializable {
+	/**
+	 * Version number for serialization.
+	 */
+	private static final long serialVersionUID = -6889887916985945155L;
 	/**
 	 * The answer's index.
 	 */
 	private int index;
+	
 	/**
 	 * Constructor for JSON deserialization.
 	 */
