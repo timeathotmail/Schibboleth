@@ -1,14 +1,12 @@
-package server.net;
+package server;
 
 import java.net.Socket;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import server.persistence.Persistence;
 import common.entities.*;
 import common.net.SocketReadException;
-import common.net.NetUtils;
 import common.net.SocketWriteException;
 import common.net.requests.*;
 import common.net.responses.*;
@@ -19,53 +17,25 @@ import common.net.responses.*;
  * @author Tim Wiechers
  */
 public class ServerInbox implements Runnable {
-
 	/**
 	 * Client's socket.
 	 */
 	private final Socket client;
-	/**
-	 * NetUtils instance.
-	 */
-	private static NetUtils net;
-	/**
-	 * Server's directory.
-	 */
-	private static ServerDirectory serverDir;
-	/**
-	 * Database access.
-	 */
-	private static Persistence persistence;
 
 	/**
 	 * Creates an instance.
 	 * 
 	 * @param client
-	 *            client's socket
-	 * @param serverDir
-	 *            server's directory
-	 * @param persistence
-	 *            persistence instance
+	 *            the client whose messages will be processed
 	 */
-	public ServerInbox(NetUtils _net, final Socket client,
-			ServerDirectory _serverDir, Persistence _persistence) {
+	public ServerInbox(final Socket client) {
 		this.client = client;
-
-		if (net == null) {
-			net = _net;
-		}
-
-		if (serverDir == null) {
-			serverDir = _serverDir;
-		}
-		if (persistence == null) {
-			persistence = _persistence;
-		}
 	}
 
 	// =====================================================================
 	// Matchmaking
 	// =====================================================================
+
 	/**
 	 * 
 	 */
@@ -90,8 +60,8 @@ public class ServerInbox implements Runnable {
 	public static synchronized void process(MatchSearchStartRequest req,
 			Socket client) throws IllegalArgumentException,
 			SocketWriteException {
-		User user = serverDir.getUser(client);
-		int revision = serverDir.getRevision(client);
+		User user = Server.serverDir.getUser(client);
+		int revision = Server.serverDir.getRevision(client);
 
 		if (waitingUser == null) {
 			// wait
@@ -102,17 +72,17 @@ public class ServerInbox implements Runnable {
 			// assert that both clients have the questions locally available
 			List<Question> questions;
 			try {
-				questions = persistence.getQuestions(Math.max(waitingRevision,
-						revision));
+				questions = Server.persistence.getQuestions(Math.max(
+						waitingRevision, revision));
 
 				List<Integer> questionIds = getQuestionIds(questions);
 
 				// connect
-				net.send(waitingClient, new MatchCreatedResponse(user,
+				Server.net.send(waitingClient, new MatchCreatedResponse(user,
 						questionIds));
-				net.send(client, new MatchCreatedResponse(waitingUser,
+				Server.net.send(client, new MatchCreatedResponse(waitingUser,
 						questionIds));
-				serverDir.startMatch(client, waitingClient, questions);
+				Server.serverDir.startMatch(client, waitingClient, questions);
 
 				// clear spot
 				waitingUser = null;
@@ -132,7 +102,7 @@ public class ServerInbox implements Runnable {
 	 */
 	public static synchronized void process(MatchSearchCancelRequest req)
 			throws IllegalArgumentException, SocketWriteException {
-		net.send(waitingClient, new MatchSearchCancelledResponse());
+		Server.net.send(waitingClient, new MatchSearchCancelledResponse());
 		waitingClient = null;
 	}
 
@@ -154,30 +124,31 @@ public class ServerInbox implements Runnable {
 			User user = null;
 			try {
 				if (req.getRegister()) {
-					user = persistence.registerUser(req.getUsername(),
+					user = Server.persistence.registerUser(req.getUsername(),
 							req.getPassword());
 				} else {
-					user = persistence.loginUser(req.getUsername(),
+					user = Server.persistence.loginUser(req.getUsername(),
 							req.getPassword());
 				}
 			} catch (IllegalArgumentException e) {
 			}
 
 			if (user == null) {
-				net.send(client, new AuthResponse(false, null));
+				Server.net.send(client, new AuthResponse(false, null));
 				return;
 			}
 
 			// send user the list of other users
-			net.send(client, new AuthResponse(true, serverDir.getActiveUsers()));
+			Server.net.send(client,
+					new AuthResponse(true, Server.serverDir.getUsers()));
 			// inform other users about the new client
-			net.send(serverDir.getActiveSockets(), new UserListChangedResponse(
-					true, user));
+			Server.net.send(Server.serverDir.getSockets(),
+					new UserListChangedResponse(true, user));
 			// connect username and socket in the server directory
-			serverDir.idClient(client, user, req.getRevision());
+			Server.serverDir.idClient(client, user, req.getRevision());
 
 		} catch (SQLException e) {
-			net.send(client, new AuthResponse(false, null));
+			Server.net.send(client, new AuthResponse(false, null));
 		}
 	}
 
@@ -191,10 +162,10 @@ public class ServerInbox implements Runnable {
 	 */
 	private void process(UserLogoutRequest req)
 			throws IllegalArgumentException, SocketWriteException {
-		User disconnectedUser = serverDir.getUser(client);
-		serverDir.removeClient(client);
-		net.send(serverDir.getActiveSockets(), new UserListChangedResponse(
-				false, disconnectedUser));
+		User disconnectedUser = Server.serverDir.getUser(client);
+		Server.serverDir.removeClient(client);
+		Server.net.send(Server.serverDir.getSockets(),
+				new UserListChangedResponse(false, disconnectedUser));
 	}
 
 	/**
@@ -207,13 +178,14 @@ public class ServerInbox implements Runnable {
 	private void process(UserDataChangeRequest req)
 			throws IllegalArgumentException, SocketWriteException {
 		try {
-			persistence.changeUserCredentials(serverDir.getUser(client),
-					req.getNewUsername(), req.getNewPassword(),
-					req.getNewPasswordConfirm());
+			Server.persistence.changeUserCredentials(
+					Server.serverDir.getUser(client), req.getNewUsername(),
+					req.getNewPassword(), req.getNewPasswordConfirm());
 		} catch (IllegalArgumentException e) {
-			net.send(client, new ErrorResponse("Bad input!"));
+			Server.net.send(client, new ErrorResponse("Bad input!"));
 		} catch (SQLException e) {
-			net.send(client, new ErrorResponse("User data couldn't be saved!"));
+			Server.net.send(client, new ErrorResponse(
+					"User data couldn't be saved!"));
 		}
 	}
 
@@ -226,9 +198,9 @@ public class ServerInbox implements Runnable {
 	 */
 	private void process(ChallengeSendRequest req)
 			throws IllegalArgumentException, SocketWriteException {
-		User sendTo = serverDir.getUser(req.getOpponent());
-		net.send(serverDir.getSocket(sendTo), new ChallengeReceivedResponse(
-				sendTo));
+		User sendTo = Server.serverDir.getUser(req.getOpponent());
+		Server.net.send(Server.serverDir.getSocket(sendTo),
+				new ChallengeReceivedResponse(sendTo));
 
 	}
 
@@ -241,9 +213,9 @@ public class ServerInbox implements Runnable {
 	 */
 	private void process(ChallengeDenyRequest req)
 			throws IllegalArgumentException, SocketWriteException {
-		User sendTo = serverDir.getUser(req.getOpponent());
-		net.send(serverDir.getSocket(sendTo), new ChallengeDeniedResponse(
-				sendTo));
+		User sendTo = Server.serverDir.getUser(req.getOpponent());
+		Server.net.send(Server.serverDir.getSocket(sendTo),
+				new ChallengeDeniedResponse(sendTo));
 	}
 
 	/**
@@ -255,27 +227,27 @@ public class ServerInbox implements Runnable {
 	 */
 	private void process(ChallengeAcceptRequest req)
 			throws IllegalArgumentException, SocketWriteException {
-		Socket opponent = serverDir.getOpponent(client);
+		Socket opponent = Server.serverDir.getOpponentSocket(client);
 
 		List<Question> questions;
 		try {
-			questions = persistence.getQuestions(Math.max(
-					serverDir.getRevision(client),
-					serverDir.getRevision(opponent)));
+			questions = Server.persistence.getQuestions(Math.max(
+					Server.serverDir.getRevision(client),
+					Server.serverDir.getRevision(opponent)));
 
 			List<Integer> questionIds = getQuestionIds(questions);
 
-			net.send(opponent,
-					new MatchCreatedResponse(serverDir.getUser(client),
+			Server.net.send(opponent,
+					new MatchCreatedResponse(Server.serverDir.getUser(client),
 							questionIds));
-			net.send(
+			Server.net.send(
 					client,
-					new MatchCreatedResponse(serverDir.getUser(req
+					new MatchCreatedResponse(Server.serverDir.getUser(req
 							.getOpponent()), questionIds));
 
-			serverDir.startMatch(client, opponent, questions);
+			Server.serverDir.startMatch(client, opponent, questions);
 		} catch (SQLException e) {
-			net.send(client, new ErrorResponse(
+			Server.net.send(client, new ErrorResponse(
 					"Challenge couldn't be accepted!"));
 		}
 	}
@@ -290,12 +262,12 @@ public class ServerInbox implements Runnable {
 	private void process(GetRankingsRequest req)
 			throws IllegalArgumentException, SocketWriteException {
 		try {
-			net.send(
+			Server.net.send(
 					client,
-					new RankingsResponse(persistence.getRankedUsers(
+					new RankingsResponse(Server.persistence.getRankedUsers(
 							req.getOffset(), req.getLength())));
 		} catch (Exception e) {
-			net.send(client, new ErrorResponse("Can't get rankings!"));
+			Server.net.send(client, new ErrorResponse("Can't get rankings!"));
 		}
 	}
 
@@ -308,8 +280,8 @@ public class ServerInbox implements Runnable {
 	 */
 	private void process(AnswerSubmitRequest req)
 			throws IllegalArgumentException, SocketWriteException {
-		serverDir.saveAnswer(client, req.getIndex());
-		net.send(serverDir.getOpponent(client),
+		Server.serverDir.saveAnswer(client, req.getIndex());
+		Server.net.send(Server.serverDir.getOpponentSocket(client),
 				new OpponentAnswerResponse(req.getIndex()));
 	}
 
@@ -322,8 +294,8 @@ public class ServerInbox implements Runnable {
 	 */
 	private void process(MatchLeaveRequest req)
 			throws IllegalArgumentException, SocketWriteException {
-		serverDir.endMatch(client);
-		net.send(client, new OpponentLeftResponse());
+		Server.serverDir.endMatch(client);
+		Server.net.send(client, new OpponentLeftResponse());
 	}
 
 	// =====================================================================
@@ -349,10 +321,10 @@ public class ServerInbox implements Runnable {
 		while (true) {
 			String json;
 			try {
-				json = net.read(client);
+				json = Server.net.read(client);
 			} catch (SocketReadException e) {
 				if (!e.isSocketClosed()) {
-					serverDir.removeClient(client);
+					Server.serverDir.removeClient(client);
 					return;
 				} else {
 					// TODO missed message
@@ -363,7 +335,7 @@ public class ServerInbox implements Runnable {
 			try {
 				// Matching...
 				{ // ============================================================
-					UserAuthRequest obj = net.fromJson(json,
+					UserAuthRequest obj = Server.net.fromJson(json,
 							UserAuthRequest.class);
 					if (obj != null) {
 						process(obj);
@@ -372,7 +344,7 @@ public class ServerInbox implements Runnable {
 				}
 
 				{ // ============================================================
-					UserLogoutRequest obj = net.fromJson(json,
+					UserLogoutRequest obj = Server.net.fromJson(json,
 							UserLogoutRequest.class);
 					if (obj != null) {
 						process(obj);
@@ -381,7 +353,7 @@ public class ServerInbox implements Runnable {
 				}
 
 				{ // ============================================================
-					UserDataChangeRequest obj = net.fromJson(json,
+					UserDataChangeRequest obj = Server.net.fromJson(json,
 							UserDataChangeRequest.class);
 					if (obj != null) {
 						process(obj);
@@ -390,7 +362,7 @@ public class ServerInbox implements Runnable {
 				}
 
 				{ // ============================================================
-					MatchSearchStartRequest obj = net.fromJson(json,
+					MatchSearchStartRequest obj = Server.net.fromJson(json,
 							MatchSearchStartRequest.class);
 					if (obj != null) {
 						process(obj, client);
@@ -399,7 +371,7 @@ public class ServerInbox implements Runnable {
 				}
 
 				{ // ============================================================
-					MatchSearchCancelRequest obj = net.fromJson(json,
+					MatchSearchCancelRequest obj = Server.net.fromJson(json,
 							MatchSearchCancelRequest.class);
 					if (obj != null) {
 						process(obj);
@@ -408,7 +380,7 @@ public class ServerInbox implements Runnable {
 				}
 
 				{ // ============================================================
-					ChallengeSendRequest obj = net.fromJson(json,
+					ChallengeSendRequest obj = Server.net.fromJson(json,
 							ChallengeSendRequest.class);
 					if (obj != null) {
 						process(obj);
@@ -417,7 +389,7 @@ public class ServerInbox implements Runnable {
 				}
 
 				{ // ============================================================
-					ChallengeAcceptRequest obj = net.fromJson(json,
+					ChallengeAcceptRequest obj = Server.net.fromJson(json,
 							ChallengeAcceptRequest.class);
 					if (obj != null) {
 						process(obj);
@@ -426,7 +398,7 @@ public class ServerInbox implements Runnable {
 				}
 
 				{ // ============================================================
-					ChallengeDenyRequest obj = net.fromJson(json,
+					ChallengeDenyRequest obj = Server.net.fromJson(json,
 							ChallengeDenyRequest.class);
 					if (obj != null) {
 						process(obj);
@@ -435,7 +407,7 @@ public class ServerInbox implements Runnable {
 				}
 
 				{ // ============================================================
-					GetRankingsRequest obj = net.fromJson(json,
+					GetRankingsRequest obj = Server.net.fromJson(json,
 							GetRankingsRequest.class);
 					if (obj != null) {
 						process(obj);
@@ -444,7 +416,7 @@ public class ServerInbox implements Runnable {
 				}
 
 				{ // ============================================================
-					AnswerSubmitRequest obj = net.fromJson(json,
+					AnswerSubmitRequest obj = Server.net.fromJson(json,
 							AnswerSubmitRequest.class);
 					if (obj != null) {
 						process(obj);
@@ -453,7 +425,7 @@ public class ServerInbox implements Runnable {
 				}
 
 				{ // ============================================================
-					MatchLeaveRequest obj = net.fromJson(json,
+					MatchLeaveRequest obj = Server.net.fromJson(json,
 							MatchLeaveRequest.class);
 					if (obj != null) {
 						process(obj);
