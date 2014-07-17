@@ -22,15 +22,11 @@ public class Server {
 	public static final ServerDirectory serverDir;
 
 	static {
-		Persistence p = null;
-		ServerDirectory s = null;
-		NetUtils n = null;
-
 		try {
-			n = NetUtils.getInstance();
-			p = Data.getInstance();
-			s = new ServerDirectory(new ServerSocket(Config.get()
-					.getInt("PORT")), p, n);
+			net = NetUtils.getInstance();
+			persistence = Data.getInstance();
+			serverDir = new ServerDirectory(new ServerSocket(Config.get()
+					.getInt("PORT")), persistence, net);
 		} catch (SQLException e) {
 			throw new RuntimeException("Database error!", e);
 		} catch (ConfigurationException e) {
@@ -38,10 +34,6 @@ public class Server {
 		} catch (IOException e) {
 			throw new RuntimeException("Error creating server socket!", e);
 		}
-		
-		persistence = p;
-		serverDir = s;
-		net = n;
 	}
 
 	/**
