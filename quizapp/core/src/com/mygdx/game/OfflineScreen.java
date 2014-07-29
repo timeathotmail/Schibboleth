@@ -7,7 +7,14 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-
+/**
+ * Beschreibt Prototyp Screen LoginSuccesfullyOffline
+ * Used http://obviam.net/index.php/getting-started-in-android-game-
+ * development-with-libgdx-create-a-working-prototype-in-a-day-tutorial-part-1/
+ * 
+ * @author halfelv
+ *
+ */
 public class OfflineScreen implements Screen {
 
 	private QuizGame game;
@@ -30,6 +37,7 @@ public class OfflineScreen implements Screen {
 
 	@Override
 	public void resize(int width, int height) {
+		game.resize(width, height);
 		// TODO Auto-generated method stub
 	}
 
@@ -44,6 +52,7 @@ public class OfflineScreen implements Screen {
 
 	@Override
 	public void hide() {
+		Gdx.input.setInputProcessor(null);
 		// TODO Auto-generated method stub
 
 	}

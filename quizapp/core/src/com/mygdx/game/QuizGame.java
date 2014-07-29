@@ -7,7 +7,9 @@ import java.util.logging.Logger;
 
 import javax.naming.ConfigurationException;
 
+import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
 
 import common.entities.*;
 import common.net.SocketWriteException;
@@ -19,9 +21,9 @@ import com.mygdx.net.NoConnectionException;
 /**
  * Game class.
  * 
- * @author Tim Wiechers
+ * @author Tim Wiechers, halfelv
  */
-public class QuizGame extends Game implements IGame {
+public class QuizGame extends Game implements IGame{
 	/**
 	 * Client used for server communication.
 	 */
@@ -31,7 +33,14 @@ public class QuizGame extends Game implements IGame {
 	private LoginScreen loginScreen;
 	private MainScreen mainScreen;
 	private OfflineScreen offlineScreen;
-
+	private OptionsScreen options;
+	
+	private OnlineScreen onlineScreen;
+	
+	public static int SCREEN_WIDTH = 480;
+	public static int SCREEN_HEIGHT = 800;
+	
+	
 	public QuizGame() {
 		Logger logger = Logger.getLogger("QuizGame");
 		try {
@@ -52,6 +61,9 @@ public class QuizGame extends Game implements IGame {
 	 */
 	@Override
 	public void create() {
+		SCREEN_WIDTH = Gdx.graphics.getWidth();
+		SCREEN_HEIGHT = Gdx.graphics.getHeight();
+		
 		if (client == null) {
 			playOffline();
 		} else if (!autoLogin()) {
@@ -253,7 +265,8 @@ public class QuizGame extends Game implements IGame {
 	 */
 	@Override
 	public void displaySettings() {
-		// TODO Auto-generated method stub
+		options = new OptionsScreen(this);
+		setScreen(options);
 
 	}
 

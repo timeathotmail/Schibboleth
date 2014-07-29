@@ -152,11 +152,13 @@ public class LoginScreen implements Screen {
 
 	@Override
 	public void resize(int width, int height) {
+		game.resize(width, height);
 		// TODO Auto-generated method stub
 	}
 
 	@Override
 	public void hide() {
+		Gdx.input.setInputProcessor(null);
 		// TODO Auto-generated method stub
 
 	}
