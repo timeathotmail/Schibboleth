@@ -48,6 +48,7 @@ public class OnlineScreen implements Screen {
 	/* (non-Javadoc)
 	 * @see com.badlogic.gdx.Screen#render(float)
 	 */
+	//wozu hier parameter wenn nie benutzt?
 	@Override
 	public void render(float delta) {
 		Gdx.gl.glClearColor(0.016f, 0.423f, 0.745f, 1f);
@@ -64,7 +65,7 @@ public class OnlineScreen implements Screen {
 	 */
 	@Override
 	public void resize(int width, int height) {
-		game.resize(width, height);
+		stage.getViewport().update(width, height, true);
 
 	}
 

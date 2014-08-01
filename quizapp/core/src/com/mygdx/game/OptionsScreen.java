@@ -3,7 +3,9 @@
  */
 package com.mygdx.game;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 
 /**
  * @author halfelv
@@ -12,6 +14,7 @@ import com.badlogic.gdx.Screen;
 public class OptionsScreen implements Screen {
 	
 	private QuizGame game;
+	private Stage stage;
 	
 	public OptionsScreen(QuizGame pGame)
 	{
@@ -35,6 +38,7 @@ public class OptionsScreen implements Screen {
 	 */
 	@Override
 	public void resize(int width, int height) {
+		stage.getViewport().update(width, height, true);
 		// TODO Auto-generated method stub
 
 	}
@@ -53,6 +57,7 @@ public class OptionsScreen implements Screen {
 	 */
 	@Override
 	public void hide() {
+		Gdx.input.setInputProcessor(null);
 		// TODO Auto-generated method stub
 
 	}
@@ -80,6 +85,7 @@ public class OptionsScreen implements Screen {
 	 */
 	@Override
 	public void dispose() {
+		stage.dispose();
 		// TODO Auto-generated method stub
 
 	}

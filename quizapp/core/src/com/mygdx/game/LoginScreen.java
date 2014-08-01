@@ -152,7 +152,7 @@ public class LoginScreen implements Screen {
 
 	@Override
 	public void resize(int width, int height) {
-		game.resize(width, height);
+		stage.getViewport().update(width, height, true);
 		// TODO Auto-generated method stub
 	}
 
