@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.mygdx.game;
 
 import com.badlogic.gdx.Gdx;
@@ -26,17 +23,17 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
  *
  */
 public class OnlineScreen implements Screen {
-	
+
 	private QuizGame game;
 	private Stage stage;
 	private Skin skin;
-	
+
 	//was macht table?
 	private Table table;
-	
+
 	private TextButton btnTogglePlay, btnToggleOptions, btnToggleSignOut;
 	private ButtonGroup btnGroup;
-	
+
 	public OnlineScreen(QuizGame pGame)
 	{
 		if(pGame == null){
@@ -51,9 +48,9 @@ public class OnlineScreen implements Screen {
 	//wozu hier parameter wenn nie benutzt?
 	@Override
 	public void render(float delta) {
-		Gdx.gl.glClearColor(0.016f, 0.423f, 0.745f, 1f);
+		Gdx.gl.glClearColor(0.459f, 0.702f, 0.459f, 1f);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		
+
 		if(stage != null) {
 			stage.draw();
 		}
@@ -82,13 +79,13 @@ public class OnlineScreen implements Screen {
 		btnTogglePlay = new TextButton("Play", skin);
 		btnToggleOptions = new TextButton("Options", skin);
 		btnToggleSignOut = new TextButton("Sign out", skin);
-		
+
 		//brauche ich ButtonGroup ueberhaupt?
 		btnGroup = new ButtonGroup(btnTogglePlay, btnToggleOptions, btnToggleSignOut);
 		btnGroup.setMaxCheckCount(1);
 		btnGroup.setMinCheckCount(1);
 		btnGroup.setUncheckLast(true);
-		
+
 		btnToggleSignOut.setChecked(true);
 
 		//KA ob es jetzt hier richtig ist
@@ -108,9 +105,9 @@ public class OnlineScreen implements Screen {
 				game.displaySettings();
 			}
 		});
-		
+
 		btnToggleSignOut.addListener(new EventListener() {
-			
+
 			@Override
 			public boolean handle(Event event) {
 				if(event instanceof ChangeEvent){
@@ -126,7 +123,7 @@ public class OnlineScreen implements Screen {
 
 	protected void switchView(boolean checked) {
 		//TODO
-		
+
 	}
 
 	/* (non-Javadoc)

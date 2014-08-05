@@ -24,7 +24,7 @@ public class MainScreen implements Screen {
 
 	@Override
 	public void render(float delta) {
-		Gdx.gl.glClearColor(0.016f, 0.423f, 0.745f, 1f);
+		Gdx.gl.glClearColor(0.459f, 0.702f, 0.459f, 1f);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		
 		if(stage != null) {

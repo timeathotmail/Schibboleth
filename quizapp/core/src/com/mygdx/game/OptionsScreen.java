@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.mygdx.game;
 
 import com.badlogic.gdx.Gdx;
@@ -12,10 +9,10 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
  *
  */
 public class OptionsScreen implements Screen {
-	
+
 	private QuizGame game;
 	private Stage stage;
-	
+
 	public OptionsScreen(QuizGame pGame)
 	{
 		if(pGame == null){

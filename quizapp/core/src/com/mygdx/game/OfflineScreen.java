@@ -1,6 +1,7 @@
+/**
+ * 
+ */
 package com.mygdx.game;
-
-
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -27,9 +28,9 @@ public class OfflineScreen implements Screen {
 
 	@Override
 	public void render(float delta) {
-		Gdx.gl.glClearColor(0.016f, 0.423f, 0.745f, 1f);
+		Gdx.gl.glClearColor(0.459f, 0.702f, 0.459f, 1f);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		
+
 		if(stage != null) {
 			stage.draw();
 		}
@@ -37,7 +38,10 @@ public class OfflineScreen implements Screen {
 
 	@Override
 	public void resize(int width, int height) {
-		game.resize(width, height);
+		if(width <= 0 || height <= 0){
+			throw new IllegalArgumentException("Width or height is incorrect");
+		}
+		stage.getViewport().update(width, height, true);
 		// TODO Auto-generated method stub
 	}
 
@@ -46,7 +50,7 @@ public class OfflineScreen implements Screen {
 		stage = new Stage();
 		Gdx.input.setInputProcessor(stage);
 		skin = new Skin(Gdx.files.internal("uiskin.json"));
-		
+
 		// TODO
 	}
 

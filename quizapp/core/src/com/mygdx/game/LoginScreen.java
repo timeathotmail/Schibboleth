@@ -140,7 +140,7 @@ public class LoginScreen implements Screen {
 		table.row();
 		table.add(lblError);
 
-		table.setCenterPosition(Gdx.graphics.getWidth() / 2,
+		table.setPosition(Gdx.graphics.getWidth() / 2,
 				Gdx.graphics.getHeight() / 2);
 
 		stage.addActor(table);

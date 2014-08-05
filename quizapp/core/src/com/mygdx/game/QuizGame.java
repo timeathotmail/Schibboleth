@@ -1,5 +1,6 @@
 package com.mygdx.game;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
@@ -10,6 +11,8 @@ import javax.naming.ConfigurationException;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 
 import common.entities.*;
 import common.net.SocketWriteException;
@@ -37,12 +40,24 @@ public class QuizGame extends Game implements IGame{
 	
 	private OnlineScreen onlineScreen;
 	
+	private Texture disclaimer;
+	private Texture btnDisclaimerTexture;
+	private TextButton btnDisclaimer;
+	
+	//saves banned expressions to compare with login
+	private List<String> bannedExpressions;
+	//saves users online
+	
 	public static int SCREEN_WIDTH = 480;
 	public static int SCREEN_HEIGHT = 800;
 	
-	
+	/**
+	 * 
+	 */
+	//TODO banned expressions list soll aufm Server gespeichert werden und daraus geholt.
 	public QuizGame() {
 		Logger logger = Logger.getLogger("QuizGame");
+		bannedExpressions = new ArrayList<String>();
 		try {
 			Config cfg = Config.get();
 			revision = cfg.getInt("revision");
@@ -69,7 +84,7 @@ public class QuizGame extends Game implements IGame{
 		} else if (!autoLogin()) {
 			loginScreen = new LoginScreen(this);
 			setScreen(loginScreen);
-		}
+		}		
 	}
 
 	// =====================================================================
@@ -117,10 +132,10 @@ public class QuizGame extends Game implements IGame{
 	@Override
 	public void register(String username, String password, String confirmation) {
 
-		if (username.isEmpty()) {
-			loginScreen.showErrorMsg("enter a username");
-		} else if (password.isEmpty()) {
-			loginScreen.showErrorMsg("enter a password");
+		if (!checkUsername(username)) {
+			loginScreen.showErrorMsg("your username is incorrect");
+		} else if (!checkPassword(password)) {
+			loginScreen.showErrorMsg("your password is incorrect");
 		} else if (!password.equals(confirmation)) {
 			loginScreen.showErrorMsg("passwords do not match");
 		} else {
@@ -135,6 +150,64 @@ public class QuizGame extends Game implements IGame{
 			}
 		}
 	}
+	
+	/**
+	 * Methode wird in register() aufgerufen. 
+	 * Ueberprueft, ob Username den Einschraenkungen uebereinstimmt
+	 * 
+	 * @param username
+	 * @return {@code true} falls die Bedienungen erfuellt sind
+	 */
+	private boolean checkUsername(String username){
+		//is null or ""
+		if(username == null || username.isEmpty()){
+			loginScreen.showErrorMsg("Username is empty");
+		}
+		//check length, min. 6 chars
+		if(username.length() < 6){
+			loginScreen.showErrorMsg("Username is too short");
+		}
+		//is illegal, f.example swearword
+		int i = 0;
+		while(i < bannedExpressions.size()){
+			if(username.contains(bannedExpressions.get(i))){
+				loginScreen.showErrorMsg("Username contains banned expressions");
+			}
+			i++;
+		}
+		//is not a numeric or letter
+		if(!username.matches("[A-Za-z_0-9]")){
+			loginScreen.showErrorMsg("Username contains illegal characters");
+		}
+		return true;
+	}
+	/**
+	 * Methode wird in register() aufgerufen.
+	 * Ueberprueft, ob Passwort den Einschraenkungen uebereinstimmt
+	 * @param password
+	 * 
+	 *  @return {@code true} falls die Bedienungen erfuellt sind
+	 */
+	private boolean checkPassword(String password){
+		// empty
+		if(password.isEmpty() || password == ""){
+			loginScreen.showErrorMsg("Password is empty");			
+		}
+		//contains less then 6 chars
+		if(password.length() < 6){
+			loginScreen.showErrorMsg("Passwort is too short");			
+		}
+		// not matches regular expression a-z A-Z _ and 0-9
+		if(!password.matches("[A-Za-z0-9]*")){
+			loginScreen.showErrorMsg("Password contains illegal characters");
+		}
+		//contains less then two digits and less then one upper case or contains special chars
+		if(!(password.matches(".*[a-z].*") || password.matches(".*[A-Z].*") || password.matches(".*\\d.*\\d.*"))){
+			loginScreen.showErrorMsg("Password contains illegal characters");
+		}
+		return true;
+	}
+	
 
 	/*
 	 * (non-Javadoc)
@@ -143,6 +216,7 @@ public class QuizGame extends Game implements IGame{
 	 */
 	@Override
 	public void logout() {
+		login(null, null);
 		// TODO Auto-generated method stub
 
 	}
@@ -155,7 +229,21 @@ public class QuizGame extends Game implements IGame{
 	 */
 	@Override
 	public void changeUserData(String username, String pw1, String pw2) {
-		// TODO Auto-generated method stub
+		if (!checkUsername(username)) {
+			loginScreen.showErrorMsg("your username is incorrect");
+		} else if (!checkPassword(pw1)) {
+			loginScreen.showErrorMsg("your password is incorrect");
+		} else if (!pw1.equals(pw2)) {
+			loginScreen.showErrorMsg("passwords do not match");
+		} else {
+			try {
+				client.changeUserData(username, pw1, pw2);
+			} catch (IllegalArgumentException e) {
+				e.printStackTrace();
+			} catch (SocketWriteException e) {
+				e.printStackTrace();
+			}
+		}
 
 	}
 
@@ -348,6 +436,7 @@ public class QuizGame extends Game implements IGame{
 	 */
 	@Override
 	public void onConnectionLost() {
+		
 		// TODO Auto-generated method stub
 
 	}

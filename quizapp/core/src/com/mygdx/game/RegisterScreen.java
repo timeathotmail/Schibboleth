@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.mygdx.game;
 
 import com.badlogic.gdx.Gdx;
@@ -23,13 +20,13 @@ public class RegisterScreen implements Screen {
 	private QuizGame game;
 	private Stage stage;
 	private Skin skin;
-	
+
 	private Table table;
 	private TextButton btnSubmit;
-	//?
+	//Unterschrifte fuer Buttons und Textfelder fuer Eingaben
 	private Label lblUsername, lblPassword, lblConfirmation, lblError;
 	private TextField txtUsername, txtPassword, txtConfirmation;
-	
+
 	public RegisterScreen(QuizGame pGame)
 	{
 		if(pGame == null){
@@ -42,9 +39,9 @@ public class RegisterScreen implements Screen {
 	 */
 	@Override
 	public void render(float delta) {
-		Gdx.gl.glClearColor(0.016f, 0.423f, 0.745f, 1f);
+		Gdx.gl.glClearColor(0.459f, 0.702f, 0.459f, 1f);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		
+
 		if(stage != null) {
 			stage.draw();
 		}
@@ -67,7 +64,7 @@ public class RegisterScreen implements Screen {
 	 */
 	@Override
 	public void show() {
-		
+
 		// TODO Auto-generated method stub
 
 	}
