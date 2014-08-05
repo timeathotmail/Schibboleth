@@ -33,8 +33,8 @@ public class ServerDirectory implements Runnable {
 	private final Map<Socket, Integer> socketToRev = new HashMap<Socket, Integer>();
 	private final Map<String, User> nameToUser = new HashMap<String, User>();
 
-	private final Map<User, MatchFactory> userToMatch1 = new HashMap<User, MatchFactory>();
-	private final Map<User, MatchFactory> userToMatch2 = new HashMap<User, MatchFactory>();
+	private final Map<User, Match> userToMatch1 = new HashMap<User, Match>();
+	private final Map<User, Match> userToMatch2 = new HashMap<User, Match>();
 	private final Map<Socket, Socket> socketToSocket1 = new HashMap<Socket, Socket>();
 	private final Map<Socket, Socket> socketToSocket2 = new HashMap<Socket, Socket>();
 
@@ -77,6 +77,7 @@ public class ServerDirectory implements Runnable {
 			userToSocket.put(user, client);
 			socketToRev.put(client, revision);
 			nameToUser.put(user.getName(), user);
+			// TODO get, add to maps & return open matches
 		}
 	}
 
@@ -91,6 +92,9 @@ public class ServerDirectory implements Runnable {
 			socketToUser.remove(client);
 			userToSocket.remove(user);
 			nameToUser.remove(user.getName());
+			// TODO save matches & remove from maps
+			// persistence.saveMatch(match);
+			// removeMatch(match);
 		}
 	}
 
@@ -98,9 +102,9 @@ public class ServerDirectory implements Runnable {
 			List<Question> questions) {
 		User user1 = socketToUser.get(client1);
 		User user2 = socketToUser.get(client2);
-		MatchFactory factory = new MatchFactory(user1, user2, questions);
-		userToMatch1.put(user1, factory);
-		userToMatch2.put(user2, factory);
+		Match match = new Match(user1, user2, questions);
+		userToMatch1.put(user1, match);
+		userToMatch2.put(user2, match);
 		socketToSocket1.put(client1, client2);
 		socketToSocket2.put(client2, client1);
 	}
@@ -112,52 +116,18 @@ public class ServerDirectory implements Runnable {
 			return;
 		}
 
-		MatchFactory factory = getMatchFactory(user);
-		if (factory == null) {
+		Match match = getMatch(user);
+		if (match == null) {
 			// TODO
 			return;
 		}
 
-		factory.addAnswer(user, answerIndex);
-
-		if (factory.isFinished()) {
-			Match match = factory.getMatch();
-			try {
-				persistence.saveMatch(match);
-				removeMatch(match);
-			} catch (SQLException e) {
-				// TODO backup match?
-			}
-		}
+		match.addAnswer(user, answerIndex);
 	}
 
-	public synchronized void endMatch(Socket client) {
-		User user = socketToUser.get(client);
-		if (user == null) {
-			// TODO
-			return;
-		}
-
-		MatchFactory factory = getMatchFactory(user);
-		if (factory == null) {
-			// TODO
-			return;
-		}
-
-		factory.forfeit(user);
-
-		Match match = factory.getMatch();
-		try {
-			persistence.saveMatch(match);
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-		}
-		removeMatch(match);
-	}
-
-	private synchronized MatchFactory getMatchFactory(User user) {
-		MatchFactory factory = userToMatch1.get(user);
-		return factory != null ? factory : userToMatch2.get(user);
+	private synchronized Match getMatch(User user) {
+		Match match = userToMatch1.get(user);
+		return match != null ? match : userToMatch2.get(user);
 	}
 
 	private synchronized void removeMatch(Match match) {

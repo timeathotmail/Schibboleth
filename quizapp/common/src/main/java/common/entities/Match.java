@@ -1,5 +1,7 @@
 package common.entities;
 
+import java.util.List;
+
 import common.entities.annotations.*;
 
 /**
@@ -26,21 +28,26 @@ public class Match {
 	/**
 	 * First player's id.
 	 */
-	@ColumnAlias(column = "user1")
 	private int userId1;
 	/**
 	 * Second player's id.
 	 */
-	@ColumnAlias(column = "user2")
 	private int userId2;
-	/**
-	 * First player's points.
-	 */
+
+	@NotPersisted
 	private int points1;
-	/**
-	 * Second player's points.
-	 */
+
+	@NotPersisted
 	private int points2;
+
+	@NotPersisted
+	private List<Question> questions;
+
+	@NotPersisted
+	private List<Integer> answers1;
+
+	@NotPersisted
+	private List<Integer> answers2;
 
 	/**
 	 * Constructor for JSON deserialization and persistence framework.
@@ -57,28 +64,35 @@ public class Match {
 	 * @param user2
 	 *            second player
 	 */
-	public Match(User user1, User user2) {
+	public Match(User user1, User user2, List<Question> questions) {
 		setUser1(user1);
 		setUser2(user2);
+		this.questions = questions;
 	}
 
-	/**
-	 * Creates an instance.
-	 * 
-	 * @param user1
-	 *            first player
-	 * @param user2
-	 *            second player
-	 * @param points1
-	 *            first player's points
-	 * @param points2
-	 *            second player's points
-	 */
-	public Match(User user1, User user2, int points1, int points2) {
+	public Match(User user1, User user2, List<Question> questions,
+			List<Integer> answers1, List<Integer> answers2) {
+		super();
 		setUser1(user1);
 		setUser2(user2);
-		this.points1 = points1;
-		this.points2 = points2;
+		this.questions = questions;
+		this.answers1 = answers1;
+		this.answers2 = answers2;
+	}
+
+	public void addAnswer(User user, int index) {
+		if (!isFinished()) {
+			if (user == user1) {
+				answers1.add(index);
+			} else if (user == user2) {
+				answers2.add(index);
+			}
+		}
+	}
+
+	public boolean isFinished() {
+		return answers1.size() == questions.size()
+				&& answers2.size() == questions.size();
 	}
 
 	// === getters & setters ===
@@ -119,70 +133,33 @@ public class Match {
 		return points1;
 	}
 
-	public void setPoints1(int points1) {
-		this.points1 = points1;
-	}
-
 	public int getPoints2() {
 		return points2;
 	}
 
-	public void setPoints2(int points2) {
-		this.points2 = points2;
+	public List<Question> getQuestions() {
+		return questions;
+	}
+
+	public void setQuestions(List<Question> questions) {
+		this.questions = questions;
+	}
+
+	public List<Integer> getAnswers1() {
+		return answers1;
+	}
+
+	public void setAnswers1(List<Integer> answers1) {
+		this.answers1 = answers1;
+	}
+
+	public List<Integer> getAnswers2() {
+		return answers2;
+	}
+
+	public void setAnswers2(List<Integer> answers2) {
+		this.answers2 = answers2;
 	}
 
 	// === special methods ===
-
-	@Override
-	public String toString() {
-		return "Match [id=" + id + ", userId1=" + userId1 + ", userId2="
-				+ userId2 + ", points1=" + points1 + ", points2=" + points2
-				+ "]";
-	}
-
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + id;
-		result = prime * result + points1;
-		result = prime * result + points2;
-		result = prime * result + ((user1 == null) ? 0 : user1.hashCode());
-		result = prime * result + ((user2 == null) ? 0 : user2.hashCode());
-		result = prime * result + userId1;
-		result = prime * result + userId2;
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Match other = (Match) obj;
-		if (id != other.id)
-			return false;
-		if (points1 != other.points1)
-			return false;
-		if (points2 != other.points2)
-			return false;
-		if (user1 == null) {
-			if (other.user1 != null)
-				return false;
-		} else if (!user1.equals(other.user1))
-			return false;
-		if (user2 == null) {
-			if (other.user2 != null)
-				return false;
-		} else if (!user2.equals(other.user2))
-			return false;
-		if (userId1 != other.userId1)
-			return false;
-		if (userId2 != other.userId2)
-			return false;
-		return true;
-	}
 }
