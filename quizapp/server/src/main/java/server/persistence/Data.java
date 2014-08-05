@@ -18,8 +18,6 @@ import org.apache.commons.dbutils.handlers.BeanListHandler;
 import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
 
 import server.persistence.constraints.*;
-import server.persistence.constraints.Constraint.AppendAt;
-import server.persistence.constraints.OrderByConstraint.Order;
 import server.persistence.query.InsertQueryBuilder;
 import server.persistence.query.QueryBuilder;
 import server.persistence.query.UpdateQueryBuilder;
@@ -198,7 +196,7 @@ public class Data implements Persistence {
 	@Override
 	public User registerUser(String username, String password)
 			throws SQLException, IllegalArgumentException {
-		logger.info(username+" wants to register.");
+		logger.info(username + " wants to register.");
 		if (username == null || username.isEmpty()) {
 			throw new IllegalArgumentException("empty username");
 		}
@@ -206,8 +204,8 @@ public class Data implements Persistence {
 			throw new IllegalArgumentException("empty password");
 		}
 
-		logger.info(username+" wants to register.");
-		
+		logger.info(username + " wants to register.");
+
 		User user = new User(username, false);
 		insert(user, "password", password);
 		return user;
@@ -409,21 +407,11 @@ public class Data implements Persistence {
 		for (Field f : obj.getClass().getDeclaredFields()) {
 			f.setAccessible(true);
 
-			// unpersisted field
-			if (f.getAnnotation(NotPersisted.class) != null) {
+			if(!f.getClass().isPrimitive() && !f.getClass().equals(String.class)) {
 				continue;
 			}
 
-			// persisted field
-			ColumnAlias alias;
-			String field;
-			if ((alias = f.getAnnotation(ColumnAlias.class)) != null) {
-				field = alias.column();
-			} else {
-				field = f.getName();
-			}
-
-			qb.appendField(field);
+			qb.appendField(f.getName());
 
 			try {
 				qb.appendValue(f.get(obj));
@@ -443,7 +431,7 @@ public class Data implements Persistence {
 		}
 	}
 
-	private <T> T get(Class<T> clazz, Constraint... constraints) 
+	private <T> T get(Class<T> clazz, Constraint... constraints)
 			throws SQLException {
 		List<T> results = getMany(clazz, constraints);
 
@@ -455,7 +443,7 @@ public class Data implements Persistence {
 			return null;
 		}
 	}
-	
+
 	private <T> List<T> getMany(Class<T> clazz, Constraint... constraints)
 			throws SQLException {
 		return run.query(String.format("SELECT * FROM %s %s", getTable(clazz),

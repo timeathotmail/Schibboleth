@@ -102,7 +102,7 @@ public class ServerDirectory implements Runnable {
 			List<Question> questions) {
 		User user1 = socketToUser.get(client1);
 		User user2 = socketToUser.get(client2);
-		Match match = new Match(user1, user2, questions);
+		Match match = new Match(user1, user2, questions, 1); // TODO correct perRoundCount
 		userToMatch1.put(user1, match);
 		userToMatch2.put(user2, match);
 		socketToSocket1.put(client1, client2);

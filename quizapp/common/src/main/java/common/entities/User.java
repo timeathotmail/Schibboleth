@@ -1,7 +1,5 @@
 package common.entities;
 
-import common.entities.annotations.NotPersisted;
-
 /**
  * This class represents a registered user in the system.
  * 

@@ -1,5 +1,6 @@
 package common.entities;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import common.entities.annotations.*;
@@ -18,12 +19,10 @@ public class Match {
 	/**
 	 * First player.
 	 */
-	@NotPersisted
 	private User user1;
 	/**
 	 * Second player.
 	 */
-	@NotPersisted
 	private User user2;
 	/**
 	 * First player's id.
@@ -34,20 +33,7 @@ public class Match {
 	 */
 	private int userId2;
 
-	@NotPersisted
-	private int points1;
-
-	@NotPersisted
-	private int points2;
-
-	@NotPersisted
-	private List<Question> questions;
-
-	@NotPersisted
-	private List<Integer> answers1;
-
-	@NotPersisted
-	private List<Integer> answers2;
+	private List<Round> rounds;
 
 	/**
 	 * Constructor for JSON deserialization and persistence framework.
@@ -64,35 +50,35 @@ public class Match {
 	 * @param user2
 	 *            second player
 	 */
-	public Match(User user1, User user2, List<Question> questions) {
+	public Match(User user1, User user2, List<Question> questions, int perRound) {
 		setUser1(user1);
 		setUser2(user2);
-		this.questions = questions;
-	}
 
-	public Match(User user1, User user2, List<Question> questions,
-			List<Integer> answers1, List<Integer> answers2) {
-		super();
-		setUser1(user1);
-		setUser2(user2);
-		this.questions = questions;
-		this.answers1 = answers1;
-		this.answers2 = answers2;
+		List<Answer> answers = new ArrayList<Answer>();
+		for (int i = 0; i < questions.size();) {
+			for (int j = 0; j < perRound; j++, i++) {
+				answers.add(new Answer(questions.get(i).getId()));
+			}
+		}
+		rounds.add(new Round(answers));
 	}
 
 	public void addAnswer(User user, int index) {
-		if (!isFinished()) {
-			if (user == user1) {
-				answers1.add(index);
-			} else if (user == user2) {
-				answers2.add(index);
+		for (Round r : rounds) {
+			if (r.addAnswer(user == user1, index)) {
+				break;
 			}
 		}
 	}
 
 	public boolean isFinished() {
-		return answers1.size() == questions.size()
-				&& answers2.size() == questions.size();
+		for (Round r : rounds) {
+			if (!r.isFinished()) {
+				return false;
+			}
+		}
+		
+		return true;
 	}
 
 	// === getters & setters ===
@@ -103,6 +89,10 @@ public class Match {
 
 	public void setId(int id) {
 		this.id = id;
+
+		for (Round r : rounds) {
+			r.setMatchId(id);
+		}
 	}
 
 	public User getUser1() {
@@ -130,35 +120,11 @@ public class Match {
 	}
 
 	public int getPoints1() {
-		return points1;
+		return 0; // TODO
 	}
 
 	public int getPoints2() {
-		return points2;
-	}
-
-	public List<Question> getQuestions() {
-		return questions;
-	}
-
-	public void setQuestions(List<Question> questions) {
-		this.questions = questions;
-	}
-
-	public List<Integer> getAnswers1() {
-		return answers1;
-	}
-
-	public void setAnswers1(List<Integer> answers1) {
-		this.answers1 = answers1;
-	}
-
-	public List<Integer> getAnswers2() {
-		return answers2;
-	}
-
-	public void setAnswers2(List<Integer> answers2) {
-		this.answers2 = answers2;
+		return 0; // TODO
 	}
 
 	// === special methods ===
