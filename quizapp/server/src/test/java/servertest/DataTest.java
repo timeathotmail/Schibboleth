@@ -33,9 +33,6 @@ public class DataTest {
 			User r_user = persistence.registerUser(user.getName(), PW);
 
 			assertEquals(user.getName(), r_user.getName());
-			assertEquals(r_user.getMatchCount(), 0);
-			assertEquals(r_user.getPointCount(), 0);
-			assertEquals(r_user.getWinCount(), 0);
 			assertTrue(r_user.getId() > 0);
 
 			user.setId(r_user.getId());
@@ -88,32 +85,6 @@ public class DataTest {
 	@Test
 	public void testGetUsers() throws SQLException {
 		assertEquals(Arrays.asList(users), persistence.getUsers());
-	}
-
-	@Test
-	public void testMatchesAndRankings() throws SQLException {
-		persistence.saveMatch(new Match(users[0], users[1], 5, 6));
-		persistence.saveMatch(new Match(users[1], users[0], 10, 2));
-		persistence.saveMatch(new Match(users[1], users[2], 1, 0));
-		persistence.saveMatch(new Match(users[3], users[2], 7, 3));
-		persistence.saveMatch(new Match(users[2], users[3], 5, 2));
-
-		for (int i = 0; i < users.length; i++) {
-			users[i] = persistence.getUser(users[i].getName());
-		}
-
-		assertTrue(users[0].getPointCount() == 7 && users[0].getWinCount() == 0
-				&& users[0].getMatchCount() == 2);
-		assertTrue(users[1].getPointCount() == 17
-				&& users[1].getWinCount() == 3 && users[1].getMatchCount() == 3);
-		assertTrue(users[2].getPointCount() == 8 && users[2].getWinCount() == 1
-				&& users[2].getMatchCount() == 3);
-		assertTrue(users[3].getPointCount() == 9 && users[3].getWinCount() == 1
-				&& users[3].getMatchCount() == 2);
-
-		List<User> ranking = persistence.getRankedUsers(0, 27);
-		assertEquals(users[1], ranking.get(0));
-		assertEquals(users[0], ranking.get(3));
 	}
 
 	@Test

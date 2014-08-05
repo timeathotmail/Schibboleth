@@ -20,21 +20,6 @@ public class User {
 	 * Username.
 	 */
 	private String name;
-	/**
-	 * The amount of matches the user played.
-	 */
-	@NotPersisted
-	private int matchCount;
-	/**
-	 * The amount of matches the user won.
-	 */
-	@NotPersisted
-	private int winCount;
-	/**
-	 * The amount of points the user scored in all of his games.
-	 */
-	@NotPersisted
-	private int pointCount;
 
 	/**
 	 * Constructor for JSON deserialization and persistence framework.
@@ -74,30 +59,6 @@ public class User {
 		this.name = name;
 	}
 
-	public int getMatchCount() {
-		return matchCount;
-	}
-
-	public void setMatchCount(int matchCount) {
-		this.matchCount = matchCount;
-	}
-
-	public int getWinCount() {
-		return winCount;
-	}
-
-	public void setWinCount(int winCount) {
-		this.winCount = winCount;
-	}
-
-	public int getPointCount() {
-		return pointCount;
-	}
-
-	public void setPointCount(int pointCount) {
-		this.pointCount = pointCount;
-	}
-
 	public boolean isAdmin() {
 		return isAdmin;
 	}
@@ -111,8 +72,7 @@ public class User {
 	@Override
 	public String toString() {
 		return "User [id=" + id + ", isAdmin=" + isAdmin + ", name=" + name
-				+ ", matchCount=" + matchCount + ", winCount=" + winCount
-				+ ", pointCount=" + pointCount + "]";
+				+ "]";
 	}
 
 	@Override
@@ -121,10 +81,7 @@ public class User {
 		int result = 1;
 		result = prime * result + id;
 		result = prime * result + (isAdmin ? 1231 : 1237);
-		result = prime * result + matchCount;
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
-		result = prime * result + pointCount;
-		result = prime * result + winCount;
 		return result;
 	}
 
@@ -141,16 +98,10 @@ public class User {
 			return false;
 		if (isAdmin != other.isAdmin)
 			return false;
-		if (matchCount != other.matchCount)
-			return false;
 		if (name == null) {
 			if (other.name != null)
 				return false;
 		} else if (!name.equals(other.name))
-			return false;
-		if (pointCount != other.pointCount)
-			return false;
-		if (winCount != other.winCount)
 			return false;
 		return true;
 	}

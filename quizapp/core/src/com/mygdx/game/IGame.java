@@ -97,13 +97,6 @@ public interface IGame {
 	void denyChallenge(User user);
 	
 	/**
-	 * Display the rankings.
-	 * @param offset offset used for displaying pages
-	 * @param length amount of players to show
-	 */
-	void displayRankings(int offset, int length);
-	
-	/**
 	 * Display the settings.
 	 */
 	void displaySettings();
@@ -213,10 +206,4 @@ public interface IGame {
 	 * Called when the search for match was cancelled before a match could be found.
 	 */
 	void onSearchCancelled();
-	
-	/**
-	 * Called when the server sends a section of the leaderboard.
-	 * @param users the ranked users
-	 */
-	void onRankingsReceived(List<User> users);
 }

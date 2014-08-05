@@ -140,15 +140,6 @@ public class ClientInbox implements Runnable {
 						continue;
 					}
 				}
-
-				{ // ============================================================
-					RankingsResponse obj = net.fromJson(json,
-							RankingsResponse.class);
-					if (obj != null) {
-						game.onRankingsReceived(obj.getUsers());
-						continue;
-					}
-				}
 			}
 		} catch (SocketReadException e) {
 			game.onConnectionLost();

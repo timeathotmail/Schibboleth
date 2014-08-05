@@ -338,17 +338,6 @@ public class QuizGame extends Game implements IGame{
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.mygdx.game.IGame#displayRankings(int, int)
-	 */
-	@Override
-	public void displayRankings(int offset, int length) {
-		// TODO Auto-generated method stub
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
 	 * @see com.mygdx.game.IGame#displaySettings()
 	 */
 	@Override
@@ -530,17 +519,6 @@ public class QuizGame extends Game implements IGame{
 	 */
 	@Override
 	public void onSearchCancelled() {
-		// TODO Auto-generated method stub
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.mygdx.game.IGame#onRankingsReceived(java.util.List)
-	 */
-	@Override
-	public void onRankingsReceived(List<User> users) {
 		// TODO Auto-generated method stub
 
 	}

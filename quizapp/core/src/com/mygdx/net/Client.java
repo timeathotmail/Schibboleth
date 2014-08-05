@@ -12,7 +12,6 @@ import common.net.requests.AnswerSubmitRequest;
 import common.net.requests.ChallengeAcceptRequest;
 import common.net.requests.ChallengeDenyRequest;
 import common.net.requests.ChallengeSendRequest;
-import common.net.requests.GetRankingsRequest;
 import common.net.requests.MatchLeaveRequest;
 import common.net.requests.MatchSearchCancelRequest;
 import common.net.requests.MatchSearchStartRequest;
@@ -165,20 +164,6 @@ public class Client {
 	 */
 	public void denyChallenge(String opponent) throws IllegalArgumentException, SocketWriteException {
 		net.send(serverSocket, new ChallengeDenyRequest(opponent));
-	}
-
-	/**
-	 * Requests the server to send rankings to the client.
-	 * 
-	 * @param offset
-	 *            first rank
-	 * @param length
-	 *            amount of users
-	 * @throws SocketWriteException 
-	 * @throws IllegalArgumentException 
-	 */
-	public void requestRankings(int offset, int length) throws IllegalArgumentException, SocketWriteException {
-		net.send(serverSocket, new GetRankingsRequest(offset, length));
 	}
 
 	/**

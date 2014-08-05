@@ -271,19 +271,6 @@ public class Data implements Persistence {
 		return __getUsers();
 	}
 
-	@Override
-	public List<User> getRankedUsers(int offset, int length)
-			throws SQLException {
-		if (offset < 0) {
-			throw new IllegalArgumentException("invalid offset");
-		}
-		if (length < 0) {
-			throw new IllegalArgumentException("invalid length");
-		}
-		return __getUsers(new OrderByConstraint(Order.DESC, "winCount"),
-				new LimitedConstraint(length, offset));
-	}
-
 	// =====================================================================
 	// Questions
 	// =====================================================================

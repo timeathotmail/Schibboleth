@@ -71,17 +71,6 @@ public interface Persistence {
 	List<User> getUsers() throws SQLException;
 
 	/**
-	 * Returns a list of users sorted by their rank.
-	 * 
-	 * @param offset
-	 *            first rank
-	 * @param length
-	 *            amount of users to return
-	 * @return a section of the ranking
-	 */
-	List<User> getRankedUsers(int offset, int length) throws SQLException;
-
-	/**
 	 * Adds a new question to the database.
 	 * 
 	 * @param question

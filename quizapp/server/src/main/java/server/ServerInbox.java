@@ -253,25 +253,6 @@ public class ServerInbox implements Runnable {
 	}
 
 	/**
-	 * Process a GetRankingsRequest.
-	 * 
-	 * @param req
-	 * @throws SocketWriteException
-	 * @throws IllegalArgumentException
-	 */
-	private void process(GetRankingsRequest req)
-			throws IllegalArgumentException, SocketWriteException {
-		try {
-			Server.net.send(
-					client,
-					new RankingsResponse(Server.persistence.getRankedUsers(
-							req.getOffset(), req.getLength())));
-		} catch (Exception e) {
-			Server.net.send(client, new ErrorResponse("Can't get rankings!"));
-		}
-	}
-
-	/**
 	 * Process a AnswerSubmitRequest.
 	 * 
 	 * @param req
@@ -400,15 +381,6 @@ public class ServerInbox implements Runnable {
 				{ // ============================================================
 					ChallengeDenyRequest obj = Server.net.fromJson(json,
 							ChallengeDenyRequest.class);
-					if (obj != null) {
-						process(obj);
-						continue;
-					}
-				}
-
-				{ // ============================================================
-					GetRankingsRequest obj = Server.net.fromJson(json,
-							GetRankingsRequest.class);
 					if (obj != null) {
 						process(obj);
 						continue;
