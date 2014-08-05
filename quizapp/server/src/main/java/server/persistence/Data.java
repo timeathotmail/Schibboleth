@@ -191,7 +191,7 @@ public class Data implements Persistence {
 			throw new IllegalArgumentException("empty password");
 		}
 
-		return __getUser(new HavingConstraint(new EqualConstraint("name",
+		return get(User.class, new HavingConstraint(new EqualConstraint("name",
 				username, "password", password)));
 	}
 
@@ -262,13 +262,13 @@ public class Data implements Persistence {
 			throw new IllegalArgumentException("empty username");
 		}
 
-		return __getUser(new HavingConstraint(new EqualConstraint("name",
+		return get(User.class, new HavingConstraint(new EqualConstraint("name",
 				username)));
 	}
 
 	@Override
 	public List<User> getUsers() throws SQLException {
-		return __getUsers();
+		return getMany(User.class);
 	}
 
 	// =====================================================================
@@ -338,35 +338,6 @@ public class Data implements Persistence {
 				+ getTable(Question.class), new BeanListHandler<Integer>(
 				Integer.class));
 		return result.size() > 0 ? result.get(0) : 0;
-	}
-
-	private User __getUser(Constraint... constraints) throws SQLException {
-		List<User> results = __getUsers(constraints);
-
-		if (results.size() == 1) {
-			return results.get(0);
-		} else if (results.size() > 1) {
-			throw new SQLException("ambiguous id");
-		} else {
-			return null;
-		}
-	}
-
-	private List<User> __getUsers(Constraint... constraints)
-			throws SQLException {
-
-		String sql = String
-				.format("SELECT u.*, "
-						+ "COUNT(m.id) matchCount, "
-						+ "SUM(IF(u.id=user1,points1,points2)) pointCount, "
-						+ "SUM(IF(u.id=user1,points1>points2,points2>points1)) winCount "
-						+ "FROM USER u "
-						+ "LEFT JOIN MATCH__ m ON u.id = user1 OR u.id = user2 ",
-						getTable(User.class), getTable(Match.class),
-						getTable(Match.class));
-
-		return getMany(sql, User.class, Constraint.append(constraints,
-				new GroupByConstraint("u.id"), AppendAt.FRONT));
 	}
 
 	// =====================================================================
@@ -472,19 +443,23 @@ public class Data implements Persistence {
 		}
 	}
 
+	private <T> T get(Class<T> clazz, Constraint... constraints) 
+			throws SQLException {
+		List<T> results = getMany(clazz, constraints);
+
+		if (results.size() == 1) {
+			return results.get(0);
+		} else if (results.size() > 1) {
+			throw new SQLException("ambiguous id");
+		} else {
+			return null;
+		}
+	}
+	
 	private <T> List<T> getMany(Class<T> clazz, Constraint... constraints)
 			throws SQLException {
 		return run.query(String.format("SELECT * FROM %s %s", getTable(clazz),
 				Constraint.toString(constraints)),
-				new BeanListHandler<T>(clazz));
-	}
-
-	private <T> List<T> getMany(String sql, Class<T> clazz,
-			Constraint... constraints) throws SQLException {
-
-		// System.out.println(sql + Constraint.toString(constraints));
-
-		return run.query(sql + Constraint.toString(constraints),
 				new BeanListHandler<T>(clazz));
 	}
 
