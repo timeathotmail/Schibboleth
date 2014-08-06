@@ -5,6 +5,10 @@ import java.util.Collection;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
@@ -15,6 +19,10 @@ public class MainScreen implements Screen {
 	private QuizGame game;
 	private Stage stage;
 	private Skin skin;
+	private SpriteBatch batch;
+	private Texture logo;
+	private TextureRegion logoRegion;
+	private OrthographicCamera camera;
 	
 	private final Collection<User> users;
 
@@ -31,6 +39,11 @@ public class MainScreen implements Screen {
 		if(stage != null) {
 			stage.draw();
 		}
+		//display logo 
+		batch.setProjectionMatrix(camera.combined);
+		batch.begin();
+		batch.draw(logoRegion, 0, 300, 463/(163.0f/280.0f), 163);
+		batch.end();
 	}
 
 	@Override
@@ -40,12 +53,18 @@ public class MainScreen implements Screen {
 
 	@Override
 	public void show() {
+		batch = new SpriteBatch();
 		Gdx.app.postRunnable(new Runnable() {
 	         @Override
 	         public void run() {
 	     		stage = new Stage();
 	    		Gdx.input.setInputProcessor(stage);
 	    		skin = new Skin(Gdx.files.internal("uiskin.json"));
+	    		
+	    		logo = new Texture(Gdx.files.internal("logo.png"));
+	    		logoRegion = new TextureRegion(logo, 0, 637, 463, 163);
+	    		camera = new OrthographicCamera();
+	    		camera.setToOrtho(false, 800, 480);
 	         }
 	      });
 		
@@ -74,6 +93,8 @@ public class MainScreen implements Screen {
 	public void dispose() {
 		stage.dispose();
 		skin.dispose();
+		logo.dispose();
+		batch.dispose();
 	}
 
 }

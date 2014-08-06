@@ -7,6 +7,8 @@ buildscript {
     dependencies {
         classpath 'de.richsource.gradle.plugins:gwt-gradle-plugin:0.4'
         classpath 'com.android.tools.build:gradle:0.10+'
+
+	classpath 'com.nabilhachicha:android-native-dependencies:0.1'
     }
 }
 
@@ -30,8 +32,7 @@ allprojects {
 }
 
 project(":desktop") {
-    apply plugin: "java"
-
+     apply plugin: "java"
 
     dependencies {
         compile project(":core")
@@ -77,7 +78,6 @@ project(":html") {
 project(":core") {
     apply plugin: "java"
 
-
     dependencies {
         compile project(":common")
         compile "com.badlogicgames.gdx:gdx:$gdxVersion"
@@ -88,7 +88,6 @@ project(":core") {
 project(":server") {
     apply plugin: "java"
 
-
     dependencies {
         compile project(":common")
     }
@@ -96,7 +95,6 @@ project(":server") {
 
 project(":common") {
     apply plugin: "java"
-
 
     dependencies {
     }

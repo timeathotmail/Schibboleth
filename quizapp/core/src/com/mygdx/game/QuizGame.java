@@ -39,6 +39,7 @@ public class QuizGame extends Game implements IGame{
 	
 	private OnlineScreen onlineScreen;
 	
+	/** Gruppe fuer No Connection found disclaimer*/
 	private Texture disclaimer;
 	private Texture btnDisclaimerTexture;
 	private TextButton btnDisclaimer;
@@ -77,13 +78,13 @@ public class QuizGame extends Game implements IGame{
 		SCREEN_WIDTH = Gdx.graphics.getWidth();
 		SCREEN_HEIGHT = Gdx.graphics.getHeight();
 		
-		if (client == null) {
-			playOffline();
+		//if (client == null) {
+		//	playOffline();
 			//loginScreen.showErrorMsg("Check your Internet connection");
-		} else if (!autoLogin()) {
+		//} else if (!autoLogin()) {
 			loginScreen = new LoginScreen(this);
 			setScreen(loginScreen);
-		}		
+		//}		
 	}
 
 	// =====================================================================
@@ -130,8 +131,22 @@ public class QuizGame extends Game implements IGame{
 	 */
 	@Override
 	public void register(String username, String password, String confirmation) {
-
-		if (!checkUsername(username)) {
+		
+		if(!password.equals(confirmation)){
+			loginScreen.showErrorMsg("passwords do not match");
+		}
+		if(checkUsername(username) && checkPassword(password)){
+			try {
+				client.register(username, password, revision);
+			} catch (IllegalArgumentException e) {
+				e.printStackTrace();
+			} catch (SocketWriteException e) {
+				e.printStackTrace();
+			}
+			
+		}
+		
+		/*if (!checkUsername(username)) {
 			loginScreen.showErrorMsg("your username is incorrect");
 		} else if (!checkPassword(password)) {
 			loginScreen.showErrorMsg("your password is incorrect");
@@ -147,7 +162,7 @@ public class QuizGame extends Game implements IGame{
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-		}
+		}*/
 	}
 	
 	/**
@@ -161,22 +176,26 @@ public class QuizGame extends Game implements IGame{
 		//is null or ""
 		if(username == null || username.isEmpty()){
 			loginScreen.showErrorMsg("Username is empty");
+			return false;
 		}
 		//check length, min. 6 chars
 		if(username.length() < 6){
 			loginScreen.showErrorMsg("Username is too short");
+			return false;
 		}
 		//is illegal, f.example swearword
-		int i = 0;
+		/*int i = 0;
 		while(i < bannedExpressions.size()){
 			if(username.contains(bannedExpressions.get(i))){
 				loginScreen.showErrorMsg("Username contains banned expressions");
+				return false;
 			}
 			i++;
-		}
+		}*/
 		//is not a numeric or letter
-		if(!username.matches("[A-Za-z_0-9]")){
+		if(!username.matches("[A-Za-z_0-9]*")){
 			loginScreen.showErrorMsg("Username contains illegal characters");
+			return false;
 		}
 		return true;
 		
@@ -192,19 +211,23 @@ public class QuizGame extends Game implements IGame{
 	private boolean checkPassword(String password){
 		// empty
 		if(password.isEmpty() || password == ""){
-			loginScreen.showErrorMsg("Password is empty");			
+			loginScreen.showErrorMsg("Password is empty");	
+			return false;
 		}
 		//contains less then 6 chars
 		if(password.length() < 6){
-			loginScreen.showErrorMsg("Passwort is too short");			
+			loginScreen.showErrorMsg("Passwort is too short");
+			return false;
 		}
 		// not matches regular expression a-z A-Z _ and 0-9
 		if(!password.matches("[A-Za-z0-9]*")){
 			loginScreen.showErrorMsg("Password contains illegal characters");
+			return false;
 		}
 		//contains less then two digits and less then one upper case or contains special chars
 		if(!(password.matches(".*[a-z].*") || password.matches(".*[A-Z].*") || password.matches(".*\\d.*\\d.*"))){
 			loginScreen.showErrorMsg("Password contains illegal characters");
+			return false;
 		}
 		return true;
 	}

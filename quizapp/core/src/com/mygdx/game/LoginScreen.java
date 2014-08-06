@@ -37,7 +37,13 @@ public class LoginScreen implements Screen {
 	private ButtonGroup btnGroup;
 	private Label lblUsername, lblPassword, lblConfirmation, lblError;
 	private TextField txtUsername, txtPassword, txtConfirmation;
-
+	
+	//options
+	private OptionsScreen options;
+	private TextButton btnOptions;
+	
+	
+	
 	public LoginScreen(QuizGame game) {
 		this.game = game;
 	}
@@ -83,6 +89,9 @@ public class LoginScreen implements Screen {
 		txtConfirmation = new TextField("", skin);
 		txtConfirmation.setPasswordMode(true);
 		txtConfirmation.setPasswordCharacter('*');
+		
+		//options		
+		btnOptions = new TextButton("Options", skin);
 
 		TextFieldListener enterListener = new TextFieldListener() {
 			@Override
@@ -135,6 +144,12 @@ public class LoginScreen implements Screen {
 				game.register(txtUsername.getText(), txtPassword.getText(), txtConfirmation.getText());
 			}
 		});
+		
+		btnOptions.addListener(new ClickListener(){
+			public void clicked(InputEvent event, float x, float y){
+				game.setScreen(options);
+			}
+		});
 
 		switchView(true);
 	}
@@ -142,6 +157,8 @@ public class LoginScreen implements Screen {
 	private void switchView(boolean login) {
 		table.clear();	
 
+		table.add(btnOptions).width(150).height(30).padBottom(10).align(Align.left);
+		table.row();
 		table.add(lblUsername).pad(2);
 		table.row();
 		table.add(txtUsername).pad(2);
