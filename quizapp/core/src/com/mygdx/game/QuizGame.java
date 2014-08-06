@@ -35,7 +35,6 @@ public class QuizGame extends Game implements IGame{
 
 	private LoginScreen loginScreen;
 	private MainScreen mainScreen;
-	private OfflineScreen offlineScreen;
 	private OptionsScreen options;
 	
 	private OnlineScreen onlineScreen;
@@ -45,8 +44,7 @@ public class QuizGame extends Game implements IGame{
 	private TextButton btnDisclaimer;
 	
 	//saves banned expressions to compare with login
-	private List<String> bannedExpressions;
-	//saves users online
+	private List<String> bannedExpressions;	
 	
 	public static int SCREEN_WIDTH = 480;
 	public static int SCREEN_HEIGHT = 800;
@@ -80,7 +78,7 @@ public class QuizGame extends Game implements IGame{
 		SCREEN_HEIGHT = Gdx.graphics.getHeight();
 		
 		if (client == null) {
-			playOffline();
+			loginScreen.showErrorMsg("Check your Internet connection");
 		} else if (!autoLogin()) {
 			loginScreen = new LoginScreen(this);
 			setScreen(loginScreen);
@@ -154,7 +152,7 @@ public class QuizGame extends Game implements IGame{
 	/**
 	 * Methode wird in register() aufgerufen. 
 	 * Ueberprueft, ob Username den Einschraenkungen uebereinstimmt
-	 * 
+	 * @author halfelv
 	 * @param username
 	 * @return {@code true} falls die Bedienungen erfuellt sind
 	 */
@@ -180,10 +178,12 @@ public class QuizGame extends Game implements IGame{
 			loginScreen.showErrorMsg("Username contains illegal characters");
 		}
 		return true;
+		
 	}
 	/**
 	 * Methode wird in register() aufgerufen.
 	 * Ueberprueft, ob Passwort den Einschraenkungen uebereinstimmt
+	 * @author halfelv
 	 * @param password
 	 * 
 	 *  @return {@code true} falls die Bedienungen erfuellt sind
@@ -216,8 +216,13 @@ public class QuizGame extends Game implements IGame{
 	 */
 	@Override
 	public void logout() {
-		login(null, null);
-		// TODO Auto-generated method stub
+		try {
+			client.logout();
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+		} catch (SocketWriteException e) {
+			e.printStackTrace();
+		}
 
 	}
 
@@ -254,8 +259,7 @@ public class QuizGame extends Game implements IGame{
 	 */
 	@Override
 	public void playOffline() {
-		offlineScreen = new OfflineScreen(this);
-		setScreen(offlineScreen);
+		//TODO not needed
 	}
 
 	/*
@@ -413,7 +417,7 @@ public class QuizGame extends Game implements IGame{
 			mainScreen = new MainScreen(this, users);
 			setScreen(mainScreen);
 		} else {
-			loginScreen.showErrorMsg("something went wrong");
+			loginScreen.showErrorMsg("something went wrong");			
 			// TODO wrong name/pw, name is taken, bad password etc.
 		}
 	}
