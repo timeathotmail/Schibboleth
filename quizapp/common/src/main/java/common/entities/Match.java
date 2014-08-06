@@ -1,5 +1,6 @@
 package common.entities;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,7 +12,11 @@ import common.entities.annotations.*;
  * @author Tim Wiechers
  */
 @TableAlias(table = "MATCH__")
-public class Match {
+public class Match implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8635993418414020408L;
 	/**
 	 * ID for unique identification.
 	 */
@@ -60,6 +65,7 @@ public class Match {
 				answers.add(new Answer(questions.get(i).getId()));
 			}
 		}
+		rounds = new ArrayList<Round>();
 		rounds.add(new Round(answers));
 	}
 

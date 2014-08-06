@@ -7,6 +7,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -115,7 +116,7 @@ public class Data implements Persistence {
 			dataSource.setUrl(DB_URL);
 			run = new QueryRunner(dataSource);
 			checkDatabaseStructure();
-
+			
 		} catch (ClassNotFoundException e) {
 			throw new SQLException("Couldn't register JDBC driver!", e);
 		}
@@ -361,6 +362,41 @@ public class Data implements Persistence {
 				}
 			}
 		}
+	}
+	
+	public List<Match> getRunningMatches(User user) throws SQLException {
+		// get all user's matches
+		List<Match> matches = getMany(Match.class, new HavingConstraint(new EqualConstraint("user1",
+				user.getId())));
+		
+		matches.addAll(getMany(Match.class, new HavingConstraint(new EqualConstraint("user2",
+				user.getId()))));
+		
+		for(Match m : matches) {
+			// set rounds
+			List<Round> rounds = getMany(Round.class, new HavingConstraint(new EqualConstraint("matchId",
+				m.getId())));
+			
+			for(Round r : rounds) {
+				// set answers
+				List<Answer> answers = getMany(Answer.class, new HavingConstraint(new EqualConstraint("roundId",
+						r.getId())));
+				
+				r.setAnswers(answers);
+			}
+			
+			m.setRounds(rounds);
+		}
+		
+		// return only running matches
+		List<Match> running = new ArrayList<Match>();
+		for(Match m : matches) {
+			if(!m.isFinished()) {
+				running.add(m);
+			}
+		}
+		
+		return running;
 	}
 
 	// =====================================================================
