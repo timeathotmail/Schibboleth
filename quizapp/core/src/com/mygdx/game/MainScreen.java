@@ -7,6 +7,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+
 import common.entities.User;
 
 public class MainScreen implements Screen {
@@ -39,9 +40,14 @@ public class MainScreen implements Screen {
 
 	@Override
 	public void show() {
-		stage = new Stage();
-		Gdx.input.setInputProcessor(stage);
-		skin = new Skin(Gdx.files.internal("uiskin.json"));
+		Gdx.app.postRunnable(new Runnable() {
+	         @Override
+	         public void run() {
+	     		stage = new Stage();
+	    		Gdx.input.setInputProcessor(stage);
+	    		skin = new Skin(Gdx.files.internal("uiskin.json"));
+	         }
+	      });
 		
 		// TODO
 	}
