@@ -127,5 +127,13 @@ public class Match {
 		return 0; // TODO
 	}
 
+	public List<Round> getRounds() {
+		return rounds;
+	}
+
+	public void setRounds(List<Round> rounds) {
+		this.rounds = rounds;
+	}
+
 	// === special methods ===
 }

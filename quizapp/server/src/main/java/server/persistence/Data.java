@@ -1,6 +1,7 @@
 package server.persistence;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -154,26 +155,45 @@ public class Data implements Persistence {
 		run.update(String.format("CREATE TABLE IF NOT EXISTS %s("
 				+ "id      INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,"
 				+ "user1   INT UNSIGNED," + "user2   INT UNSIGNED,"
-				+ "points1 INT UNSIGNED NOT NULL,"
-				+ "points2 INT UNSIGNED NOT NULL,"
-				+ "FOREIGN KEY(user1) REFERENCES USER(id) "
+				+ "FOREIGN KEY(user1) REFERENCES %s(id) "
 				+ "ON DELETE SET NULL,"
-				+ "FOREIGN KEY(user2) REFERENCES USER(id) "
-				+ "ON DELETE SET NULL)", getTable(Match.class)));
+				+ "FOREIGN KEY(user2) REFERENCES %s(id) "
+				+ "ON DELETE SET NULL)", getTable(Match.class),
+				getTable(User.class), getTable(User.class)));
 
-		run.update("DROP TRIGGER IF EXISTS matchval");
-		run.update(String.format("CREATE TRIGGER matchval "
-				+ "BEFORE INSERT ON %s FOR EACH ROW BEGIN "
-				+ "IF NEW.user1 = NEW.user2 " + "THEN SIGNAL SQLSTATE '45000' "
-				+ "SET MESSAGE_TEXT = 'Cannot add or "
-				+ "update match: same users'; END IF; END;",
+		run.update(String.format("CREATE TABLE IF NOT EXISTS %s("
+				+ "id      INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,"
+				+ "matchId INT UNSIGNED ,"
+				+ "FOREIGN KEY(matchId) REFERENCES %s(id) "
+				+ "ON DELETE SET NULL" + ")", getTable(Round.class),
 				getTable(Match.class)));
 
-		run.update("DROP TRIGGER IF EXISTS matchcleaner");
-		run.update(String.format("CREATE TRIGGER matchcleaner "
-				+ "AFTER DELETE ON %s FOR EACH ROW BEGIN "
-				+ "DELETE FROM %s WHERE user1 IS NULL AND user2 IS NULL; "
-				+ "END;", getTable(User.class), getTable(Match.class)));
+		run.update(String.format("CREATE TABLE IF NOT EXISTS %s("
+				+ "id      INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,"
+				+ "roundId INT UNSIGNED ,"
+				+ "questionId INT UNSIGNED ,"
+				+ "answerIndex1 TINYINT UNSIGNED, "
+				+ "answerIndex2 TINYINT UNSIGNED, " // TODO check if 1-4
+				+ "FOREIGN KEY(roundId) REFERENCES %s(id) "
+				+ "ON DELETE SET NULL, "
+				+ "FOREIGN KEY(questionId) REFERENCES %s(id) "
+				+ "ON DELETE SET NULL)", getTable(Answer.class),
+				getTable(Round.class), getTable(Question.class)));
+
+		/*
+		 * TODO in sqlite run.update("DROP TRIGGER IF EXISTS matchval");
+		 * run.update(String.format("CREATE TRIGGER matchval " +
+		 * "BEFORE INSERT ON %s FOR EACH ROW BEGIN " +
+		 * "IF NEW.user1 = NEW.user2 " + "THEN SIGNAL SQLSTATE '45000' " +
+		 * "SET MESSAGE_TEXT = 'Cannot add or " +
+		 * "update match: same users'; END IF; END;", getTable(Match.class)));
+		 * 
+		 * run.update("DROP TRIGGER IF EXISTS matchcleaner");
+		 * run.update(String.format("CREATE TRIGGER matchcleaner " +
+		 * "AFTER DELETE ON %s FOR EACH ROW BEGIN " +
+		 * "DELETE FROM %s WHERE user1 IS NULL AND user2 IS NULL; " + "END;",
+		 * getTable(User.class), getTable(Match.class)));
+		 */
 	}
 
 	// =====================================================================
@@ -324,7 +344,23 @@ public class Data implements Persistence {
 			throw new IllegalArgumentException("null match");
 		}
 
-		insert(match);
+		if (match.getId() == 0) {
+			insert(match);
+
+			for (Round r : match.getRounds()) {
+				insert(r);
+
+				for (Answer a : r.getAnswers()) {
+					insert(a);
+				}
+			}
+		} else {
+			for (Round r : match.getRounds()) {
+				for (Answer a : r.getAnswers()) {
+					update(a);
+				}
+			}
+		}
 	}
 
 	// =====================================================================
@@ -362,7 +398,8 @@ public class Data implements Persistence {
 				generatedKeys = stmt.getGeneratedKeys();
 				if (generatedKeys.next()) {
 					int insertId = generatedKeys.getInt(1);
-					getIdField(obj).set(obj, insertId);
+					obj.getClass().getDeclaredMethod("setId", int.class)
+							.invoke(obj, insertId);
 					logger.info(obj + " inserted with id " + insertId);
 				}
 			} catch (SQLException e) {
@@ -407,7 +444,7 @@ public class Data implements Persistence {
 		for (Field f : obj.getClass().getDeclaredFields()) {
 			f.setAccessible(true);
 
-			if(!f.getClass().isPrimitive() && !f.getClass().equals(String.class)) {
+			if (!f.getType().isPrimitive() && !f.getType().equals(String.class)) {
 				continue;
 			}
 
