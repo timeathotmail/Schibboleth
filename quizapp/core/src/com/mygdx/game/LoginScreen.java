@@ -3,8 +3,10 @@ package com.mygdx.game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -27,6 +29,8 @@ public class LoginScreen implements Screen {
 	private Skin skin;
 	private SpriteBatch batch;
 	private Texture logo;
+	private TextureRegion logoRegion;
+	private OrthographicCamera camera;
 
 	private Table table;
 	private TextButton btnToggleLogin, btnToggleRegister, btnPlayOffline;
@@ -44,9 +48,10 @@ public class LoginScreen implements Screen {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		stage.draw();
 		
+		batch.setProjectionMatrix(camera.combined);
 		batch.begin();
-		batch.draw(logo, 0, (800-163));
-		
+		batch.draw(logoRegion, 0, 637, 463/(163.0f/480.0f),	480);//or 800?
+		batch.end();
 	}
 
 	@Override
@@ -56,6 +61,9 @@ public class LoginScreen implements Screen {
 		skin = new Skin(Gdx.files.internal("uiskin.json"));
 		
 		logo = new Texture(Gdx.files.internal("logo.png"));
+		logoRegion = new TextureRegion(logo, 0, 637, 463, 163);
+		camera = new OrthographicCamera();
+		camera.setToOrtho(false, 800, 480);
 		
 		table = new Table();
 
@@ -187,6 +195,8 @@ public class LoginScreen implements Screen {
 
 	@Override
 	public void dispose() {
+		batch.dispose();
+		logo.dispose();
 		stage.dispose();
 		skin.dispose();
 	}

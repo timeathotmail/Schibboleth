@@ -78,7 +78,8 @@ public class QuizGame extends Game implements IGame{
 		SCREEN_HEIGHT = Gdx.graphics.getHeight();
 		
 		if (client == null) {
-			loginScreen.showErrorMsg("Check your Internet connection");
+			playOffline();
+			//loginScreen.showErrorMsg("Check your Internet connection");
 		} else if (!autoLogin()) {
 			loginScreen = new LoginScreen(this);
 			setScreen(loginScreen);
