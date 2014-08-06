@@ -33,7 +33,7 @@ public class LoginScreen implements Screen {
 	private OrthographicCamera camera;
 
 	private Table table;
-	private TextButton btnToggleLogin, btnToggleRegister, btnPlayOffline;
+	private TextButton btnToggleLogin, btnToggleRegister, btnSubmitLogin, btnSubmitRegister;
 	private ButtonGroup btnGroup;
 	private Label lblUsername, lblPassword, lblConfirmation, lblError;
 	private TextField txtUsername, txtPassword, txtConfirmation;
@@ -50,8 +50,7 @@ public class LoginScreen implements Screen {
 		
 		batch.setProjectionMatrix(camera.combined);
 		batch.begin();
-		batch.draw(logoRegion, 0, 300, 463/(163.0f/280.0f), 163);//or 800?
-		//batch.draw(logo, 0, 0);
+		batch.draw(logoRegion, 0, 320, 463/(163.0f/290.0f), 163);
 		batch.end();
 	}
 
@@ -62,8 +61,10 @@ public class LoginScreen implements Screen {
 		skin = new Skin(Gdx.files.internal("uiskin.json"));
 		batch = new SpriteBatch();
 		
+		//set and show logo
 		logo = new Texture(Gdx.files.internal("logo.png"));
 		logoRegion = new TextureRegion(logo, 0, 0, 463, 163);
+		
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, 800, 480);
 		
@@ -109,7 +110,8 @@ public class LoginScreen implements Screen {
 		btnGroup.setMinCheckCount(1);
 		btnGroup.setUncheckLast(true);
 		btnToggleLogin.setChecked(true);
-		btnPlayOffline = new TextButton("Play offline", skin);
+		btnSubmitLogin = new TextButton("Submit", skin);
+		btnSubmitRegister = new TextButton("Submit", skin);
 
 		btnToggleLogin.addListener(new EventListener() {
 			@Override
@@ -122,9 +124,15 @@ public class LoginScreen implements Screen {
 			}
 		});
 
-		btnPlayOffline.addListener(new ClickListener() {
+		btnSubmitLogin.addListener(new ClickListener() {
 			public void clicked(InputEvent event, float x, float y) {
-				game.playOffline();
+				game.login(txtUsername.getText(), txtPassword.getText());
+			}
+		});
+		
+		btnSubmitRegister.addListener(new ClickListener() {
+			public void clicked(InputEvent event, float x, float y) {
+				game.register(txtUsername.getText(), txtPassword.getText(), txtConfirmation.getText());
 			}
 		});
 
@@ -132,17 +140,8 @@ public class LoginScreen implements Screen {
 	}
 
 	private void switchView(boolean login) {
-		table.clear();
+		table.clear();	
 
-		if (!login) {
-			table.add(btnToggleLogin).align(Align.left);
-			table.row();
-		} else {
-			table.add(btnToggleRegister).align(Align.left);
-			table.row();
-		}
-		table.add(btnPlayOffline).align(Align.left);
-		table.row();
 		table.add(lblUsername).pad(2);
 		table.row();
 		table.add(txtUsername).pad(2);
@@ -150,13 +149,22 @@ public class LoginScreen implements Screen {
 		table.add(lblPassword).pad(2);
 		table.row();
 		table.add(txtPassword).pad(2);
-
-		if (!login) {
-			table.row();
+		table.row();
+		
+		if(!login){
+						
 			table.add(lblConfirmation).pad(2);
 			table.row();
 			table.add(txtConfirmation).pad(2);
-		}
+			table.row();
+			table.add(btnSubmitRegister).width(150).height(30).align(Align.left).padBottom(5);
+			table.row();			
+			table.add(btnToggleLogin).width(150).height(30).align(Align.left);
+		}else{
+			table.add(btnSubmitLogin).width(150).height(30).align(Align.left).padBottom(5);
+			table.row();
+			table.add(btnToggleRegister).width(150).height(30).align(Align.left);			
+		}		
 
 		table.row();
 		table.add(lblError);
