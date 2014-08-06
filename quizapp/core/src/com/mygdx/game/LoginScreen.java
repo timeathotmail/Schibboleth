@@ -59,11 +59,13 @@ public class LoginScreen implements Screen {
 		stage = new Stage();
 		Gdx.input.setInputProcessor(stage);
 		skin = new Skin(Gdx.files.internal("uiskin.json"));
+		batch = new SpriteBatch();
 		
 		logo = new Texture(Gdx.files.internal("logo.png"));
 		logoRegion = new TextureRegion(logo, 0, 637, 463, 163);
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, 800, 480);
+		
 		
 		table = new Table();
 
