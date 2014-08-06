@@ -50,7 +50,8 @@ public class LoginScreen implements Screen {
 		
 		batch.setProjectionMatrix(camera.combined);
 		batch.begin();
-		batch.draw(logoRegion, 0, 637, 463/(163.0f/480.0f),	480);//or 800?
+		batch.draw(logoRegion, 0, 300, 463/(163.0f/280.0f), 163);//or 800?
+		//batch.draw(logo, 0, 0);
 		batch.end();
 	}
 
@@ -62,7 +63,7 @@ public class LoginScreen implements Screen {
 		batch = new SpriteBatch();
 		
 		logo = new Texture(Gdx.files.internal("logo.png"));
-		logoRegion = new TextureRegion(logo, 0, 637, 463, 163);
+		logoRegion = new TextureRegion(logo, 0, 0, 463, 163);
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, 800, 480);
 		
