@@ -116,7 +116,7 @@ public class Data implements Persistence {
 			dataSource.setUrl(DB_URL);
 			run = new QueryRunner(dataSource);
 			checkDatabaseStructure();
-			
+
 		} catch (ClassNotFoundException e) {
 			throw new SQLException("Couldn't register JDBC driver!", e);
 		}
@@ -181,6 +181,9 @@ public class Data implements Persistence {
 				+ "ON DELETE SET NULL)", getTable(Answer.class),
 				getTable(Round.class), getTable(Question.class)));
 
+		run.update(String
+				.format("CREATE TABLE IF NOT EXISTS BAD_WORDS(word VARCHAR(100))"));
+
 		/*
 		 * TODO in sqlite run.update("DROP TRIGGER IF EXISTS matchval");
 		 * run.update(String.format("CREATE TRIGGER matchval " +
@@ -221,6 +224,14 @@ public class Data implements Persistence {
 		if (username == null || username.isEmpty()) {
 			throw new IllegalArgumentException("empty username");
 		}
+
+		for (String badWord : getBadWords()) {
+			if (username.contains(badWord)) {
+				throw new IllegalArgumentException(
+						"username contains banned word " + badWord);
+			}
+		}
+
 		if (password == null || password.isEmpty()) {
 			throw new IllegalArgumentException("empty password");
 		}
@@ -243,6 +254,13 @@ public class Data implements Persistence {
 		}
 
 		if (username != null && !username.isEmpty()) {
+			for (String badWord : getBadWords()) {
+				if (username.contains(badWord)) {
+					throw new IllegalArgumentException(
+							"username contains banned word " + badWord);
+				}
+			}
+
 			user.setName(username);
 		}
 
@@ -288,6 +306,38 @@ public class Data implements Persistence {
 	@Override
 	public List<User> getUsers() throws SQLException {
 		return getMany(User.class);
+	}
+
+	@Override
+	public List<String> getBadWords() throws SQLException {
+		Connection conn = null;
+		Statement stmt = null;
+		ResultSet res = null;
+		List<String> words = new ArrayList<String>();
+
+		try {
+			conn = dataSource.getConnection();
+			stmt = conn.createStatement();
+			res = stmt.executeQuery("SELECT word FROM BAD_WORDS");
+
+			while (res.next()) {
+				words.add(res.getString(0));
+			}
+		} catch (SQLException e) {
+			throw e;
+		} finally {
+			if (conn != null) {
+				conn.close();
+			}
+			if (stmt != null) {
+				stmt.close();
+			}
+			if (res != null) {
+				res.close();
+			}
+		}
+
+		return words;
 	}
 
 	// =====================================================================
@@ -363,40 +413,42 @@ public class Data implements Persistence {
 			}
 		}
 	}
-	
+
 	@Override
 	public List<Match> getRunningMatches(User user) throws SQLException {
 		// get all user's matches
-		List<Match> matches = getMany(Match.class, new HavingConstraint(new EqualConstraint("user1",
-				user.getId())));
-		
-		matches.addAll(getMany(Match.class, new HavingConstraint(new EqualConstraint("user2",
-				user.getId()))));
-		
-		for(Match m : matches) {
+		List<Match> matches = getMany(Match.class, new HavingConstraint(
+				new EqualConstraint("user1", user.getId())));
+
+		matches.addAll(getMany(Match.class, new HavingConstraint(
+				new EqualConstraint("user2", user.getId()))));
+
+		for (Match m : matches) {
 			// set rounds
-			List<Round> rounds = getMany(Round.class, new HavingConstraint(new EqualConstraint("matchId",
-				m.getId())));
-			
-			for(Round r : rounds) {
+			List<Round> rounds = getMany(Round.class, new HavingConstraint(
+					new EqualConstraint("matchId", m.getId())));
+
+			for (Round r : rounds) {
 				// set answers
-				List<Answer> answers = getMany(Answer.class, new HavingConstraint(new EqualConstraint("roundId",
-						r.getId())));
-				
+				List<Answer> answers = getMany(
+						Answer.class,
+						new HavingConstraint(new EqualConstraint("roundId", r
+								.getId())));
+
 				r.setAnswers(answers);
 			}
-			
+
 			m.setRounds(rounds);
 		}
-		
+
 		// return only running matches
 		List<Match> running = new ArrayList<Match>();
-		for(Match m : matches) {
-			if(!m.isFinished()) {
+		for (Match m : matches) {
+			if (!m.isFinished()) {
 				running.add(m);
 			}
 		}
-		
+
 		return running;
 	}
 

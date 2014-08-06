@@ -114,4 +114,6 @@ public interface Persistence {
 	void saveMatch(Match match) throws SQLException;
 	
 	List<Match> getRunningMatches(User user) throws SQLException;
+	
+	List<String> getBadWords() throws SQLException;
 }
