@@ -134,13 +134,14 @@ public class ServerInbox implements Runnable {
 			}
 
 			if (user == null) {
-				Server.net.send(client, new AuthResponse(false, null));
+				Server.net.send(client, new AuthResponse(false, null, null));
 				return;
 			}
 
 			// send user the list of other users
 			Server.net.send(client,
-					new AuthResponse(true, Server.serverDir.getUsers())); // TODO send user's open matches
+					new AuthResponse(true, Server.serverDir.getUsers(),
+							Server.persistence.getRunningMatches(user)));
 			// inform other users about the new client
 			Server.net.send(Server.serverDir.getSockets(),
 					new UserListChangedResponse(true, user));
@@ -148,7 +149,7 @@ public class ServerInbox implements Runnable {
 			Server.serverDir.idClient(client, user, req.getRevision());
 
 		} catch (SQLException e) {
-			Server.net.send(client, new AuthResponse(false, null));
+			Server.net.send(client, new AuthResponse(false, null, null));
 		}
 	}
 
@@ -263,9 +264,12 @@ public class ServerInbox implements Runnable {
 			throws IllegalArgumentException, SocketWriteException {
 		Server.serverDir.saveAnswer(client, req.getIndex());
 
+		boolean answeredInTime = true; // TODO
+
 		Socket opponent = Server.serverDir.getOpponentSocket(client);
-		if(opponent != null) { // is online, sync
-			Server.net.send(opponent, new OpponentAnswerResponse(req.getIndex()));
+		if (opponent != null) { // is online, sync
+			Server.net.send(opponent, new OpponentAnswerResponse(
+					req.getIndex(), answeredInTime));
 		}
 	}
 

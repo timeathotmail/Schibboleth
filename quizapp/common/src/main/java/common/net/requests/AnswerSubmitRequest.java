@@ -20,6 +20,8 @@ public class AnswerSubmitRequest implements Serializable {
 	 */
 	private int index;
 	
+	private float timeNeeded;
+	
 	/**
 	 * Constructor for JSON deserialization.
 	 */
@@ -31,13 +33,18 @@ public class AnswerSubmitRequest implements Serializable {
 	 * Creates an instance.
 	 * @param index the answer's index
 	 */
-	public AnswerSubmitRequest(int index) {
+	public AnswerSubmitRequest(int index, float timeNeeded) {
 		this.index = index;
+		this.timeNeeded = timeNeeded;
 	}
 
 	// === getters ===
 	
 	public int getIndex() {
 		return index;
+	}
+	
+	public float getTimeNeeded() {
+		return timeNeeded;
 	}
 }

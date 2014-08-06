@@ -59,10 +59,11 @@ public class Client {
 	 *            desired username
 	 * @param password
 	 *            desired password
-	 * @throws SocketWriteException 
-	 * @throws IllegalArgumentException 
+	 * @throws SocketWriteException
+	 * @throws IllegalArgumentException
 	 */
-	public void register(String username, String password, int revision) throws IllegalArgumentException, SocketWriteException {
+	public void register(String username, String password, int revision)
+			throws IllegalArgumentException, SocketWriteException {
 		net.send(serverSocket, new UserAuthRequest(username, password, true,
 				revision));
 	}
@@ -74,7 +75,7 @@ public class Client {
 	 *            username
 	 * @param password
 	 *            password
-	 * @throws SocketWriteException 
+	 * @throws SocketWriteException
 	 */
 	public void login(String username, String password, int revision)
 			throws SocketWriteException {
@@ -87,8 +88,8 @@ public class Client {
 	 * 
 	 * @param username
 	 *            username
-	 * @throws SocketWriteException 
-	 * @throws IllegalArgumentException 
+	 * @throws SocketWriteException
+	 * @throws IllegalArgumentException
 	 */
 	public void logout() throws IllegalArgumentException, SocketWriteException {
 		net.send(serverSocket, new UserLogoutRequest());
@@ -103,28 +104,33 @@ public class Client {
 	 *            new password
 	 * @param pw2
 	 *            new password confirmation
-	 * @throws SocketWriteException 
-	 * @throws IllegalArgumentException 
+	 * @throws SocketWriteException
+	 * @throws IllegalArgumentException
 	 */
-	public void changeUserData(String username, String pw1, String pw2) throws IllegalArgumentException, SocketWriteException {
+	public void changeUserData(String username, String pw1, String pw2)
+			throws IllegalArgumentException, SocketWriteException {
 		net.send(serverSocket, new UserDataChangeRequest(username, pw1, pw2));
 	}
 
 	/**
 	 * Requests the server to search for a match.
-	 * @throws SocketWriteException 
-	 * @throws IllegalArgumentException 
+	 * 
+	 * @throws SocketWriteException
+	 * @throws IllegalArgumentException
 	 */
-	public void searchMatch() throws IllegalArgumentException, SocketWriteException {
+	public void searchMatch() throws IllegalArgumentException,
+			SocketWriteException {
 		net.send(serverSocket, new MatchSearchStartRequest());
 	}
 
 	/**
 	 * Requests the server to cancel the search for a match.
-	 * @throws SocketWriteException 
-	 * @throws IllegalArgumentException 
+	 * 
+	 * @throws SocketWriteException
+	 * @throws IllegalArgumentException
 	 */
-	public void cancelSearch() throws IllegalArgumentException, SocketWriteException {
+	public void cancelSearch() throws IllegalArgumentException,
+			SocketWriteException {
 		net.send(serverSocket, new MatchSearchCancelRequest());
 	}
 
@@ -133,10 +139,11 @@ public class Client {
 	 * 
 	 * @param username
 	 *            receiving user
-	 * @throws SocketWriteException 
-	 * @throws IllegalArgumentException 
+	 * @throws SocketWriteException
+	 * @throws IllegalArgumentException
 	 */
-	public void sendChallenge(String opponent) throws IllegalArgumentException, SocketWriteException {
+	public void sendChallenge(String opponent) throws IllegalArgumentException,
+			SocketWriteException {
 		net.send(serverSocket, new ChallengeSendRequest(opponent));
 	}
 
@@ -147,10 +154,11 @@ public class Client {
 	 *            receiving user
 	 * @param questionId
 	 *            the first question's id
-	 * @throws SocketWriteException 
-	 * @throws IllegalArgumentException 
+	 * @throws SocketWriteException
+	 * @throws IllegalArgumentException
 	 */
-	public void acceptChallenge(String opponent) throws IllegalArgumentException, SocketWriteException {
+	public void acceptChallenge(String opponent)
+			throws IllegalArgumentException, SocketWriteException {
 		net.send(serverSocket, new ChallengeAcceptRequest(opponent));
 	}
 
@@ -159,10 +167,11 @@ public class Client {
 	 * 
 	 * @param username
 	 *            denied user
-	 * @throws SocketWriteException 
-	 * @throws IllegalArgumentException 
+	 * @throws SocketWriteException
+	 * @throws IllegalArgumentException
 	 */
-	public void denyChallenge(String opponent) throws IllegalArgumentException, SocketWriteException {
+	public void denyChallenge(String opponent) throws IllegalArgumentException,
+			SocketWriteException {
 		net.send(serverSocket, new ChallengeDenyRequest(opponent));
 	}
 
@@ -171,20 +180,23 @@ public class Client {
 	 * 
 	 * @param answer
 	 *            answer's index
-	 * @throws SocketWriteException 
-	 * @throws IllegalArgumentException 
+	 * @throws SocketWriteException
+	 * @throws IllegalArgumentException
 	 */
-	public void submitAnswer(int answer, int nextQuestionId) throws IllegalArgumentException, SocketWriteException {
-		net.send(serverSocket, new AnswerSubmitRequest(answer));
+	public void submitAnswer(int answer, float timeNeeded)
+			throws IllegalArgumentException, SocketWriteException {
+		net.send(serverSocket, new AnswerSubmitRequest(answer, timeNeeded));
 	}
 
 	/**
 	 * Requests the server to notify the client's opponent that the client left
 	 * the game.
-	 * @throws SocketWriteException 
-	 * @throws IllegalArgumentException 
+	 * 
+	 * @throws SocketWriteException
+	 * @throws IllegalArgumentException
 	 */
-	public void leaveMatch() throws IllegalArgumentException, SocketWriteException {
+	public void leaveMatch() throws IllegalArgumentException,
+			SocketWriteException {
 		net.send(serverSocket, new MatchLeaveRequest());
 	}
 }

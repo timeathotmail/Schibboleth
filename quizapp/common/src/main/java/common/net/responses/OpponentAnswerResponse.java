@@ -20,6 +20,8 @@ public class OpponentAnswerResponse implements Serializable {
 	 */
 	private int index;
 	
+	private boolean inTime;
+	
 	/**
 	 * Constructor for JSON deserialization.
 	 */
@@ -31,13 +33,18 @@ public class OpponentAnswerResponse implements Serializable {
 	 * Creates an instance.
 	 * @param index the answer's index
 	 */
-	public OpponentAnswerResponse(int index) {
+	public OpponentAnswerResponse(int index, boolean inTime) {
 		this.index = index;
+		this.inTime = inTime;
 	}
 
 	// === getters ===
 	
 	public int getIndex() {
 		return index;
+	}
+	
+	public boolean answeredInTime() {
+		return inTime;
 	}
 }

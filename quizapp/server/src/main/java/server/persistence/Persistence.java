@@ -112,4 +112,6 @@ public interface Persistence {
 	 * @return true on success
 	 */
 	void saveMatch(Match match) throws SQLException;
+	
+	List<Match> getRunningMatches(User user) throws SQLException;
 }

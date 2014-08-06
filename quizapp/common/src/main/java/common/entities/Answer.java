@@ -1,6 +1,12 @@
 package common.entities;
 
-public class Answer {
+import java.io.Serializable;
+
+public class Answer implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1141900858713375550L;
 	private int id;
 	private int roundId;
 	private int questionId;

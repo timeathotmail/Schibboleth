@@ -1,10 +1,13 @@
 package common.net.responses;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
+import common.entities.Match;
 import common.entities.User;
 
 /**
@@ -27,7 +30,9 @@ public class AuthResponse implements Serializable {
 	/**
 	 * Collection of other currently online users.
 	 */
-	private Collection<User> users;
+	private List<User> users;
+	
+	private List<Match> runningMatches;
 
 	/**
 	 * Constructor for JSON deserialization.
@@ -41,9 +46,10 @@ public class AuthResponse implements Serializable {
 	 * @param success true if the he registration and/or login was successful
 	 * @param users collection of other currently online users
 	 */
-	public AuthResponse(boolean success, Collection<User> users) {
+	public AuthResponse(boolean success, Collection<User> users, List<Match> matches) {
 		this.success = success;
-		this.users = users;
+		this.users = new ArrayList<User>(users);
+		this.runningMatches = matches;
 	}
 	
 	// === getters ===
@@ -51,7 +57,11 @@ public class AuthResponse implements Serializable {
 		return success;
 	}
 
-	public Collection<User> getUsers() {
+	public List<User> getUsers() {
 		return users;
+	}
+
+	public List<Match> getRunningMatches() {
+		return runningMatches;
 	}
 }

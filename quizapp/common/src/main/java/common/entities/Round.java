@@ -1,8 +1,13 @@
 package common.entities;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class Round {
+public class Round implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1914320813276870786L;
 	private int id;
 	private int matchId;
 	private List<Answer> answers;

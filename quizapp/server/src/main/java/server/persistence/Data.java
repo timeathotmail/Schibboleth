@@ -364,6 +364,7 @@ public class Data implements Persistence {
 		}
 	}
 	
+	@Override
 	public List<Match> getRunningMatches(User user) throws SQLException {
 		// get all user's matches
 		List<Match> matches = getMany(Match.class, new HavingConstraint(new EqualConstraint("user1",
