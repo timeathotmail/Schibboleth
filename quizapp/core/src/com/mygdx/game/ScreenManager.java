@@ -6,6 +6,7 @@ package com.mygdx.game;
 import javax.management.RuntimeErrorException;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.utils.IntMap;
@@ -49,7 +50,7 @@ public final class ScreenManager{
 	 * Falls Game Klasse noch nicht inizialisiert ist, wird eine {@link RuntimeException} ausgeloest
 	 * @param select Enum with Screens 
 	 */
-	public void show(ScreenSelector select){
+	public void show(final ScreenSelector select){
 		if(select == null){
 			throw new IllegalArgumentException("ScreenSelector is null");
 		}
@@ -59,7 +60,13 @@ public final class ScreenManager{
 		if (!screens.containsKey(select.ordinal())) {
             screens.put(select.ordinal(), select.getScreenInstance());
         }
-        game.setScreen(screens.get(select.ordinal()));
+		
+		Gdx.app.postRunnable(new Runnable() {
+	         @Override
+	         public void run() {
+	        	 game.setScreen(screens.get(select.ordinal()));
+	         }
+	      });
 	}
 	
 	/* initializes a game */

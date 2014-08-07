@@ -87,14 +87,18 @@ public class ServerDirectory implements Runnable {
 			thread.interrupt();
 			socketToThread.remove(client);
 			User user = socketToUser.get(client);
-			socketToUser.remove(client);
-			userToSocket.remove(user);
-			nameToUser.remove(user.getName());
 
-			// TODO save matches & remove from maps if opponent is offline as
-			// well
-			// persistence.saveMatch(match);
-			// removeMatch(match);
+			if (user != null) {
+				socketToUser.remove(client);
+				userToSocket.remove(user);
+				nameToUser.remove(user.getName());
+
+				// TODO save matches & remove from maps if opponent is offline
+				// as
+				// well
+				// persistence.saveMatch(match);
+				// removeMatch(match);
+			}
 		}
 	}
 

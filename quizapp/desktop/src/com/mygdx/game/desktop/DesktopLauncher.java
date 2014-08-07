@@ -9,6 +9,6 @@ public class DesktopLauncher {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.height = 800;
 		config.width = 480;
-		new LwjglApplication(new QuizGame(), config);
+		new LwjglApplication(QuizGame.getInstance(), config);
 	}
 }

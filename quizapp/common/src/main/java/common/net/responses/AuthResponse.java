@@ -30,7 +30,7 @@ public class AuthResponse implements Serializable {
 	/**
 	 * Collection of other currently online users.
 	 */
-	private List<User> users;
+	private List<User> users = new ArrayList<User>();
 	
 	private List<Match> runningMatches;
 
@@ -48,8 +48,11 @@ public class AuthResponse implements Serializable {
 	 */
 	public AuthResponse(boolean success, Collection<User> users, List<Match> matches) {
 		this.success = success;
-		this.users = new ArrayList<User>(users);
 		this.runningMatches = matches;
+		
+		for(User user : users) {
+			this.users.add(user);
+		}
 	}
 	
 	// === getters ===
