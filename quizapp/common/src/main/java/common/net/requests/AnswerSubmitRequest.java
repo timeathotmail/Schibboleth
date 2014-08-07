@@ -15,6 +15,9 @@ public class AnswerSubmitRequest implements Serializable {
 	 * Version number for serialization.
 	 */
 	private static final long serialVersionUID = -6889887916985945155L;
+	
+	private int matchId;
+	
 	/**
 	 * The answer's index.
 	 */
@@ -33,12 +36,17 @@ public class AnswerSubmitRequest implements Serializable {
 	 * Creates an instance.
 	 * @param index the answer's index
 	 */
-	public AnswerSubmitRequest(int index, float timeNeeded) {
+	public AnswerSubmitRequest(int matchId, int index, float timeNeeded) {
+		this.matchId = matchId;
 		this.index = index;
 		this.timeNeeded = timeNeeded;
 	}
 
 	// === getters ===
+	
+	public int getMatchId() {
+		return matchId;
+	}
 	
 	public int getIndex() {
 		return index;

@@ -27,10 +27,6 @@ public class UserAuthRequest implements Serializable {
 	 * True if the user wants to register.
 	 */
 	private boolean register;
-	/**
-	 * User's app's revision.
-	 */
-	private int revision;
 
 	/**
 	 * Constructor for JSON deserialization.
@@ -49,12 +45,10 @@ public class UserAuthRequest implements Serializable {
 	 * @param register
 	 *            true if the user wants to register
 	 */
-	public UserAuthRequest(String username, String password, boolean register,
-			int revision) {
+	public UserAuthRequest(String username, String password, boolean register) {
 		this.username = username;
 		this.password = password;
 		this.register = register;
-		this.revision = revision;
 	}
 
 	// === getters ===
@@ -68,9 +62,5 @@ public class UserAuthRequest implements Serializable {
 
 	public boolean getRegister() {
 		return register;
-	}
-
-	public int getRevision() {
-		return revision;
 	}
 }

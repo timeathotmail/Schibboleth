@@ -64,8 +64,7 @@ public class Client {
 	 */
 	public void register(String username, String password, int revision)
 			throws IllegalArgumentException, SocketWriteException {
-		net.send(serverSocket, new UserAuthRequest(username, password, true,
-				revision));
+		net.send(serverSocket, new UserAuthRequest(username, password, true));
 	}
 
 	/**
@@ -79,8 +78,7 @@ public class Client {
 	 */
 	public void login(String username, String password, int revision)
 			throws SocketWriteException {
-		net.send(serverSocket, new UserAuthRequest(username, password, false,
-				revision));
+		net.send(serverSocket, new UserAuthRequest(username, password, false));
 	}
 
 	/**
@@ -183,9 +181,9 @@ public class Client {
 	 * @throws SocketWriteException
 	 * @throws IllegalArgumentException
 	 */
-	public void submitAnswer(int answer, float timeNeeded)
+	public void submitAnswer(int matchId, int answer, float timeNeeded)
 			throws IllegalArgumentException, SocketWriteException {
-		net.send(serverSocket, new AnswerSubmitRequest(answer, timeNeeded));
+		net.send(serverSocket, new AnswerSubmitRequest(matchId, answer, timeNeeded));
 	}
 
 	/**

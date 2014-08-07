@@ -25,13 +25,11 @@ import common.net.NetUtils;
  */
 public class ServerDirectory implements Runnable {
 	private static final Logger logger = Logger.getLogger("ServerDirectory");
-	private final Persistence persistence;
 	private final ServerSocket socket;
 
 	private final Map<Socket, Thread> socketToThread = new HashMap<Socket, Thread>();
 	private final Map<Socket, User> socketToUser = new HashMap<Socket, User>();
 	private final Map<User, Socket> userToSocket = new HashMap<User, Socket>();
-	private final Map<Socket, Integer> socketToRev = new HashMap<Socket, Integer>();
 	private final Map<String, User> nameToUser = new HashMap<String, User>();
 
 	private final List<Match> userMatches = new ArrayList<Match>();
@@ -42,10 +40,8 @@ public class ServerDirectory implements Runnable {
 	 * @param socket
 	 *            server's socket
 	 */
-	public ServerDirectory(ServerSocket socket, Persistence persistence,
-			NetUtils net) {
+	public ServerDirectory(ServerSocket socket) {
 		this.socket = socket;
-		this.persistence = persistence;
 	}
 
 	/**
@@ -69,20 +65,19 @@ public class ServerDirectory implements Runnable {
 		}
 	}
 
-	public synchronized List<Match> idClient(Socket client, User user,
-			int revision) throws SQLException {
+	public synchronized List<Match> idClient(Socket client, User user)
+			throws SQLException, DirectoryException {
 		if (socketToThread.containsKey(client)) {
 			socketToUser.put(client, user);
 			userToSocket.put(user, client);
-			socketToRev.put(client, revision);
 			nameToUser.put(user.getName(), user);
 
-			List<Match> matches = persistence.getRunningMatches(user);
+			List<Match> matches = Server.persistence.getRunningMatches(user);
 			userMatches.addAll(matches);
 			return matches;
 		}
 
-		return null; // TODO
+		throw new DirectoryException("cannot id client");
 	}
 
 	public synchronized void removeClient(Socket client) {
@@ -91,42 +86,63 @@ public class ServerDirectory implements Runnable {
 		if (thread != null) {
 			thread.interrupt();
 			socketToThread.remove(client);
-			socketToRev.remove(client);
 			User user = socketToUser.get(client);
 			socketToUser.remove(client);
 			userToSocket.remove(user);
 			nameToUser.remove(user.getName());
-			// TODO save matches & remove from maps
+
+			// TODO save matches & remove from maps if opponent is offline as
+			// well
 			// persistence.saveMatch(match);
 			// removeMatch(match);
 		}
 	}
 
 	public synchronized void addMatch(Match match) {
-		// TODO
+		userMatches.add(match);
 	}
 
-	public synchronized void saveAnswer(Socket client, int matchId, int answerIndex) {
+	public synchronized void saveAnswer(Socket client, int matchId,
+			int answerIndex) throws DirectoryException {
 		User user = socketToUser.get(client);
 		if (user == null) {
-			// TODO
-			return;
+			throw new DirectoryException(
+					"cannot save answer: no user mapped to socket");
 		}
 
+		Match match = getMatch(matchId);
+
+		if (match == null) {
+			throw new DirectoryException(
+					"cannot save answer: no match with id " + matchId);
+		}
+
+		match.addAnswer(user, answerIndex);
+	}
+
+	private Match getMatch(int id) {
 		Match match = null;
-		for(Match m : userMatches) {
-			if(m.getId() == matchId) {
+		for (Match m : userMatches) {
+			if (m.getId() == id) {
 				match = m;
 				break;
 			}
 		}
-		
-		if(match == null) {
-			// TODO
-			return;
+
+		return match;
+	}
+
+	public Socket getOpponentSocket(Socket client, int matchId) {
+		Match match = getMatch(matchId);
+
+		if (match == null) {
+			return null;
 		}
 
-		match.addAnswer(user, answerIndex);
+		User user = getUser(client);
+		User opponent = match.getUser1();
+		return opponent != user ? userToSocket.get(opponent) : userToSocket
+				.get(match.getUser2());
 	}
 
 	// === getters ===
@@ -145,10 +161,6 @@ public class ServerDirectory implements Runnable {
 
 	public synchronized User getUser(String username) {
 		return nameToUser.get(username);
-	}
-
-	public synchronized int getRevision(Socket client) {
-		return socketToRev.get(client);
 	}
 
 	public synchronized Socket getSocket(User user) {

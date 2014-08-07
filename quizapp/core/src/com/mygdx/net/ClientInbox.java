@@ -24,7 +24,7 @@ public class ClientInbox implements Runnable {
 	private final IGame game;
 
 	private final NetUtils net;
-	
+
 	/**
 	 * Creates an instance.
 	 * 
@@ -49,8 +49,8 @@ public class ClientInbox implements Runnable {
 				String json;
 				try {
 					json = net.read(serverSocket);
-				} catch(SocketReadException e) {
-					if(!e.isSocketClosed()) {
+				} catch (SocketReadException e) {
+					if (!e.isSocketClosed()) {
 						throw e;
 					} else {
 						// TODO missed message
@@ -60,8 +60,7 @@ public class ClientInbox implements Runnable {
 
 				// Matching...
 				{ // ============================================================
-					AuthResponse obj = net.fromJson(json,
-							AuthResponse.class);
+					AuthResponse obj = net.fromJson(json, AuthResponse.class);
 					if (obj != null) {
 						game.onLogin(obj.isSuccess(), obj.getUsers());
 						continue;
@@ -97,8 +96,7 @@ public class ClientInbox implements Runnable {
 				}
 
 				{ // ============================================================
-					ErrorResponse obj = net.fromJson(json,
-							ErrorResponse.class);
+					ErrorResponse obj = net.fromJson(json, ErrorResponse.class);
 					if (obj != null) {
 						game.onError(obj.getMessage());
 						continue;
@@ -127,7 +125,8 @@ public class ClientInbox implements Runnable {
 					OpponentAnswerResponse obj = net.fromJson(json,
 							OpponentAnswerResponse.class);
 					if (obj != null) {
-						game.onOpponentAnswered(obj.getIndex());
+						game.onOpponentAnswered(obj.getMatchId(),
+								obj.getIndex(), obj.answeredInTime());
 						continue;
 					}
 				}

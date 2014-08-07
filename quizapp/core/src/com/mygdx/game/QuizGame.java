@@ -520,10 +520,10 @@ public class QuizGame extends Game implements IGame{
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.mygdx.game.IGame#onOpponentAnswered(int)
+	 * @see com.mygdx.game.IGame#onOpponentAnswered(int, int, boolean)
 	 */
 	@Override
-	public void onOpponentAnswered(int opponentAnswer) {
+	public void onOpponentAnswered(int matchId, int opponentAnswer, boolean inTime) {
 		// TODO Auto-generated method stub
 
 	}

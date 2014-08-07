@@ -26,7 +26,7 @@ public class Server {
 			net = NetUtils.getInstance();
 			persistence = Data.getInstance();
 			serverDir = new ServerDirectory(new ServerSocket(Config.get()
-					.getInt("PORT")), persistence, net);
+					.getInt("PORT")));
 		} catch (SQLException e) {
 			throw new RuntimeException("Database error!", e);
 		} catch (ConfigurationException e) {

@@ -188,7 +188,7 @@ public interface IGame {
 	 * Display correct answer and the one the opponent selected.
 	 * @param opponentAnswer opponent's answer
 	 */
-	void onOpponentAnswered(int opponentAnswer);
+	void onOpponentAnswered(int matchId, int opponentAnswer, boolean inTime);
 	
 	/**
 	 * Called when a request couldn't be processed on the server.

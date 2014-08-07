@@ -44,10 +44,6 @@ public class ServerInbox implements Runnable {
 	 * 
 	 */
 	private static User waitingUser;
-	/**
-	 * 
-	 */
-	private static int waitingRevision;
 
 	/**
 	 * Process a MatchSearchStartRequest.
@@ -61,26 +57,24 @@ public class ServerInbox implements Runnable {
 			Socket client) throws IllegalArgumentException,
 			SocketWriteException {
 		User user = Server.serverDir.getUser(client);
-		int revision = Server.serverDir.getRevision(client);
 
 		if (waitingUser == null) {
 			// wait
 			waitingUser = user;
 			waitingClient = client;
-			waitingRevision = revision;
 		} else {
 			// assert that both clients have the questions locally available
 			List<Question> questions;
 			try {
-				questions = Server.persistence.getQuestions(Math.max(
-						waitingRevision, revision));
+				questions = Server.persistence.getQuestions();
 
 				Match match = new Match(user, waitingUser, questions, 0);
 
 				// connect
 				Server.net.send(waitingClient, new MatchCreatedResponse(match));
 				Server.net.send(client, new MatchCreatedResponse(match));
-				//Server.serverDir.startMatch(client, waitingClient, questions);
+				// Server.serverDir.startMatch(client, waitingClient,
+				// questions);
 				// TODO serverDir.addMatch
 
 				// clear spot
@@ -145,7 +139,12 @@ public class ServerInbox implements Runnable {
 			Server.net.send(Server.serverDir.getSockets(),
 					new UserListChangedResponse(true, user));
 			// connect username and socket in the server directory
-			Server.serverDir.idClient(client, user, req.getRevision());
+			try {
+				Server.serverDir.idClient(client, user);
+			} catch (DirectoryException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 
 		} catch (SQLException e) {
 			Server.net.send(client, new AuthResponse(false, null, null));
@@ -227,21 +226,26 @@ public class ServerInbox implements Runnable {
 	 */
 	private void process(ChallengeAcceptRequest req)
 			throws IllegalArgumentException, SocketWriteException {
-		Socket opponent = Server.serverDir.getOpponentSocket(client);
+		// Socket opponent = Server.serverDir.getOpponentSocket(client);
 
 		List<Question> questions;
 		try {
-			questions = Server.persistence.getQuestions(Math.max(
-					Server.serverDir.getRevision(client),
-					Server.serverDir.getRevision(opponent)));
+			questions = Server.persistence.getQuestions();
 
 			Match match = new Match(Server.serverDir.getUser(client),
 					Server.serverDir.getUser(req.getOpponent()), questions, 0);
 
-			Server.net.send(opponent, new MatchCreatedResponse(match));
+			// TODO add match to persistence so it has an id
+
 			Server.net.send(client, new MatchCreatedResponse(match));
 
-			//Server.serverDir.startMatch(client, opponent, questions);
+			Socket opponent = Server.serverDir.getOpponentSocket(client,
+					match.getId());
+			if (opponent != null) { // opponent is online
+				Server.net.send(opponent, new MatchCreatedResponse(match));
+			}
+
+			// Server.serverDir.startMatch(client, opponent, questions);
 			// TODO serverDir.addMatch
 		} catch (SQLException e) {
 			Server.net.send(client, new ErrorResponse(
@@ -258,14 +262,22 @@ public class ServerInbox implements Runnable {
 	 */
 	private void process(AnswerSubmitRequest req)
 			throws IllegalArgumentException, SocketWriteException {
-		Server.serverDir.saveAnswer(client, req.getIndex());
+		boolean answeredInTime = true; // TODO dont save answer in case not in
+										// time
+		try {
+			Server.serverDir.saveAnswer(client, req.getMatchId(),
+					req.getIndex());
+		} catch (DirectoryException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
-		boolean answeredInTime = true; // TODO
-
-		Socket opponent = Server.serverDir.getOpponentSocket(client);
+		Socket opponent = Server.serverDir.getOpponentSocket(client,
+				req.getMatchId());
 		if (opponent != null) { // is online, sync
-			Server.net.send(opponent, new OpponentAnswerResponse(
-					req.getIndex(), answeredInTime));
+			Server.net.send(opponent,
+					new OpponentAnswerResponse(req.getMatchId(),
+							req.getIndex(), answeredInTime));
 		}
 	}
 
