@@ -129,16 +129,6 @@ public class QuizGame extends Game implements IGame{
 
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.mygdx.game.IGame#displayUserList()
-	 */
-	@Override
-	public void displayUserList() {
-		ScreenManager.getInstance().show(ScreenSelector.USERLIST);
-
-	}
 
 	/*
 	 * (non-Javadoc)

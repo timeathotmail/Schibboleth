@@ -104,6 +104,8 @@ public class UserListScreen implements Screen {
 		stage.addActor(table);
 		//TODO add scroll pane
 		//TODO add users
+		//TODO dialog mit accept/deny challenge. if accept setScreen(Game)
+		//TODO GameScreen
 
 	}
 	
@@ -114,6 +116,7 @@ public class UserListScreen implements Screen {
 		table.row();
 		
 		//TODO add and display users
+		//TODO scroll pane , accept deny challenge
 	}
 
 	/**

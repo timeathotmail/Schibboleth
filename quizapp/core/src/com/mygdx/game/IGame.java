@@ -43,12 +43,8 @@ public interface IGame {
 	 * Cancel the search for a match.
 	 * Enter main menu.
 	 */
-	void cancelSearch();
-	
-	/**
-	 * Display the user list.
-	 */
-	void displayUserList();
+	void cancelSearch();	
+
 	
 	/**
 	 * Send a challenge to another user.

@@ -148,7 +148,7 @@ public class MainScreen implements Screen {
 	//}
 	
 	/**
-	 * 
+	 * Displays an error message
 	 * @param msg
 	 */
 	public void showErrorMsg(String msg) {
