@@ -26,9 +26,9 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
  * @author halfelv
  *
  */
-public class OptionsScreen implements Screen {
+class OptionsScreen implements Screen {
 
-	private final QuizGame game;
+	//private final QuizGame game;
 	private Stage stage;
 	private Skin skin;
 	private SpriteBatch batch;
@@ -45,12 +45,15 @@ public class OptionsScreen implements Screen {
 	//to be remover later
 	private LoginScreen login;
 
-	public OptionsScreen(QuizGame pGame)
+	
+	/*public OptionsScreen(QuizGame game)
 	{
-		if(pGame == null){
-			throw new IllegalArgumentException("Parameter is null");
-		}
-		this.game = pGame;
+		this.game = game;
+	}*/
+	
+	OptionsScreen()
+	{
+		
 	}
 
 	/* (non-Javadoc)
@@ -116,8 +119,11 @@ public class OptionsScreen implements Screen {
 		
 		btnChange.addListener(new ClickListener() {
 			public void clicked(InputEvent event, float x, float y) {
-				game.changeUserData(txtUsername.getText(), txtPassword.getText(), txtConfirmation.getText());
-				game.setScreen(login);
+				ScreenManager.getInstance().getGame().changeUserData(txtUsername.getText(), 
+												txtPassword.getText(), txtConfirmation.getText());
+				ScreenManager.getInstance().show(ScreenSelector.MAIN_MENU);
+				//game.changeUserData(txtUsername.getText(), txtPassword.getText(), txtConfirmation.getText());
+				//game.setScreen(login);
 				//TODO login durch MainScreen ersetzen
 			}
 		});
@@ -145,6 +151,11 @@ public class OptionsScreen implements Screen {
 		
 	}
 
+	
+	public void showErrorMessage(String msg){
+		lblError.setText(msg);
+	}
+	
 	/* (non-Javadoc)
 	 * @see com.badlogic.gdx.Screen#hide()
 	 */

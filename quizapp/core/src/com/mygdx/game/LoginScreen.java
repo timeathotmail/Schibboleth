@@ -24,7 +24,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 public class LoginScreen implements Screen {
 
-	private final QuizGame game;
+	//private final QuizGame game;
 	private Stage stage;
 	private Skin skin;
 	private SpriteBatch batch;
@@ -44,8 +44,13 @@ public class LoginScreen implements Screen {
 	
 	
 	
-	public LoginScreen(QuizGame game) {
-		this.game = game;
+	LoginScreen(QuizGame game) {
+	//	this.game = game;
+	}
+	
+	LoginScreen()
+	{
+		
 	}
 
 	@Override
@@ -90,19 +95,20 @@ public class LoginScreen implements Screen {
 		txtConfirmation.setPasswordMode(true);
 		txtConfirmation.setPasswordCharacter('*');
 		
-		//options		
-		btnOptions = new TextButton("Options", skin);
-
+		
 		TextFieldListener enterListener = new TextFieldListener() {
 			@Override
 			public void keyTyped(TextField textField, char key) {
 				if (key == '\r' || key == '\n') {
 					if (btnToggleLogin.isChecked()) {
-						game.login(txtUsername.getText(), txtPassword.getText());
+						ScreenManager.getInstance().getGame().login(txtUsername.getText(), txtPassword.getText());
+						//game.login(txtUsername.getText(), txtPassword.getText());
 					} else {
-						game.register(txtUsername.getText(),
+						ScreenManager.getInstance().getGame().register(txtUsername.getText(),
+											txtPassword.getText(), txtConfirmation.getText());
+						/*game.register(txtUsername.getText(),
 								txtPassword.getText(),
-								txtConfirmation.getText());
+								txtConfirmation.getText());*/
 					}
 				}
 			}
@@ -121,6 +127,8 @@ public class LoginScreen implements Screen {
 		btnToggleLogin.setChecked(true);
 		btnSubmitLogin = new TextButton("Submit", skin);
 		btnSubmitRegister = new TextButton("Submit", skin);
+		
+		btnOptions = new TextButton("Options", skin);
 
 		btnToggleLogin.addListener(new EventListener() {
 			@Override
@@ -135,19 +143,22 @@ public class LoginScreen implements Screen {
 
 		btnSubmitLogin.addListener(new ClickListener() {
 			public void clicked(InputEvent event, float x, float y) {
-				game.login(txtUsername.getText(), txtPassword.getText());
+				ScreenManager.getInstance().getGame().login(txtUsername.getText(), txtPassword.getText());
+				//game.login(txtUsername.getText(), txtPassword.getText());
 			}
 		});
 		
 		btnSubmitRegister.addListener(new ClickListener() {
 			public void clicked(InputEvent event, float x, float y) {
-				game.register(txtUsername.getText(), txtPassword.getText(), txtConfirmation.getText());
+				ScreenManager.getInstance().getGame().register(txtUsername.getText(), 
+													txtPassword.getText(), txtConfirmation.getText());
+				//game.register(txtUsername.getText(), txtPassword.getText(), txtConfirmation.getText());
 			}
 		});
 		
 		btnOptions.addListener(new ClickListener(){
 			public void clicked(InputEvent event, float x, float y){
-				game.setScreen(options);
+				ScreenManager.getInstance().show(ScreenSelector.OPTIONS);
 			}
 		});
 
@@ -190,18 +201,21 @@ public class LoginScreen implements Screen {
 				Gdx.graphics.getHeight() / 2);
 
 		stage.addActor(table);
-	}
+	}	
 
 	public void showErrorMsg(String msg) {
 		lblError.setText(msg);
 	}
-
+	
 	@Override
 	public void resize(int width, int height) {
 		stage.getViewport().update(width, height, true);
 		// TODO Auto-generated method stub
 	}
 
+	/**
+	 * a reason why optionsScreen cant be called?
+	 */
 	@Override
 	public void hide() {
 		Gdx.input.setInputProcessor(null);

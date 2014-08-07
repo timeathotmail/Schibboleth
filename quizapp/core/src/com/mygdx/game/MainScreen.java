@@ -10,13 +10,17 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.fasterxml.jackson.core.util.TextBuffer;
 
 import common.entities.User;
 
 public class MainScreen implements Screen {
 
-	private QuizGame game;
+	//private QuizGame game;
 	private Stage stage;
 	private Skin skin;
 	private SpriteBatch batch;
@@ -24,11 +28,20 @@ public class MainScreen implements Screen {
 	private TextureRegion logoRegion;
 	private OrthographicCamera camera;
 	
-	private final Collection<User> users;
+	//private final Collection<User> users;
+	
+	private Table table;
+	private TextButton btnPlay, btnOptions, btnLogout;
+	private Label lblWelcome;
+	private Label lblError;
 
-	public MainScreen(QuizGame game, Collection<User> users) {
+	/*public MainScreen(QuizGame game, Collection<User> users) {
 		this.game = game;
 		this.users = users;
+	}*/
+
+	MainScreen() {
+		// TODO Auto-generated constructor stub
 	}
 
 	@Override
@@ -48,6 +61,7 @@ public class MainScreen implements Screen {
 
 	@Override
 	public void resize(int width, int height) {
+		stage.getViewport().update(width, height, true);
 		// TODO Auto-generated method stub
 	}
 
@@ -69,6 +83,15 @@ public class MainScreen implements Screen {
 	      });
 		
 		// TODO
+	}
+	
+	public void showErrorMessage(String msg){
+		lblError.setText(msg);
+	}
+	
+	
+	private void setTable(){
+		
 	}
 
 	@Override

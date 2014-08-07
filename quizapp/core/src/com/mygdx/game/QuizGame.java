@@ -33,19 +33,16 @@ public class QuizGame extends Game implements IGame{
 	private Client client;
 	private int revision;
 
-	private LoginScreen loginScreen;
+	/*private LoginScreen loginScreen;
 	private MainScreen mainScreen;
-	private OptionsScreen options;
+	private OptionsScreen options;*/
 	
-	private OnlineScreen onlineScreen;
+	
 	
 	/** Gruppe fuer No Connection found disclaimer*/
 	private Texture disclaimer;
 	private Texture btnDisclaimerTexture;
 	private TextButton btnDisclaimer;
-	
-	//saves banned expressions to compare with login
-	private List<String> bannedExpressions;	
 	
 	public static int SCREEN_WIDTH = 480;
 	public static int SCREEN_HEIGHT = 800;
@@ -53,10 +50,9 @@ public class QuizGame extends Game implements IGame{
 	/**
 	 * 
 	 */
-	//TODO banned expressions list soll aufm Server gespeichert werden und daraus geholt.
+	//TODO banned expressions list von Server geholt.
 	public QuizGame() {
-		Logger logger = Logger.getLogger("QuizGame");
-		bannedExpressions = new ArrayList<String>();
+		Logger logger = Logger.getLogger("QuizGame");		
 		try {
 			Config cfg = Config.get();
 			revision = cfg.getInt("revision");
@@ -78,12 +74,14 @@ public class QuizGame extends Game implements IGame{
 		SCREEN_WIDTH = Gdx.graphics.getWidth();
 		SCREEN_HEIGHT = Gdx.graphics.getHeight();
 		
+		ScreenManager.getInstance().initialize(this);
+		ScreenManager.getInstance().show(ScreenSelector.LOGIN);
 		//if (client == null) {
 		//	playOffline();
 			//loginScreen.showErrorMsg("Check your Internet connection");
 		//} else if (!autoLogin()) {
-			loginScreen = new LoginScreen(this);
-			setScreen(loginScreen);
+			/*loginScreen = new LoginScreen(this);
+			setScreen(loginScreen);*/
 		//}		
 	}
 
@@ -111,9 +109,11 @@ public class QuizGame extends Game implements IGame{
 	@Override
 	public void login(String username, String password) {
 		if (username.isEmpty()) {
-			loginScreen.showErrorMsg("enter a username");
+			ScreenManager.getInstance().showErrorMsg("enter a username");
+			//loginScreen.showErrorMsg("enter a username");
 		} else if (password.isEmpty()) {
-			loginScreen.showErrorMsg("enter a password");
+			ScreenManager.getInstance().showErrorMsg("enter a password");
+			//loginScreen.showErrorMsg("enter a password");
 		} else {
 			try {
 				client.login(username, password, revision);
@@ -133,7 +133,8 @@ public class QuizGame extends Game implements IGame{
 	public void register(String username, String password, String confirmation) {
 		
 		if(!password.equals(confirmation)){
-			loginScreen.showErrorMsg("passwords do not match");
+			ScreenManager.getInstance().showErrorMsg("passwords do not match");
+			//loginScreen.showErrorMsg("passwords do not match");
 		}
 		if(checkUsername(username) && checkPassword(password)){
 			try {
@@ -145,24 +146,6 @@ public class QuizGame extends Game implements IGame{
 			}
 			
 		}
-		
-		/*if (!checkUsername(username)) {
-			loginScreen.showErrorMsg("your username is incorrect");
-		} else if (!checkPassword(password)) {
-			loginScreen.showErrorMsg("your password is incorrect");
-		} else if (!password.equals(confirmation)) {
-			loginScreen.showErrorMsg("passwords do not match");
-		} else {
-			try {
-				client.register(username, password, revision);
-			} catch (IllegalArgumentException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (SocketWriteException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}*/
 	}
 	
 	/**
@@ -175,12 +158,14 @@ public class QuizGame extends Game implements IGame{
 	private boolean checkUsername(String username){
 		//is null or ""
 		if(username == null || username.isEmpty()){
-			loginScreen.showErrorMsg("Username is empty");
+			ScreenManager.getInstance().showErrorMsg("Username is empty");
+			//loginScreen.showErrorMsg("Username is empty");
 			return false;
 		}
 		//check length, min. 6 chars
 		if(username.length() < 6){
-			loginScreen.showErrorMsg("Username is too short");
+			ScreenManager.getInstance().showErrorMsg("Username is too short");
+			//loginScreen.showErrorMsg("Username is too short");
 			return false;
 		}
 		//is illegal, f.example swearword
@@ -194,7 +179,8 @@ public class QuizGame extends Game implements IGame{
 		}*/
 		//is not a numeric or letter
 		if(!username.matches("[A-Za-z_0-9]*")){
-			loginScreen.showErrorMsg("Username contains illegal characters");
+			ScreenManager.getInstance().showErrorMsg("Username contains illegal characters");			
+			//loginScreen.showErrorMsg("Username contains illegal characters");
 			return false;
 		}
 		return true;
@@ -211,22 +197,26 @@ public class QuizGame extends Game implements IGame{
 	private boolean checkPassword(String password){
 		// empty
 		if(password.isEmpty() || password == ""){
-			loginScreen.showErrorMsg("Password is empty");	
+			ScreenManager.getInstance().showErrorMsg("Password is empty");
+			//loginScreen.showErrorMsg("Password is empty");	
 			return false;
 		}
 		//contains less then 6 chars
 		if(password.length() < 6){
-			loginScreen.showErrorMsg("Passwort is too short");
+			ScreenManager.getInstance().showErrorMsg("Passwort is too short");
+			//loginScreen.showErrorMsg("Passwort is too short");
 			return false;
 		}
 		// not matches regular expression a-z A-Z _ and 0-9
 		if(!password.matches("[A-Za-z0-9]*")){
-			loginScreen.showErrorMsg("Password contains illegal characters");
+			ScreenManager.getInstance().showErrorMsg("Password contains illegal characters");
+			//loginScreen.showErrorMsg("Password contains illegal characters");
 			return false;
 		}
 		//contains less then two digits and less then one upper case or contains special chars
 		if(!(password.matches(".*[a-z].*") || password.matches(".*[A-Z].*") || password.matches(".*\\d.*\\d.*"))){
-			loginScreen.showErrorMsg("Password contains illegal characters");
+			ScreenManager.getInstance().showErrorMsg("Password contains illegal characters");
+			//loginScreen.showErrorMsg("Password contains illegal characters");
 			return false;
 		}
 		return true;
@@ -259,11 +249,13 @@ public class QuizGame extends Game implements IGame{
 	@Override
 	public void changeUserData(String username, String pw1, String pw2) {
 		if (!checkUsername(username)) {
-			loginScreen.showErrorMsg("your username is incorrect");
+			ScreenManager.getInstance().showErrorMsg("your username is incorrect");
 		} else if (!checkPassword(pw1)) {
-			loginScreen.showErrorMsg("your password is incorrect");
+			ScreenManager.getInstance().showErrorMsg("your password is incorrect");
+			//loginScreen.showErrorMsg("your password is incorrect");
 		} else if (!pw1.equals(pw2)) {
-			loginScreen.showErrorMsg("passwords do not match");
+			ScreenManager.getInstance().showErrorMsg("passwords do not match");
+			//loginScreen.showErrorMsg("passwords do not match");
 		} else {
 			try {
 				client.changeUserData(username, pw1, pw2);
@@ -315,7 +307,7 @@ public class QuizGame extends Game implements IGame{
 	 */
 	@Override
 	public void displayUserList() {
-		// TODO Auto-generated method stub
+		ScreenManager.getInstance().show(ScreenSelector.USERLIST);
 
 	}
 
@@ -370,8 +362,7 @@ public class QuizGame extends Game implements IGame{
 	 */
 	@Override
 	public void displaySettings() {
-		options = new OptionsScreen(this);
-		setScreen(options);
+		ScreenManager.getInstance().show(ScreenSelector.OPTIONS);
 
 	}
 
@@ -438,11 +429,9 @@ public class QuizGame extends Game implements IGame{
 	@Override
 	public void onLogin(boolean success, Collection<User> users) {
 		if (success) {
-			mainScreen = new MainScreen(this, users);
-			setScreen(mainScreen);
+			ScreenManager.getInstance().show(ScreenSelector.MAIN_MENU);
 		} else {
-			loginScreen.showErrorMsg("something went wrong");			
-			// TODO wrong name/pw, name is taken, bad password etc.
+			ScreenManager.getInstance().show(ScreenSelector.MAIN_MENU);
 		}
 	}
 
@@ -548,5 +537,16 @@ public class QuizGame extends Game implements IGame{
 	public void onSearchCancelled() {
 		// TODO Auto-generated method stub
 
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.badlogic.gdx.Game#dispose()
+	 */
+	@Override
+	public void dispose(){
+		super.dispose();
+		ScreenManager.getInstance().dispose();
 	}
 }
