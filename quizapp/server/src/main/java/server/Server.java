@@ -20,6 +20,8 @@ public class Server {
 	public static final Persistence persistence;
 	public static final NetUtils net;
 	public static final ServerDirectory serverDir;
+	
+	public static final int TIME_LIMIT;
 
 	static {
 		try {
@@ -27,6 +29,8 @@ public class Server {
 			persistence = Data.getInstance();
 			serverDir = new ServerDirectory(new ServerSocket(Config.get()
 					.getInt("PORT")));
+			
+			TIME_LIMIT = Config.get().getInt("TIME_LIMIT");
 		} catch (SQLException e) {
 			throw new RuntimeException("Database error!", e);
 		} catch (ConfigurationException e) {

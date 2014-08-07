@@ -10,9 +10,25 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
  * @author Tim Wiechers
  */
 @JsonTypeInfo(use = JsonTypeInfo.Id.MINIMAL_CLASS, include = JsonTypeInfo.As.PROPERTY)
-public class MatchLeaveRequest implements Serializable {
+public class MatchEnterRequest implements Serializable {
+
 	/**
 	 * Version number for serialization.
 	 */
-	private static final long serialVersionUID = -6586014878559958274L;
+	private static final long serialVersionUID = -4533507640979437987L;
+
+	private int matchId;
+	
+	@Deprecated
+	public MatchEnterRequest() {
+		
+	}
+	
+	public MatchEnterRequest(int matchId) {
+		this.matchId = matchId;
+	}
+	
+	public int getMatchId() {
+		return matchId;
+	}
 }

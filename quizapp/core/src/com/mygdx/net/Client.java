@@ -12,7 +12,6 @@ import common.net.requests.AnswerSubmitRequest;
 import common.net.requests.ChallengeAcceptRequest;
 import common.net.requests.ChallengeDenyRequest;
 import common.net.requests.ChallengeSendRequest;
-import common.net.requests.MatchLeaveRequest;
 import common.net.requests.MatchSearchCancelRequest;
 import common.net.requests.MatchSearchStartRequest;
 import common.net.requests.UserAuthRequest;
@@ -181,20 +180,8 @@ public class Client {
 	 * @throws SocketWriteException
 	 * @throws IllegalArgumentException
 	 */
-	public void submitAnswer(int matchId, int answer, float timeNeeded)
+	public void submitAnswer(int matchId, int answer, boolean inTime)
 			throws IllegalArgumentException, SocketWriteException {
-		net.send(serverSocket, new AnswerSubmitRequest(matchId, answer, timeNeeded));
-	}
-
-	/**
-	 * Requests the server to notify the client's opponent that the client left
-	 * the game.
-	 * 
-	 * @throws SocketWriteException
-	 * @throws IllegalArgumentException
-	 */
-	public void leaveMatch() throws IllegalArgumentException,
-			SocketWriteException {
-		net.send(serverSocket, new MatchLeaveRequest());
+		net.send(serverSocket, new AnswerSubmitRequest(matchId, answer, inTime));
 	}
 }

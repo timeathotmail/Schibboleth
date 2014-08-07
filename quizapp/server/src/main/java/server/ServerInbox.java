@@ -2,8 +2,9 @@ package server;
 
 import java.net.Socket;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import common.entities.*;
 import common.net.SocketReadException;
@@ -17,6 +18,9 @@ import common.net.responses.*;
  * @author Tim Wiechers
  */
 public class ServerInbox implements Runnable {
+
+	private static final Logger logger = Logger.getLogger("ServerInbox");
+
 	/**
 	 * Client's socket.
 	 */
@@ -63,25 +67,27 @@ public class ServerInbox implements Runnable {
 			waitingUser = user;
 			waitingClient = client;
 		} else {
-			// assert that both clients have the questions locally available
 			List<Question> questions;
 			try {
 				questions = Server.persistence.getQuestions();
-
 				Match match = new Match(user, waitingUser, questions, 0);
+				Server.persistence.saveMatch(match);
 
 				// connect
 				Server.net.send(waitingClient, new MatchCreatedResponse(match));
 				Server.net.send(client, new MatchCreatedResponse(match));
-				// Server.serverDir.startMatch(client, waitingClient,
-				// questions);
-				// TODO serverDir.addMatch
+				Server.serverDir.addMatch(match);
 
 				// clear spot
 				waitingUser = null;
 			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				try {
+					Server.net.send(client, new ErrorResponse(
+							"Error connecting with " + waitingUser.getName()));
+					Server.net.send(waitingClient, new ErrorResponse(
+							"Error connecting with " + user.getName()));
+				} catch (SocketWriteException _) {
+				}
 			}
 		}
 	}
@@ -142,8 +148,7 @@ public class ServerInbox implements Runnable {
 			try {
 				Server.serverDir.idClient(client, user);
 			} catch (DirectoryException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				Server.net.send(client, new ErrorResponse(e.getMessage()));
 			}
 
 		} catch (SQLException e) {
@@ -235,8 +240,7 @@ public class ServerInbox implements Runnable {
 			Match match = new Match(Server.serverDir.getUser(client),
 					Server.serverDir.getUser(req.getOpponent()), questions, 0);
 
-			// TODO add match to persistence so it has an id
-
+			Server.persistence.saveMatch(match);
 			Server.net.send(client, new MatchCreatedResponse(match));
 
 			Socket opponent = Server.serverDir.getOpponentSocket(client,
@@ -245,8 +249,7 @@ public class ServerInbox implements Runnable {
 				Server.net.send(opponent, new MatchCreatedResponse(match));
 			}
 
-			// Server.serverDir.startMatch(client, opponent, questions);
-			// TODO serverDir.addMatch
+			Server.serverDir.addMatch(match);
 		} catch (SQLException e) {
 			Server.net.send(client, new ErrorResponse(
 					"Challenge couldn't be accepted!"));
@@ -268,8 +271,7 @@ public class ServerInbox implements Runnable {
 			Server.serverDir.saveAnswer(client, req.getMatchId(),
 					req.getIndex());
 		} catch (DirectoryException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Server.net.send(client, new ErrorResponse(e.getMessage()));
 		}
 
 		Socket opponent = Server.serverDir.getOpponentSocket(client,
@@ -279,19 +281,6 @@ public class ServerInbox implements Runnable {
 					new OpponentAnswerResponse(req.getMatchId(),
 							req.getIndex(), answeredInTime));
 		}
-	}
-
-	/**
-	 * Process a MatchLeaveRequest.
-	 * 
-	 * @param req
-	 * @throws SocketWriteException
-	 * @throws IllegalArgumentException
-	 */
-	private void process(MatchLeaveRequest req)
-			throws IllegalArgumentException, SocketWriteException {
-		// TODO
-		Server.net.send(client, new OpponentLeftResponse());
 	}
 
 	// =====================================================================
@@ -309,9 +298,29 @@ public class ServerInbox implements Runnable {
 			} catch (SocketReadException e) {
 				if (!e.isSocketClosed()) {
 					Server.serverDir.removeClient(client);
+
+					try {
+						Server.net.send(Server.serverDir.getSockets(),
+								new UserListChangedResponse(false,
+										Server.serverDir.getUser(client)));
+					} catch (IllegalArgumentException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					} catch (SocketWriteException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+
 					return;
 				} else {
-					// TODO missed message
+					try {
+						Server.net.send(client, new ErrorResponse(
+								"Message couldn't be received!"));
+					} catch (Exception e1) {
+						logger.log(Level.SEVERE,
+								"cannot send ErrorResponse to " + client, e);
+					}
+
 					continue;
 				}
 			}
@@ -398,17 +407,8 @@ public class ServerInbox implements Runnable {
 						continue;
 					}
 				}
-
-				{ // ============================================================
-					MatchLeaveRequest obj = Server.net.fromJson(json,
-							MatchLeaveRequest.class);
-					if (obj != null) {
-						process(obj);
-						continue;
-					}
-				}
 			} catch (SocketWriteException e) {
-				// TODO
+				logger.log(Level.SEVERE, "cannot send response to " + client, e);
 			}
 		}
 	}
