@@ -105,6 +105,19 @@ public class ServerInbox implements Runnable {
 		waitingClient = null;
 	}
 
+	private void onUserLogout() {
+		try {
+			Server.net.send(Server.serverDir.getSockets(),
+					new UserListChangedResponse(false,
+							Server.serverDir.getUser(client)));
+		} catch (Exception e1) {
+			logger.log(Level.SEVERE,
+					"cannot send UserListChangedResponse", e1);
+		}
+		
+		Server.serverDir.removeClient(client);
+	}
+	
 	// =====================================================================
 	// Processing requests
 	// =====================================================================
@@ -166,10 +179,7 @@ public class ServerInbox implements Runnable {
 	 */
 	private void process(UserLogoutRequest req)
 			throws IllegalArgumentException, SocketWriteException {
-		User disconnectedUser = Server.serverDir.getUser(client);
-		Server.serverDir.removeClient(client);
-		Server.net.send(Server.serverDir.getSockets(),
-				new UserListChangedResponse(false, disconnectedUser));
+		onUserLogout();
 	}
 
 	/**
@@ -296,21 +306,8 @@ public class ServerInbox implements Runnable {
 			try {
 				json = Server.net.read(client);
 			} catch (SocketReadException e) {
-				if (!e.isSocketClosed()) {
-					Server.serverDir.removeClient(client);
-
-					try {
-						Server.net.send(Server.serverDir.getSockets(),
-								new UserListChangedResponse(false,
-										Server.serverDir.getUser(client)));
-					} catch (IllegalArgumentException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					} catch (SocketWriteException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
-
+				if (e.isSocketClosed()) {
+					onUserLogout();
 					return;
 				} else {
 					try {
