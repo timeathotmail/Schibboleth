@@ -21,37 +21,14 @@ public interface IGame {
 	 */
 	boolean autoLogin();
 	
-	/**
-	 * Login with provided username and password.
-	 * Save credentials for auto-login.
-	 * Enter main menu.
-	 * @param username username
-	 * @param password password
-	 */
-	void login(String username, String password);
-	
-	void register(String username, String password, String confirmation);
 	
 	/**
 	 * Log out of active account.
 	 * Remove credentials for auto-login.
 	 * Enter main menu.
 	 */
-	void logout();
-	
-	/**
-	 * Change username and/or password.
-	 * @param username new username
-	 * @param pw1 new password
-	 * @param pw2 new password confirmation
-	 */
-	void changeUserData(String username, String pw1, String pw2);
-	
-	/**
-	 * Enter offline mode.
-	 */
-	void playOffline();
-	
+	public void logout();
+
 	/*==========================================================
 	 * Menu interaction
 	 *==========================================================*/

@@ -21,6 +21,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.mygdx.net.Client;
+
+import common.net.SocketWriteException;
 
 public class LoginScreen implements Screen {
 
@@ -36,10 +39,13 @@ public class LoginScreen implements Screen {
 	private TextButton btnToggleLogin, btnToggleRegister, btnSubmitLogin, btnSubmitRegister;
 	private ButtonGroup btnGroup;
 	private Label lblUsername, lblPassword, lblConfirmation, lblError;
-	private TextField txtUsername, txtPassword, txtConfirmation;
+	private TextField txtUsername, txtPassword, txtConfirmation;	
 	
-	//options
-	private OptionsScreen options;
+	/** Gruppe fuer No Connection found disclaimer*/
+	private Texture disclaimer;
+	private Texture btnDisclaimerTexture;
+	private TextButton btnDisclaimer;
+
 	private TextButton btnOptions;
 	
 	
@@ -101,10 +107,9 @@ public class LoginScreen implements Screen {
 			public void keyTyped(TextField textField, char key) {
 				if (key == '\r' || key == '\n') {
 					if (btnToggleLogin.isChecked()) {
-						ScreenManager.getInstance().getGame().login(txtUsername.getText(), txtPassword.getText());
-						//game.login(txtUsername.getText(), txtPassword.getText());
+						login(txtUsername.getText(), txtPassword.getText());
 					} else {
-						ScreenManager.getInstance().getGame().register(txtUsername.getText(),
+						register(txtUsername.getText(),
 											txtPassword.getText(), txtConfirmation.getText());
 						/*game.register(txtUsername.getText(),
 								txtPassword.getText(),
@@ -143,16 +148,15 @@ public class LoginScreen implements Screen {
 
 		btnSubmitLogin.addListener(new ClickListener() {
 			public void clicked(InputEvent event, float x, float y) {
-				ScreenManager.getInstance().getGame().login(txtUsername.getText(), txtPassword.getText());
-				//game.login(txtUsername.getText(), txtPassword.getText());
+				login(txtUsername.getText(), txtPassword.getText());
+				ScreenManager.getInstance().show(ScreenSelector.MAIN_MENU);
 			}
 		});
 		
 		btnSubmitRegister.addListener(new ClickListener() {
 			public void clicked(InputEvent event, float x, float y) {
-				ScreenManager.getInstance().getGame().register(txtUsername.getText(), 
-													txtPassword.getText(), txtConfirmation.getText());
-				//game.register(txtUsername.getText(), txtPassword.getText(), txtConfirmation.getText());
+				register(txtUsername.getText(), txtPassword.getText(), txtConfirmation.getText());
+				ScreenManager.getInstance().show(ScreenSelector.MAIN_MENU);
 			}
 		});
 		
@@ -167,9 +171,7 @@ public class LoginScreen implements Screen {
 
 	private void switchView(boolean login) {
 		table.clear();	
-
-		table.add(btnOptions).width(150).height(30).padBottom(10).align(Align.left);
-		table.row();
+	
 		table.add(lblUsername).pad(2);
 		table.row();
 		table.add(txtUsername).pad(2);
@@ -205,6 +207,114 @@ public class LoginScreen implements Screen {
 
 	public void showErrorMsg(String msg) {
 		lblError.setText(msg);
+	}
+	
+	/**
+	 * Login with provided username and password.
+	 * Save credentials for auto-login.
+	 * Enter main menu.
+	 * @param username username
+	 * @param password password
+	 */
+	private void login(String username, String password) {
+		if (username.isEmpty()) {
+			showErrorMsg("enter a username");			
+		} else if (password.isEmpty()) {
+			showErrorMsg("enter a password");			
+		} else {
+			try {
+				Client.getInstance().login(username, password);
+			} catch (SocketWriteException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
+
+	private void register(String username, String password, String confirmation) {		
+		if(!password.equals(confirmation)){
+			showErrorMsg("passwords do not match");
+		}
+		if(checkUsername(username) && checkPassword(password)){
+			try {
+				Client.getInstance().register(username, password);
+			} catch (IllegalArgumentException e) {
+				e.printStackTrace();
+			} catch (SocketWriteException e) {
+				e.printStackTrace();
+			}
+			
+		}
+	}
+	
+	
+	
+	/**
+	 * Methode wird in register() aufgerufen. 
+	 * Ueberprueft, ob Username den Einschraenkungen uebereinstimmt
+	 * 
+	 * @param username
+	 * @return {@code true} falls die Bedienungen erfuellt sind
+	 */
+	private boolean checkUsername(String username){
+		//is null or ""
+		if(username == null || username.isEmpty()){
+			showErrorMsg("Username is empty");			
+			return false;
+		}
+		//check length, min. 6 chars
+		if(username.length() < 6){
+			showErrorMsg("Username is too short");
+			return false;
+		}
+		//is illegal, f.example swearword
+		/*int i = 0;
+		while(i < bannedExpressions.size()){
+			if(username.contains(bannedExpressions.get(i))){
+				loginScreen.showErrorMsg("Username contains banned expressions");
+				return false;
+			}
+			i++;
+		}*/
+		//is not a numeric or letter
+		if(!username.matches("[A-Za-z_0-9]*")){
+			showErrorMsg("Username contains illegal characters");
+			return false;
+		}
+		return true;
+		
+	}
+	
+	/**
+	 * Methode wird in register() aufgerufen.
+	 * Ueberprueft, ob Passwort den Einschraenkungen uebereinstimmt
+	 * 
+	 * @param password
+	 * 
+	 *  @return {@code true} falls die Bedienungen erfuellt sind
+	 */
+	private boolean checkPassword(String password){
+		// empty
+		if(password.isEmpty() || password == ""){
+			showErrorMsg("Password is empty");
+			return false;
+		}
+		//contains less then 6 chars
+		if(password.length() < 6){
+			showErrorMsg("Passwort is too short");
+			return false;
+		}
+		// not matches regular expression a-z A-Z _ and 0-9
+		if(!password.matches("[A-Za-z0-9]*")){
+			showErrorMsg("Password contains illegal characters");
+			return false;
+		}
+		//contains less then two digits and less then one upper case or contains special chars
+		if(!(password.matches(".*[a-z].*") || password.matches(".*[A-Z].*") || password.matches(".*\\d.*\\d.*"))){
+			showErrorMsg("Password contains illegal characters");
+			return false;
+		}
+		return true;
 	}
 	
 	@Override

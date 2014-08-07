@@ -79,14 +79,6 @@ public final class ScreenManager{
 		}
 		return game;
 	}
-	/**
-	 * Theoretisch soll Error Message Label verwalten. 
-	 * TODO shit happens..
-	 * @return
-	 */
-	public void showErrorMsg(String msg, Label label) {
-		label.setText(msg);
-	}
 
 	/**
 	 * Raeumt den eingegebenen Screen auf

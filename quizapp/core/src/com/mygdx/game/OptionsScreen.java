@@ -21,6 +21,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.mygdx.net.Client;
+
+import common.net.SocketWriteException;
 
 /**
  * @author halfelv
@@ -31,6 +34,7 @@ class OptionsScreen implements Screen {
 	//private final QuizGame game;
 	private Stage stage;
 	private Skin skin;
+	
 	private SpriteBatch batch;
 	private Texture logo;
 	private TextureRegion logoRegion;
@@ -40,17 +44,10 @@ class OptionsScreen implements Screen {
 	private TextButton btnChange;
 	private Label lblUsername, lblPassword, lblConfirmation, lblError;
 	private TextField txtUsername, txtPassword, txtConfirmation;
-	
-	private MainScreen main;
-	//to be remover later
-	private LoginScreen login;
 
-	
-	/*public OptionsScreen(QuizGame game)
-	{
-		this.game = game;
-	}*/
-	
+	/**
+	 * 
+	 */
 	OptionsScreen()
 	{
 		
@@ -69,16 +66,6 @@ class OptionsScreen implements Screen {
 		batch.begin();
 		batch.draw(logoRegion, 0, 320, 463/(163.0f/290.0f), 163);
 		batch.end();
-
-	}
-
-	/* (non-Javadoc)
-	 * @see com.badlogic.gdx.Screen#resize(int, int)
-	 */
-	@Override
-	public void resize(int width, int height) {
-		stage.getViewport().update(width, height, true);
-		// TODO Auto-generated method stub
 
 	}
 
@@ -115,11 +102,26 @@ class OptionsScreen implements Screen {
 		txtConfirmation.setPasswordMode(true);
 		txtConfirmation.setPasswordCharacter('*');
 		
+		/*TextFieldListener enterListener = new TextFieldListener() {
+			@Override
+			public void keyTyped(TextField textField, char key) {
+				if (key == '\r' || key == '\n') {
+					if (btnChange.isChecked()) {
+						changeUserData(txtUsername.getText(), txtPassword.getText(), txtConfirmation.getText());
+					}
+				}
+			}
+		};
+
+		txtUsername.setTextFieldListener(enterListener);
+		txtPassword.setTextFieldListener(enterListener);
+		txtConfirmation.setTextFieldListener(enterListener);*/
+		
 		btnChange = new TextButton("Change", skin);
 		
 		btnChange.addListener(new ClickListener() {
 			public void clicked(InputEvent event, float x, float y) {
-				ScreenManager.getInstance().getGame().changeUserData(txtUsername.getText(), 
+				changeUserData(txtUsername.getText(), 
 												txtPassword.getText(), txtConfirmation.getText());
 				ScreenManager.getInstance().show(ScreenSelector.MAIN_MENU);
 				//game.changeUserData(txtUsername.getText(), txtPassword.getText(), txtConfirmation.getText());
@@ -128,12 +130,11 @@ class OptionsScreen implements Screen {
 			}
 		});
 		
-		setTable(true);
+		setTable();
 
 	}
 	
-	private void setTable(boolean confirm){
-		table.clear();	
+	private void setTable(){
 
 		table.add(lblUsername).pad(2);
 		table.row();
@@ -147,13 +148,124 @@ class OptionsScreen implements Screen {
 		table.row();
 		table.add(txtConfirmation).pad(2);
 		table.row();
+		table.add(lblError);
+		table.row();
 		table.add(btnChange).width(150).height(30).align(Align.left).padBottom(5);
+		
+		table.setPosition(Gdx.graphics.getWidth() / 2,
+				Gdx.graphics.getHeight() / 2);
+
+		stage.addActor(table);
 		
 	}
 
 	
-	public void showErrorMessage(String msg){
+	public void showErrorMsg(String msg){
 		lblError.setText(msg);
+	}	
+
+	/**
+	 * Change username and/or password.
+	 * @author halfelv, Tim Wiechers
+	 * @param username new username
+	 * @param pw1 new password
+	 * @param pw2 new password confirmation
+	 */
+	private void changeUserData(String username, String pw1, String pw2) {
+		if (!checkUsername(username)) {
+			showErrorMsg("your username is incorrect");
+		} else if (!checkPassword(pw1)) {
+			showErrorMsg("your password is incorrect");
+		} else if (!pw1.equals(pw2)) {
+			showErrorMsg("passwords do not match");
+		} else {
+			try {
+				Client.getInstance().changeUserData(username, pw1, pw2);
+			} catch (IllegalArgumentException e) {
+				e.printStackTrace();
+			} catch (SocketWriteException e) {
+				e.printStackTrace();
+			}
+		}
+
+	}
+	/**
+	 * Methode wird in register() aufgerufen. 
+	 * Ueberprueft, ob Username den Einschraenkungen uebereinstimmt
+	 * 
+	 * @param username
+	 * @return {@code true} falls die Bedienungen erfuellt sind
+	 */
+	private boolean checkUsername(String username){
+		//is null or ""
+		if(username == null || username.isEmpty()){
+			showErrorMsg("Username is empty");			
+			return false;
+		}
+		//check length, min. 6 chars
+		if(username.length() < 6){
+			showErrorMsg("Username is too short");
+			return false;
+		}
+		//is illegal, f.example swearword
+		/*int i = 0;
+		while(i < bannedExpressions.size()){
+			if(username.contains(bannedExpressions.get(i))){
+				loginScreen.showErrorMsg("Username contains banned expressions");
+				return false;
+			}
+			i++;
+		}*/
+		//is not a numeric or letter
+		if(!username.matches("[A-Za-z_0-9]*")){
+			showErrorMsg("Username contains illegal characters");
+			return false;
+		}
+		return true;
+		
+	}
+	
+	/**
+	 * Methode wird in register() aufgerufen.
+	 * Ueberprueft, ob Passwort den Einschraenkungen uebereinstimmt
+	 * 
+	 * @param password
+	 * 
+	 *  @return {@code true} falls die Bedienungen erfuellt sind
+	 */
+	private boolean checkPassword(String password){
+		// empty
+		if(password.isEmpty() || password == ""){
+			showErrorMsg("Password is empty");
+			return false;
+		}
+		//contains less then 6 chars
+		if(password.length() < 6){
+			showErrorMsg("Passwort is too short");
+			return false;
+		}
+		// not matches regular expression a-z A-Z _ and 0-9
+		if(!password.matches("[A-Za-z0-9]*")){
+			showErrorMsg("Password contains illegal characters");
+			return false;
+		}
+		//contains less then two digits and less then one upper case or contains special chars
+		if(!(password.matches(".*[a-z].*") || password.matches(".*[A-Z].*") || password.matches(".*\\d.*\\d.*"))){
+			showErrorMsg("Password contains illegal characters");
+			return false;
+		}
+		return true;
+	}
+	
+
+	/* (non-Javadoc)
+	 * @see com.badlogic.gdx.Screen#resize(int, int)
+	 */
+	@Override
+	public void resize(int width, int height) {
+		stage.getViewport().update(width, height, true);
+		// TODO Auto-generated method stub
+
 	}
 	
 	/* (non-Javadoc)

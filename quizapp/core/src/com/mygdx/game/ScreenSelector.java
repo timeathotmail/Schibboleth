@@ -4,6 +4,7 @@
 package com.mygdx.game;
 
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 
 /**
  * Switches the screens in game
@@ -26,12 +27,12 @@ public enum ScreenSelector {
         protected com.badlogic.gdx.Screen getScreenInstance() {
              return new LoginScreen();
         }
-    },
- 
-    PLAY {
+    }, 
+    
+    GAME {
         @Override
         protected com.badlogic.gdx.Screen getScreenInstance() {
-             return new PlayScreen();
+             return new GameScreen();
         }
     },
     
@@ -47,7 +48,7 @@ public enum ScreenSelector {
         protected com.badlogic.gdx.Screen getScreenInstance() {
              return new OptionsScreen();
         }
-    };
+    };  
  
     protected abstract Screen getScreenInstance();
 }

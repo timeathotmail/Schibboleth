@@ -9,36 +9,37 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.ButtonGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.Align;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.fasterxml.jackson.core.util.TextBuffer;
+import com.mygdx.net.Client;
 
 import common.entities.User;
+import common.net.SocketWriteException;
 
 public class MainScreen implements Screen {
 
-	//private QuizGame game;
 	private Stage stage;
 	private Skin skin;
+	
 	private SpriteBatch batch;
 	private Texture logo;
 	private TextureRegion logoRegion;
 	private OrthographicCamera camera;
-	
-	//private final Collection<User> users;
-	
+		
 	private Table table;
 	private TextButton btnPlay, btnOptions, btnLogout;
+	private ButtonGroup btnGroup;
+	private TextButton btnNewMatch, btnSelectChallenge, btnBack;
 	private Label lblWelcome;
 	private Label lblError;
-
-	/*public MainScreen(QuizGame game, Collection<User> users) {
-		this.game = game;
-		this.users = users;
-	}*/
 
 	MainScreen() {
 		// TODO Auto-generated constructor stub
@@ -48,50 +49,117 @@ public class MainScreen implements Screen {
 	public void render(float delta) {
 		Gdx.gl.glClearColor(0.459f, 0.702f, 0.459f, 1f);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		stage.draw();
 		
-		if(stage != null) {
-			stage.draw();
-		}
-		//display logo 
 		batch.setProjectionMatrix(camera.combined);
 		batch.begin();
-		batch.draw(logoRegion, 0, 300, 463/(163.0f/280.0f), 163);
+		batch.draw(logoRegion, 0, 320, 463/(163.0f/290.0f), 163);
 		batch.end();
 	}
 
 	@Override
-	public void resize(int width, int height) {
-		stage.getViewport().update(width, height, true);
-		// TODO Auto-generated method stub
-	}
-
-	@Override
-	public void show() {
+	public void show() {		
+		stage = new Stage();
+		Gdx.input.setInputProcessor(stage);
+		skin = new Skin(Gdx.files.internal("uiskin.json"));
 		batch = new SpriteBatch();
-		Gdx.app.postRunnable(new Runnable() {
-	         @Override
-	         public void run() {
-	     		stage = new Stage();
-	    		Gdx.input.setInputProcessor(stage);
-	    		skin = new Skin(Gdx.files.internal("uiskin.json"));
-	    		
-	    		logo = new Texture(Gdx.files.internal("logo.png"));
-	    		logoRegion = new TextureRegion(logo, 0, 637, 463, 163);
-	    		camera = new OrthographicCamera();
-	    		camera.setToOrtho(false, 800, 480);
-	         }
-	      });
 		
-		// TODO
-	}
+		//set and show logo
+		logo = new Texture(Gdx.files.internal("logo.png"));
+		logoRegion = new TextureRegion(logo, 0, 0, 463, 163);
+		
+		camera = new OrthographicCamera();
+		camera.setToOrtho(false, 800, 480);
+		
+		
+		/*Gdx.app.postRunnable(new Runnable() {
+	         @Override
+	         public void run() {*/
+	     		
+	    		
+	    		/*buttons */
+	    		btnPlay = new TextButton("Play", skin);
+	    		btnOptions = new TextButton("Options", skin);
+	    		btnLogout = new TextButton("Logout", skin);
+	    		btnNewMatch = new TextButton("New Match", skin);
+	    		btnSelectChallenge = new TextButton("Select challenge", skin);
+	    		btnBack = new TextButton("Back", skin);
+	    		
+	    		/*buttongroup*/
+	    		btnGroup = new ButtonGroup(btnPlay, btnBack);
+	    		btnGroup.setMaxCheckCount(1);
+	    		btnGroup.setMinCheckCount(1);
+	    		btnGroup.setUncheckLast(true);
+	    		btnBack.setChecked(true);
+	    		
+	    		
+	    		/*shown text */
+	    		lblWelcome = new Label("Welcome by the QuizzApp!", skin);
+	    		lblError = new Label("", skin);
+	    		
+	    		/*button listeners */
+	    		btnPlay.addListener(new ClickListener() {
+	    			public void clicked(InputEvent event, float x, float y) {
+	    				ScreenManager.getInstance().show(ScreenSelector.USERLIST);
+	    				}
+	    		});
+	    		
+	    		btnOptions.addListener(new ClickListener() {
+	    			public void clicked(InputEvent event, float x, float y) {
+	    				ScreenManager.getInstance().show(ScreenSelector.OPTIONS);
+	    				}
+	    		});
+	    		
+	    		btnLogout.addListener(new ClickListener() {
+	    			public void clicked(InputEvent event, float x, float y) {
+	    				ScreenManager.getInstance().getGame().logout();
+	    				ScreenManager.getInstance().show(ScreenSelector.LOGIN);
+	    				}
+	    		});
+	    		
+	    		table = new Table();
+	    		setTable();
+	         }
+	    //  });
+
+	//}
 	
+	/**
+	 * 
+	 * @param msg
+	 */
 	public void showErrorMessage(String msg){
 		lblError.setText(msg);
 	}
 	
-	
+	/**
+	 * 
+	 */
 	private void setTable(){
 		
+		table.add(lblWelcome).pad(10);
+		table.row();
+		table.add(btnPlay).width(200).height(50).align(Align.left).padBottom(5);
+		table.row();
+		table.add(btnOptions).width(200).height(50).align(Align.left).padBottom(5);
+		table.row();
+		table.add(btnLogout).width(200).height(50).align(Align.left).padBottom(5);
+		table.row();
+		table.add(lblError).pad(2);
+		table.row();
+		
+		table.setPosition(Gdx.graphics.getWidth() / 2,
+				Gdx.graphics.getHeight() / 2);
+
+		stage.addActor(table);
+		
+	}
+	
+
+	@Override
+	public void resize(int width, int height) {
+		//stage.getViewport().update(width, height, true);
+		// TODO Auto-generated method stub
 	}
 
 	@Override
