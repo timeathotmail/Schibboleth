@@ -1,0 +1,54 @@
+
+graphics.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+disclaimer
+  rotate: false
+  xy: 1, 109
+  size: 405, 256
+  orig: 405, 256
+  offset: 0, 0
+  index: -1
+field
+  rotate: false
+  xy: 408, 273
+  size: 469, 92
+  orig: 469, 92
+  offset: 0, 0
+  index: -1
+button
+  rotate: false
+  xy: 408, 187
+  size: 476, 84
+  orig: 476, 84
+  offset: 0, 0
+  index: -1
+disclaimerButton
+  rotate: false
+  xy: 1, 38
+  size: 378, 69
+  orig: 378, 69
+  offset: 0, 0
+  index: -1
+answerButton
+  rotate: false
+  xy: 408, 1
+  size: 232, 184
+  orig: 232, 184
+  offset: 0, 0
+  index: -1
+buttonHelp
+  rotate: false
+  xy: 642, 108
+  size: 177, 77
+  orig: 177, 77
+  offset: 0, 0
+  index: -1
+preferences
+  rotate: false
+  xy: 879, 325
+  size: 47, 40
+  orig: 47, 40
+  offset: 0, 0
+  index: -1

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module rename-to="com.badlogic.gdx">
+	<inherits name="com.esotericsoftware.tablelayout"/>
+	<source path="gdx">
+		<include name="src/main/java/common/net/requests/AnswerSubmitRequest.java"/>
+		<include name="src/main/java/common/net/responses/AuthResponse.java"/>
+		<include name="src/main/java/common/net/requests/ChallengeAcceptRequest.java"/>
+		<include name="src/main/java/common/net/responses/ChallengeDeniedResponse.java"/>
+		<include name="src/main/java/common/net/requests/ChallengeDenyRequest.java"/>
+		<include name="src/main/java/common/net/responses/ChallengeReceivedResponse.java"/>
+		<include name="src/main/java/common/net/requests/ChallengeSendRequest.java"/>
+		<include name="src/main/java/common/entities/annotations/ColumnAlias.java"/>
+		<include name="src/main/java/common/utils/Config.java"/>
+		<include name="src/main/java/common/net/responses/ErrorResponse.java"/>
+		<include name="src/main/java/common/net/requests/GetRankingsRequest.java"/>
+		<include name="src/main/java/common/entities/Match.java"/>
+		<include name="src/main/java/common/net/responses/MatchCreatedResponse.java"/>
+		<include name="src/main/java/common/net/requests/MatchLeaveRequest.java"/>
+		<include name="src/main/java/common/net/requests/MatchSearchCancelRequest.java"/>
+		<include name="src/main/java/common/net/responses/MatchSearchCancelledResponse.java"/>
+		<include name="src/main/java/common/net/requests/MatchSearchStartRequest.java"/>
+		<include name="src/main/java/common/net/NetUtils.java"/>
+		<include name="src/main/java/common/entities/annotations/NotPersisted.java"/>
+		<include name="src/main/java/common/net/responses/OpponentAnswerResponse.java"/>
+		<include name="src/main/java/common/net/responses/OpponentLeftResponse.java"/>
+		<include name="src/main/java/common/entities/Question.java"/>
+		<include name="src/main/java/common/net/responses/RankingsResponse.java"/>
+		<include name="src/main/java/common/net/SocketReadException.java"/>
+		<include name="src/main/java/common/net/SocketWriteException.java"/>
+		<include name="src/main/java/common/entities/annotations/TableAlias.java"/>
+		<include name="src/main/java/common/entities/User.java"/>
+		<include name="src/main/java/common/net/requests/UserAuthRequest.java"/>
+		<include name="src/main/java/common/net/requests/UserDataChangeRequest.java"/>
+		<include name="src/main/java/common/net/responses/UserListChangedResponse.java"/>
+		<include name="src/main/java/common/net/requests/UserLogoutRequest.java"/>
+		<include name="graphics/g2d/Animation.java"/>
+		<include name="graphics/g3d/Animation.java"/>
+	</source>
+</module>

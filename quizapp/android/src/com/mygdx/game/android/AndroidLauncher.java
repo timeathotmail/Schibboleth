@@ -16,6 +16,6 @@ public class AndroidLauncher extends AndroidApplication {
 		config.useCompass = false;	
 		//TODO resolution activity
 		
-		initialize(new QuizGame(), config);
+		initialize(QuizGame.getInstance(), config);
 	}
 }
