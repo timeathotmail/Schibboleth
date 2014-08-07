@@ -476,11 +476,10 @@ public class QuizGame extends Game implements IGame{
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.mygdx.game.IGame#onMatchStarted(common.entities.User,
-	 * java.util.List)
+	 * @see com.mygdx.game.IGame#onMatchStarted(common.entities.Match)
 	 */
 	@Override
-	public void onMatchStarted(User user, List<Integer> questionIds) {
+	public void onMatchStarted(Match match) {
 		// TODO Auto-generated method stub
 
 	}

@@ -161,13 +161,7 @@ public interface IGame {
 	 */
 	void onUserListChanged(boolean connected, User user);
 	
-	/**
-	 * Called if opponent found.
-	 * Display match start screen.
-	 * @param user found opponent
-	 * @param questionIds list of the questions' ids
-	 */
-	void onMatchStarted(User user, List<Integer> questionIds);
+	void onMatchStarted(Match match);
 	
 	/**
 	 * Called on denied challenge.

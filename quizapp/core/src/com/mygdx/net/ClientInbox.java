@@ -109,7 +109,7 @@ public class ClientInbox implements Runnable {
 					MatchCreatedResponse obj = net.fromJson(json,
 							MatchCreatedResponse.class);
 					if (obj != null) {
-						game.onMatchStarted(obj.getUser(), obj.getQuestionIds());
+						game.onMatchStarted(obj.getMatch());
 						continue;
 					}
 				}

@@ -15,6 +15,8 @@ public class OpponentAnswerResponse implements Serializable {
 	 *  Version number for serialization.
 	 */
 	private static final long serialVersionUID = -827424907619406814L;
+	
+	private int matchId;
 	/**
 	 * The answer's index.
 	 */
@@ -33,12 +35,17 @@ public class OpponentAnswerResponse implements Serializable {
 	 * Creates an instance.
 	 * @param index the answer's index
 	 */
-	public OpponentAnswerResponse(int index, boolean inTime) {
+	public OpponentAnswerResponse(int matchId, int index, boolean inTime) {
+		this.matchId = matchId;
 		this.index = index;
 		this.inTime = inTime;
 	}
 
 	// === getters ===
+	
+	public int getMatchId() {
+		return matchId;
+	}
 	
 	public int getIndex() {
 		return index;

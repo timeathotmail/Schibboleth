@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
+import common.entities.Match;
 import common.entities.User;
 
 /**
@@ -20,13 +21,9 @@ public class MatchCreatedResponse implements Serializable {
 	 */
 	private static final long serialVersionUID = -8468892503273560460L;
 	/**
-	 * Opponent.
+	 * Match.
 	 */
-	private User user;
-	/**
-	 * IDs of questions that will be posed.
-	 */
-	private List<Integer> questionIds;
+	private Match match;
 
 	/**
 	 * Constructor for JSON deserialization.
@@ -37,21 +34,14 @@ public class MatchCreatedResponse implements Serializable {
 
 	/**
 	 * Creates an instance.
-	 * @param user the opponent
-	 * @param questionIds IDs of questions that will be posed
 	 */
-	public MatchCreatedResponse(User user, List<Integer> questionIds) {
-		this.questionIds = questionIds;
-		this.user = user;
+	public MatchCreatedResponse(Match match) {
+		this.match = match;
 	}
 
 	// === getters ===
 	
-	public List<Integer> getQuestionIds() {
-		return questionIds;
-	}
-
-	public User getUser() {
-		return user;
+	public Match getMatch() {
+		return match;
 	}
 }

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -33,10 +34,7 @@ public class ServerDirectory implements Runnable {
 	private final Map<Socket, Integer> socketToRev = new HashMap<Socket, Integer>();
 	private final Map<String, User> nameToUser = new HashMap<String, User>();
 
-	private final Map<User, Match> userToMatch1 = new HashMap<User, Match>();
-	private final Map<User, Match> userToMatch2 = new HashMap<User, Match>();
-	private final Map<Socket, Socket> socketToSocket1 = new HashMap<Socket, Socket>();
-	private final Map<Socket, Socket> socketToSocket2 = new HashMap<Socket, Socket>();
+	private final List<Match> userMatches = new ArrayList<Match>();
 
 	/**
 	 * Creates an instance.
@@ -71,14 +69,20 @@ public class ServerDirectory implements Runnable {
 		}
 	}
 
-	public synchronized void idClient(Socket client, User user, int revision) {
+	public synchronized List<Match> idClient(Socket client, User user,
+			int revision) throws SQLException {
 		if (socketToThread.containsKey(client)) {
 			socketToUser.put(client, user);
 			userToSocket.put(user, client);
 			socketToRev.put(client, revision);
 			nameToUser.put(user.getName(), user);
-			// TODO get, add to maps & return open matches
+
+			List<Match> matches = persistence.getRunningMatches(user);
+			userMatches.addAll(matches);
+			return matches;
 		}
+
+		return null; // TODO
 	}
 
 	public synchronized void removeClient(Socket client) {
@@ -98,43 +102,31 @@ public class ServerDirectory implements Runnable {
 		}
 	}
 
-	public synchronized void startMatch(Socket client1, Socket client2,
-			List<Question> questions) {
-		User user1 = socketToUser.get(client1);
-		User user2 = socketToUser.get(client2);
-		Match match = new Match(user1, user2, questions, 1); // TODO correct perRoundCount
-		userToMatch1.put(user1, match);
-		userToMatch2.put(user2, match);
-		socketToSocket1.put(client1, client2);
-		socketToSocket2.put(client2, client1);
+	public synchronized void addMatch(Match match) {
+		// TODO
 	}
 
-	public synchronized void saveAnswer(Socket client, int answerIndex) {
+	public synchronized void saveAnswer(Socket client, int matchId, int answerIndex) {
 		User user = socketToUser.get(client);
 		if (user == null) {
 			// TODO
 			return;
 		}
 
-		Match match = getMatch(user);
-		if (match == null) {
+		Match match = null;
+		for(Match m : userMatches) {
+			if(m.getId() == matchId) {
+				match = m;
+				break;
+			}
+		}
+		
+		if(match == null) {
 			// TODO
 			return;
 		}
 
 		match.addAnswer(user, answerIndex);
-	}
-
-	private synchronized Match getMatch(User user) {
-		Match match = userToMatch1.get(user);
-		return match != null ? match : userToMatch2.get(user);
-	}
-
-	private synchronized void removeMatch(Match match) {
-		userToMatch1.remove(match.getUser1());
-		userToMatch2.remove(match.getUser2());
-		socketToSocket1.remove(userToSocket.get(match.getUser1()));
-		socketToSocket2.remove(userToSocket.get(match.getUser2()));
 	}
 
 	// === getters ===
@@ -161,10 +153,5 @@ public class ServerDirectory implements Runnable {
 
 	public synchronized Socket getSocket(User user) {
 		return userToSocket.get(user);
-	}
-
-	public synchronized Socket getOpponentSocket(Socket client) {
-		Socket opp = socketToSocket1.get(client);
-		return opp != null ? opp : socketToSocket2.get(client);
 	}
 }

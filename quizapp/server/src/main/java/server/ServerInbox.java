@@ -75,14 +75,13 @@ public class ServerInbox implements Runnable {
 				questions = Server.persistence.getQuestions(Math.max(
 						waitingRevision, revision));
 
-				List<Integer> questionIds = getQuestionIds(questions);
+				Match match = new Match(user, waitingUser, questions, 0);
 
 				// connect
-				Server.net.send(waitingClient, new MatchCreatedResponse(user,
-						questionIds));
-				Server.net.send(client, new MatchCreatedResponse(waitingUser,
-						questionIds));
-				Server.serverDir.startMatch(client, waitingClient, questions);
+				Server.net.send(waitingClient, new MatchCreatedResponse(match));
+				Server.net.send(client, new MatchCreatedResponse(match));
+				//Server.serverDir.startMatch(client, waitingClient, questions);
+				// TODO serverDir.addMatch
 
 				// clear spot
 				waitingUser = null;
@@ -236,17 +235,14 @@ public class ServerInbox implements Runnable {
 					Server.serverDir.getRevision(client),
 					Server.serverDir.getRevision(opponent)));
 
-			List<Integer> questionIds = getQuestionIds(questions);
+			Match match = new Match(Server.serverDir.getUser(client),
+					Server.serverDir.getUser(req.getOpponent()), questions, 0);
 
-			Server.net.send(opponent,
-					new MatchCreatedResponse(Server.serverDir.getUser(client),
-							questionIds));
-			Server.net.send(
-					client,
-					new MatchCreatedResponse(Server.serverDir.getUser(req
-							.getOpponent()), questionIds));
+			Server.net.send(opponent, new MatchCreatedResponse(match));
+			Server.net.send(client, new MatchCreatedResponse(match));
 
-			Server.serverDir.startMatch(client, opponent, questions);
+			//Server.serverDir.startMatch(client, opponent, questions);
+			// TODO serverDir.addMatch
 		} catch (SQLException e) {
 			Server.net.send(client, new ErrorResponse(
 					"Challenge couldn't be accepted!"));
@@ -284,18 +280,6 @@ public class ServerInbox implements Runnable {
 			throws IllegalArgumentException, SocketWriteException {
 		// TODO
 		Server.net.send(client, new OpponentLeftResponse());
-	}
-
-	// =====================================================================
-	// Utils
-	// =====================================================================
-
-	private static List<Integer> getQuestionIds(List<Question> questions) {
-		List<Integer> questionIds = new ArrayList<Integer>();
-		for (Question q : questions) {
-			questionIds.add(q.getId());
-		}
-		return questionIds;
 	}
 
 	// =====================================================================
