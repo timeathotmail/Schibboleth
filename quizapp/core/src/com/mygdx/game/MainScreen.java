@@ -9,6 +9,8 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.Event;
+import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ButtonGroup;
@@ -18,6 +20,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.fasterxml.jackson.core.util.TextBuffer;
 import com.mygdx.net.Client;
 
@@ -90,7 +93,21 @@ public class MainScreen implements Screen {
 	    		btnGroup.setMaxCheckCount(1);
 	    		btnGroup.setMinCheckCount(1);
 	    		btnGroup.setUncheckLast(true);
+	    		
+	    		//oder back
 	    		btnBack.setChecked(true);
+	    		//hier ebenso
+	    		btnBack.addListener(new EventListener() {
+	    			@Override
+	    			public boolean handle(Event event) {
+	    				if (event instanceof ChangeEvent) {
+	    					switchView(btnBack.isChecked());
+	    				}
+
+	    				return true;
+	    			}
+	    		});
+	    		
 	    		
 	    		
 	    		/*shown text */
@@ -98,7 +115,7 @@ public class MainScreen implements Screen {
 	    		lblError = new Label("", skin);
 	    		
 	    		/*button listeners */
-	    		btnPlay.addListener(new ClickListener() {
+	    		btnNewMatch.addListener(new ClickListener() {
 	    			public void clicked(InputEvent event, float x, float y) {
 	    				ScreenManager.getInstance().show(ScreenSelector.USERLIST);
 	    				}
@@ -117,8 +134,14 @@ public class MainScreen implements Screen {
 	    				}
 	    		});
 	    		
+	    		btnSelectChallenge.addListener(new ClickListener() {
+	    			public void clicked(InputEvent event, float x, float y) {
+	    				ScreenManager.getInstance().show(ScreenSelector.CHALLENGES);
+	    				}
+	    		});
+	    		
 	    		table = new Table();
-	    		setTable();
+	    		switchView(true);
 	         }
 	    //  });
 
@@ -128,26 +151,38 @@ public class MainScreen implements Screen {
 	 * 
 	 * @param msg
 	 */
-	public void showErrorMessage(String msg){
+	public void showErrorMsg(String msg) {
 		lblError.setText(msg);
 	}
 	
 	/**
-	 * 
+	 * Die Methode schaltet zwischen  play-options-logout und new match-select challenge - back
+	 * @param play	falls der Knopf gedrueckt, wird anderer View gezeigt 
 	 */
-	private void setTable(){
+	private void switchView(boolean play){
+		table.clear();
 		
 		table.add(lblWelcome).pad(10);
 		table.row();
-		table.add(btnPlay).width(200).height(50).align(Align.left).padBottom(5);
-		table.row();
-		table.add(btnOptions).width(200).height(50).align(Align.left).padBottom(5);
-		table.row();
-		table.add(btnLogout).width(200).height(50).align(Align.left).padBottom(5);
-		table.row();
-		table.add(lblError).pad(2);
-		table.row();
 		
+		if(play){			
+			table.add(btnPlay).width(200).height(50).align(Align.left).padBottom(5);
+			table.row();
+			table.add(btnOptions).width(200).height(50).align(Align.left).padBottom(5);
+			table.row();
+			table.add(btnLogout).width(200).height(50).align(Align.left).padBottom(5);
+			
+		} else{
+			table.add(btnNewMatch).width(200).height(50).align(Align.left).padBottom(5);
+			table.row();
+			table.add(btnSelectChallenge).width(200).height(50).align(Align.left).padBottom(5);
+			table.row();
+			table.add(btnBack).width(200).height(50).align(Align.left).padBottom(5);
+		}
+		
+		table.row();
+			table.add(lblError).pad(2);
+			
 		table.setPosition(Gdx.graphics.getWidth() / 2,
 				Gdx.graphics.getHeight() / 2);
 
