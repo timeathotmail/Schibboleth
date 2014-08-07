@@ -30,6 +30,9 @@ public class Client {
 	private Socket serverSocket;
 
 	private final NetUtils net;
+	
+	/*a singletone */
+	private static Client INSTANCE;
 
 	/**
 	 * Creates an instance. Opens a socket connection and initiiates a thread
@@ -38,7 +41,7 @@ public class Client {
 	 * @param game
 	 * @throws ConfigurationException
 	 */
-	public Client(IGame game, String ip, int port)
+	private Client(IGame game, String ip, int port)
 			throws ConfigurationException, NoConnectionException {
 		net = NetUtils.getInstance();
 
@@ -50,7 +53,32 @@ public class Client {
 
 		new Thread(new ClientInbox(game, net, serverSocket)).start();
 	}
+	
+	/* sets a new Instance and returns it*/
+	public static Client getInstance(IGame game, String ip, int port){
+		if(INSTANCE == null){
+			try {
+				INSTANCE = new Client(game, ip, port);
+			} catch (ConfigurationException e) {
+				e.printStackTrace();
+			} catch (NoConnectionException e) {
+				e.printStackTrace();
+			} 
+		}
+		return INSTANCE;
+	}
 
+	/**
+	 * If an Instance is null, throws {@link RuntimeException}
+	 * @return an Instance for a Client.
+	 */
+	public static Client getInstance(){
+		if(INSTANCE == null){
+			throw new RuntimeException("Client may not be initialized. "
+								+ "Please call Client.getInstance(IGame game, String ip, int port)");
+			}
+		return INSTANCE;
+	}
 	/**
 	 * Requests a user registration.
 	 * 
@@ -61,7 +89,7 @@ public class Client {
 	 * @throws SocketWriteException
 	 * @throws IllegalArgumentException
 	 */
-	public void register(String username, String password, int revision)
+	public void register(String username, String password)
 			throws IllegalArgumentException, SocketWriteException {
 		net.send(serverSocket, new UserAuthRequest(username, password, true));
 	}
@@ -75,7 +103,7 @@ public class Client {
 	 *            password
 	 * @throws SocketWriteException
 	 */
-	public void login(String username, String password, int revision)
+	public void login(String username, String password)
 			throws SocketWriteException {
 		net.send(serverSocket, new UserAuthRequest(username, password, false));
 	}
