@@ -1,0 +1,46 @@
+{
+com.badlogic.gdx.graphics.g2d.BitmapFont: { default-font: { file: default.fnt } },
+com.badlogic.gdx.graphics.Color: {
+	green: { a: 1, b: 0, g: 1, r: 0 },
+	darkgreen: {a: 1, b: 0.094, g: 0.25, r:0.094},
+	white: { a: 1, b: 1, g: 1, r: 1 },
+	red: { a: 1, b: 0, g: 0, r: 1 },
+	black: { a: 1, b: 0, g: 0, r: 0 },
+	blue: { a: 1, b: 1, g: 0, r: 0 },
+	cyan: {a: 1, b: 1, g: 1, r: 0 },
+	magenta: {r: 1, g: 0, b: 1, a: 1 },
+	yellow: { r: 1, b:0.92, g:0.016, a:1}
+},
+
+
+com.badlogic.gdx.scenes.scene2d.ui.Button$ButtonStyle: {
+	menu: { down: button, up: buttonPressed },
+	help: { down: buttonHelp, up: buttonHelpPressed },
+	answer: {down: answerButton, up: answerButtonPressed},
+	disclaimer: {down: disclaimerButton, up: disclaimerButtonPressed}
+},
+com.badlogic.gdx.scenes.scene2d.ui.TextButton$TextButtonStyle: {
+	menu: { down: button, up: buttonPressed, font: default-font, fontColor: black, downFontColor: black  },
+	help: { down: buttonHelp, up: buttonHelpPressed, font: default-font, fontColor: black, downFontColor: black },
+	answer: {down: answerButton, up: answerButtonPressed, font: default-font, fontColor: black, downFontColor: black},
+	disclaimer: {down: disclaimerButton, up: disclaimerButtonPressed, font: default-font, fontColor: black, downFontColor: black}
+	
+},
+com.badlogic.gdx.scenes.scene2d.ui.ScrollPane$ScrollPaneStyle: {
+	default: { hScrollKnob: hScrollbar, vScrollKnob: scrollbar }
+},
+com.badlogic.gdx.scenes.scene2d.ui.Window$WindowStyle: {
+	default: { titleFont: default-font, background: default-window, titleFontColor: black },
+	dialog: { titleFont: default-font, background: disclaimer, titleFontColor: black, stageBackground: dialogDim }
+}
+com.badlogic.gdx.scenes.scene2d.ui.ProgressBar$ProgressBarStyle: {
+	default-horizontal: { background: empty, knob: full },
+	default-vertical: { background: empty, knob: full }
+},
+com.badlogic.gdx.scenes.scene2d.ui.TextField$TextFieldStyle: {
+	default: { background: field, font: default-font, fontColor: black}
+},
+com.badlogic.gdx.scenes.scene2d.ui.List$ListStyle: {
+	default: { fontColorUnselected: black, background: listBackground,selection: listSelected, fontColorSelected: black, font: default-font }
+}
+}

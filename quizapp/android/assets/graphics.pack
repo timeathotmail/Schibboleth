@@ -5,50 +5,113 @@ filter: Nearest,Nearest
 repeat: none
 disclaimer
   rotate: false
-  xy: 1, 109
+  xy: 1, 225
   size: 405, 256
   orig: 405, 256
   offset: 0, 0
   index: -1
-field
-  rotate: false
-  xy: 408, 273
-  size: 469, 92
-  orig: 469, 92
-  offset: 0, 0
-  index: -1
 button
   rotate: false
-  xy: 408, 187
-  size: 476, 84
-  orig: 476, 84
+  xy: 408, 401
+  size: 444, 80
+  orig: 444, 80
+  offset: 0, 0
+  index: -1
+buttonPressed
+  rotate: false
+  xy: 408, 319
+  size: 444, 80
+  orig: 444, 80
+  offset: 0, 0
+  index: -1
+field
+  rotate: false
+  xy: 408, 244
+  size: 444, 73
+  orig: 444, 73
+  offset: 0, 0
+  index: -1
+listBackground
+  rotate: false
+  xy: 1, 175
+  size: 396, 48
+  orig: 396, 48
+  offset: 0, 0
+  index: -1
+listSelected
+  rotate: false
+  xy: 1, 125
+  size: 396, 48
+  orig: 396, 48
+  offset: 0, 0
+  index: -1
+disclaimerButtonPressed
+  rotate: false
+  xy: 1, 63
+  size: 333, 60
+  orig: 333, 60
   offset: 0, 0
   index: -1
 disclaimerButton
   rotate: false
-  xy: 1, 38
-  size: 378, 69
-  orig: 378, 69
+  xy: 1, 1
+  size: 333, 60
+  orig: 333, 60
+  offset: 0, 0
+  index: -1
+answerButtonPressed
+  rotate: false
+  xy: 408, 68
+  size: 221, 174
+  orig: 221, 174
   offset: 0, 0
   index: -1
 answerButton
   rotate: false
-  xy: 408, 1
-  size: 232, 184
-  orig: 232, 184
+  xy: 631, 68
+  size: 221, 174
+  orig: 221, 174
+  offset: 0, 0
+  index: -1
+buttonHelpPressed
+  rotate: false
+  xy: 854, 412
+  size: 134, 69
+  orig: 134, 69
   offset: 0, 0
   index: -1
 buttonHelp
   rotate: false
-  xy: 642, 108
-  size: 177, 77
-  orig: 177, 77
+  xy: 854, 341
+  size: 134, 69
+  orig: 134, 69
   offset: 0, 0
   index: -1
-preferences
+scrollbar
   rotate: false
-  xy: 879, 325
-  size: 47, 40
-  orig: 47, 40
+  xy: 854, 190
+  size: 46, 149
+  orig: 46, 149
+  offset: 0, 0
+  index: -1
+hScrollbar
+  rotate: false
+  xy: 336, 22
+  size: 149, 44
+  orig: 149, 44
+  offset: 0, 0
+  index: -1
+empty
+  rotate: false
+  xy: 990, 449
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+full
+  rotate: false
+  xy: 854, 156
+  size: 32, 32
+  orig: 32, 32
   offset: 0, 0
   index: -1
