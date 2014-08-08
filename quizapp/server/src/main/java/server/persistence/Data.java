@@ -3,6 +3,7 @@ package server.persistence;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -16,6 +17,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.naming.ConfigurationException;
+import javax.sql.DataSource;
 
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.handlers.BeanListHandler;
@@ -74,10 +76,13 @@ public class Data implements Persistence {
 	 * 
 	 */
 	private final MysqlDataSource dataSource = new MysqlDataSource();
+
 	/**
 	 * 
 	 */
 	private final QueryRunner run;
+	//private final QueryRunner run = new QueryRunner();
+	//private final Connection conn;
 
 	// =====================================================================
 	// Init database connection
@@ -113,8 +118,12 @@ public class Data implements Persistence {
 	 * @throws SQLException
 	 */
 	private Data() throws SQLException {
-
 		try {
+			/*
+			Class.forName("org.sqlite.JDBC");
+			conn = DriverManager.getConnection("jdbc:sqlite:testdb.db");
+			checkDatabaseStructure();*/
+			
 			Class.forName(JDBC_DRIVER);
 			dataSource.setUser(MYSQL_USER);
 			dataSource.setPassword(MYSQL_PASS);
