@@ -2,7 +2,6 @@ package server;
 
 import java.net.Socket;
 import java.sql.SQLException;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -20,6 +19,15 @@ import common.net.responses.*;
 public class ServerInbox implements Runnable {
 
 	private static final Logger logger = Logger.getLogger("ServerInbox");
+
+	/**
+	 * 
+	 */
+	private static Socket waitingClient;
+	/**
+	 * 
+	 */
+	private static User waitingUser;
 
 	/**
 	 * Client's socket.
@@ -41,15 +49,6 @@ public class ServerInbox implements Runnable {
 	// =====================================================================
 
 	/**
-	 * 
-	 */
-	private static Socket waitingClient;
-	/**
-	 * 
-	 */
-	private static User waitingUser;
-
-	/**
 	 * Process a MatchSearchStartRequest.
 	 * 
 	 * @param req
@@ -57,37 +56,34 @@ public class ServerInbox implements Runnable {
 	 * @throws SocketWriteException
 	 * @throws IllegalArgumentException
 	 */
-	public static synchronized void process(MatchSearchStartRequest req,
+	private static synchronized void process(MatchSearchStartRequest req,
 			Socket client) throws IllegalArgumentException,
 			SocketWriteException {
 		User user = Server.serverDir.getUser(client);
 
-		if (waitingUser == null) {
-			// wait
+		if (waitingUser == null) { // user has to wait
 			waitingUser = user;
 			waitingClient = client;
-		} else {
-			List<Question> questions;
+		} else { // connect users
 			try {
-				questions = Server.persistence.getQuestions();
-				Match match = new Match(user, waitingUser, questions, 0);
-				Server.persistence.saveMatch(match);
+				Match match = new Match(user, waitingUser);
+				Server.persistence.saveMatch(match); // set id & questions
 
-				// connect
 				Server.net.send(waitingClient, new MatchCreatedResponse(match));
 				Server.net.send(client, new MatchCreatedResponse(match));
 				Server.serverDir.addMatch(client, match);
 				Server.serverDir.addMatch(waitingClient, match);
 
-				// clear spot
-				waitingUser = null;
+				waitingUser = null; // clear spot
 			} catch (SQLException e) {
 				try {
 					Server.net.send(client, new ErrorResponse(
 							"Error connecting with " + waitingUser.getName()));
 					Server.net.send(waitingClient, new ErrorResponse(
 							"Error connecting with " + user.getName()));
-				} catch (SocketWriteException _) {
+				} catch (SocketWriteException e1) {
+					logger.log(Level.SEVERE,
+							"Cannot send user(s) error response", e1);
 				}
 			}
 		}
@@ -100,23 +96,10 @@ public class ServerInbox implements Runnable {
 	 * @throws SocketWriteException
 	 * @throws IllegalArgumentException
 	 */
-	public static synchronized void process(MatchSearchCancelRequest req)
+	private static synchronized void process(MatchSearchCancelRequest req)
 			throws IllegalArgumentException, SocketWriteException {
 		Server.net.send(waitingClient, new MatchSearchCancelledResponse());
 		waitingClient = null;
-	}
-
-	private void onUserLogout() {
-		try {
-			Server.net.send(
-					Server.serverDir.getSockets(),
-					new UserListChangedResponse(false, Server.serverDir
-							.getUser(client)));
-		} catch (Exception e1) {
-			logger.log(Level.SEVERE, "cannot send UserListChangedResponse", e1);
-		}
-
-		Server.serverDir.removeClient(client);
 	}
 
 	// =====================================================================
@@ -230,12 +213,13 @@ public class ServerInbox implements Runnable {
 	 * @param req
 	 * @throws SocketWriteException
 	 * @throws IllegalArgumentException
+	 * @throws SQLException
 	 */
 	private void process(ChallengeDenyRequest req)
-			throws IllegalArgumentException, SocketWriteException {
+			throws IllegalArgumentException, SocketWriteException, SQLException {
 		Server.net.send(Server.serverDir.getSocket(req.getChallenge().getTo()),
 				new ChallengeDeniedResponse(req.getChallenge()));
-		// TODO remove challenge
+		Server.persistence.removeChallenge(req.getChallenge());
 	}
 
 	/**
@@ -247,16 +231,11 @@ public class ServerInbox implements Runnable {
 	 */
 	private void process(ChallengeAcceptRequest req)
 			throws IllegalArgumentException, SocketWriteException {
-		// Socket opponent = Server.serverDir.getOpponentSocket(client);
-
-		List<Question> questions;
 		try {
-			questions = Server.persistence.getQuestions();
-
 			Match match = new Match(Server.serverDir.getUser(client), req
-					.getChallenge().getFrom(), questions, 0);
+					.getChallenge().getFrom());
+			Server.persistence.saveMatch(match); // set id & questions
 
-			Server.persistence.saveMatch(match);
 			Server.net.send(client, new MatchCreatedResponse(match));
 			Server.serverDir.addMatch(client, match);
 
@@ -267,8 +246,7 @@ public class ServerInbox implements Runnable {
 				Server.serverDir.addMatch(opponent, match);
 			}
 
-			// TODO remove challenge
-
+			Server.persistence.removeChallenge(req.getChallenge());
 		} catch (SQLException e) {
 			Server.net.send(client, new ErrorResponse(
 					"Challenge couldn't be accepted!"));
@@ -284,11 +262,15 @@ public class ServerInbox implements Runnable {
 	 */
 	private void process(AnswerSubmitRequest req)
 			throws IllegalArgumentException, SocketWriteException {
-		boolean answeredInTime = true; // TODO dont save answer in case not in
-										// time
 		try {
-			Server.serverDir.saveAnswer(client, req.getMatchId(),
-					req.getIndex());
+			if (req.answeredInTime()) {
+				Server.serverDir.saveAnswer(client, req.getMatchId(),
+						req.getIndex());
+			} else {
+				Server.serverDir.saveAnswer(client, req.getMatchId(),
+						Answer.NOT_ANSWERED_INDEX);
+			}
+
 		} catch (DirectoryException e) {
 			Server.net.send(client, new ErrorResponse(e.getMessage()));
 		}
@@ -298,8 +280,25 @@ public class ServerInbox implements Runnable {
 		if (opponent != null) { // is online, sync
 			Server.net.send(opponent,
 					new OpponentAnswerResponse(req.getMatchId(),
-							req.getIndex(), answeredInTime));
+							req.getIndex(), req.answeredInTime()));
 		}
+	}
+
+	// =====================================================================
+	// Helpers
+	// =====================================================================
+
+	private void onUserLogout() {
+		try {
+			Server.net.send(
+					Server.serverDir.getSockets(),
+					new UserListChangedResponse(false, Server.serverDir
+							.getUser(client)));
+		} catch (Exception e1) {
+			logger.log(Level.SEVERE, "cannot send UserListChangedResponse", e1);
+		}
+
+		Server.serverDir.removeClient(client);
 	}
 
 	// =====================================================================

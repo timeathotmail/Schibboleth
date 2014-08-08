@@ -22,6 +22,8 @@ public class Server {
 	public static final ServerDirectory serverDir;
 	
 	public static final int TIME_LIMIT;
+	public static final int QUESTIONS_PER_ROUND;
+	public static final int ROUNDS_PER_MATCH;
 
 	static {
 		try {
@@ -31,6 +33,8 @@ public class Server {
 					.getInt("PORT")));
 			
 			TIME_LIMIT = Config.get().getInt("TIME_LIMIT");
+			QUESTIONS_PER_ROUND = Config.get().getInt("QUESTIONS_PER_ROUND");
+			ROUNDS_PER_MATCH = Config.get().getInt("ROUNDS_PER_MATCH");
 		} catch (SQLException e) {
 			throw new RuntimeException("Database error!", e);
 		} catch (ConfigurationException e) {

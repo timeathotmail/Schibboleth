@@ -102,8 +102,6 @@ public interface Persistence {
 	 */
 	List<Question> getQuestions() throws SQLException;
 
-	List<Question> getQuestions(int revision) throws SQLException;
-
 	/**
 	 * Saves the result of a match in the database.
 	 * 

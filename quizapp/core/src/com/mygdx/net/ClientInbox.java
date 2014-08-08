@@ -53,7 +53,7 @@ public class ClientInbox implements Runnable {
 					if (!e.isSocketClosed()) {
 						throw e;
 					} else {
-						// TODO missed message
+						game.onError("Missed server message");
 						continue;
 					}
 				}
@@ -62,7 +62,7 @@ public class ClientInbox implements Runnable {
 				{ // ============================================================
 					AuthResponse obj = net.fromJson(json, AuthResponse.class);
 					if (obj != null) {
-						game.onLogin(obj.isSuccess(), obj.getUsers(),
+						game.onLogin(obj.isSuccess(), obj.getTimeLimit(), obj.getUsers(),
 								obj.getRunningMatches(), obj.getChallenges());
 						continue;
 					}

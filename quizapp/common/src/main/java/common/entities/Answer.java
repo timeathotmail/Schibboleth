@@ -3,6 +3,8 @@ package common.entities;
 import java.io.Serializable;
 
 public class Answer implements Serializable {
+	public final static int NOT_ANSWERED_INDEX = 5;
+	
 	/**
 	 * 
 	 */
@@ -24,7 +26,15 @@ public class Answer implements Serializable {
 	}
 	
 	public boolean isAnswered() {
-		return answerIndex1 > 0 && answerIndex2 > 0;
+		return isAnswered1() && isAnswered2();
+	}
+	
+	public boolean isAnswered1() {
+		return answerIndex1 > 0;
+	}
+	
+	public boolean isAnswered2() {
+		return answerIndex2 > 0;
 	}
 	
 	public int getId() {

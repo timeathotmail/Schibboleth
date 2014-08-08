@@ -8,6 +8,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -19,11 +22,13 @@ import org.apache.commons.dbutils.handlers.BeanListHandler;
 
 import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
 
+import server.Server;
 import server.persistence.constraints.*;
 import server.persistence.query.InsertQueryBuilder;
 import server.persistence.query.QueryBuilder;
 import server.persistence.query.UpdateQueryBuilder;
 import common.entities.*;
+import common.entities.Question.Category;
 import common.entities.annotations.*;
 import common.utils.Config;
 
@@ -385,16 +390,6 @@ public class Data implements Persistence {
 		return getMany(Question.class);
 	}
 
-	@Override
-	public List<Question> getQuestions(int revision) throws SQLException {
-		if (revision < 0 || revision > getNewestRevision()) {
-			throw new IllegalArgumentException("invalid revision");
-		}
-
-		return getMany(Question.class, new HavingConstraint(
-				new LessEqualConstraint("revision", revision)));
-	}
-
 	// =====================================================================
 	// Matches
 	// =====================================================================
@@ -405,7 +400,25 @@ public class Data implements Persistence {
 			throw new IllegalArgumentException("null match");
 		}
 
-		if (match.getId() == 0) {
+		if (match.getId() == 0) { // insert new match
+			// setting random questions for match
+			List<Question> questions = new ArrayList<Question>();
+
+			// get and shuffle all categories
+			List<Category> categories = new ArrayList<Category>(
+					Arrays.asList(Category.values()));
+			Collections.shuffle(categories);
+
+			// 
+			for (int i = 0; i < Server.ROUNDS_PER_MATCH; i++) {
+				questions.addAll(getMany(Question.class,
+						new HavingConstraint(new EqualConstraint("category",
+								categories.get(i % categories.size()))),
+						new OrderByConstraint(null, "RAND()"),
+						new LimitedConstraint(Server.QUESTIONS_PER_ROUND, 0)));
+			}
+
+			match.setQuestions(questions, Server.QUESTIONS_PER_ROUND);
 			insert(match);
 
 			for (Round r : match.getRounds()) {
@@ -415,7 +428,7 @@ public class Data implements Persistence {
 					insert(a);
 				}
 			}
-		} else {
+		} else { // updating running match
 			for (Round r : match.getRounds()) {
 				for (Answer a : r.getAnswers()) {
 					update(a);
@@ -474,23 +487,12 @@ public class Data implements Persistence {
 	}
 
 	public List<Challenge> getChallenges(User user) throws SQLException {
-		return getMany(Challenge.class, new HavingConstraint(new EqualConstraint("toId",
-				user.getId())));
+		return getMany(Challenge.class, new HavingConstraint(
+				new EqualConstraint("toId", user.getId())));
 	}
-	
+
 	public void removeChallenge(Challenge challenge) throws SQLException {
 		remove(challenge);
-	}
-
-	// =====================================================================
-	// Entity utils
-	// =====================================================================
-
-	private int getNewestRevision() throws SQLException {
-		List<Integer> result = run.query("SELECT MAX(revision) FROM "
-				+ getTable(Question.class), new BeanListHandler<Integer>(
-				Integer.class));
-		return result.size() > 0 ? result.get(0) : 0;
 	}
 
 	// =====================================================================
@@ -579,8 +581,7 @@ public class Data implements Persistence {
 		}
 	}
 
-	private void remove(Object obj)
-			throws SQLException {
+	private void remove(Object obj) throws SQLException {
 		if (0 == run.update(String.format("DELETE FROM %s WHERE id=%d",
 				getTable(obj), getId(obj)))) {
 			throw new SQLException("no row updated");
