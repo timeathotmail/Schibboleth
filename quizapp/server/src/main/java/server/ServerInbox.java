@@ -76,7 +76,8 @@ public class ServerInbox implements Runnable {
 				// connect
 				Server.net.send(waitingClient, new MatchCreatedResponse(match));
 				Server.net.send(client, new MatchCreatedResponse(match));
-				Server.serverDir.addMatch(match);
+				Server.serverDir.addMatch(client, match);
+				Server.serverDir.addMatch(waitingClient, match);
 
 				// clear spot
 				waitingUser = null;
@@ -107,17 +108,17 @@ public class ServerInbox implements Runnable {
 
 	private void onUserLogout() {
 		try {
-			Server.net.send(Server.serverDir.getSockets(),
-					new UserListChangedResponse(false,
-							Server.serverDir.getUser(client)));
+			Server.net.send(
+					Server.serverDir.getSockets(),
+					new UserListChangedResponse(false, Server.serverDir
+							.getUser(client)));
 		} catch (Exception e1) {
-			logger.log(Level.SEVERE,
-					"cannot send UserListChangedResponse", e1);
+			logger.log(Level.SEVERE, "cannot send UserListChangedResponse", e1);
 		}
-		
+
 		Server.serverDir.removeClient(client);
 	}
-	
+
 	// =====================================================================
 	// Processing requests
 	// =====================================================================
@@ -146,14 +147,17 @@ public class ServerInbox implements Runnable {
 			}
 
 			if (user == null) {
-				Server.net.send(client, new AuthResponse(false, null, null));
+				Server.net.send(client, AuthResponse.Fail);
 				return;
 			}
 
 			// send user the list of other users
-			Server.net.send(client,
-					new AuthResponse(true, Server.serverDir.getUsers(),
-							Server.persistence.getRunningMatches(user)));
+			Server.net.send(
+					client,
+					new AuthResponse(true, Server.TIME_LIMIT, Server.serverDir
+							.getUsers(), Server.persistence
+							.getRunningMatches(user), Server.persistence
+							.getChallenges(user)));
 			// inform other users about the new client
 			Server.net.send(Server.serverDir.getSockets(),
 					new UserListChangedResponse(true, user));
@@ -165,7 +169,7 @@ public class ServerInbox implements Runnable {
 			}
 
 		} catch (SQLException e) {
-			Server.net.send(client, new AuthResponse(false, null, null));
+			Server.net.send(client, AuthResponse.Fail);
 		}
 	}
 
@@ -209,13 +213,15 @@ public class ServerInbox implements Runnable {
 	 * @param req
 	 * @throws SocketWriteException
 	 * @throws IllegalArgumentException
+	 * @throws SQLException
 	 */
 	private void process(ChallengeSendRequest req)
-			throws IllegalArgumentException, SocketWriteException {
-		User sendTo = Server.serverDir.getUser(req.getOpponent());
-		Server.net.send(Server.serverDir.getSocket(sendTo),
-				new ChallengeReceivedResponse(sendTo));
-
+			throws IllegalArgumentException, SocketWriteException, SQLException {
+		Challenge c = req.getChallenge();
+		c.setFrom(Server.serverDir.getUser(client));
+		Server.persistence.saveChallenge(c); // set id
+		Server.net.send(Server.serverDir.getSocket(c.getTo()),
+				new ChallengeReceivedResponse(c));
 	}
 
 	/**
@@ -227,9 +233,9 @@ public class ServerInbox implements Runnable {
 	 */
 	private void process(ChallengeDenyRequest req)
 			throws IllegalArgumentException, SocketWriteException {
-		User sendTo = Server.serverDir.getUser(req.getOpponent());
-		Server.net.send(Server.serverDir.getSocket(sendTo),
-				new ChallengeDeniedResponse(sendTo));
+		Server.net.send(Server.serverDir.getSocket(req.getChallenge().getTo()),
+				new ChallengeDeniedResponse(req.getChallenge()));
+		// TODO remove challenge
 	}
 
 	/**
@@ -247,19 +253,22 @@ public class ServerInbox implements Runnable {
 		try {
 			questions = Server.persistence.getQuestions();
 
-			Match match = new Match(Server.serverDir.getUser(client),
-					Server.serverDir.getUser(req.getOpponent()), questions, 0);
+			Match match = new Match(Server.serverDir.getUser(client), req
+					.getChallenge().getFrom(), questions, 0);
 
 			Server.persistence.saveMatch(match);
 			Server.net.send(client, new MatchCreatedResponse(match));
+			Server.serverDir.addMatch(client, match);
 
 			Socket opponent = Server.serverDir.getOpponentSocket(client,
 					match.getId());
 			if (opponent != null) { // opponent is online
 				Server.net.send(opponent, new MatchCreatedResponse(match));
+				Server.serverDir.addMatch(opponent, match);
 			}
 
-			Server.serverDir.addMatch(match);
+			// TODO remove challenge
+
 		} catch (SQLException e) {
 			Server.net.send(client, new ErrorResponse(
 					"Challenge couldn't be accepted!"));
@@ -404,7 +413,7 @@ public class ServerInbox implements Runnable {
 						continue;
 					}
 				}
-			} catch (SocketWriteException e) {
+			} catch (Exception e) {
 				logger.log(Level.SEVERE, "cannot send response to " + client, e);
 			}
 		}

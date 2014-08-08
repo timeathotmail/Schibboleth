@@ -12,6 +12,10 @@ public class Round implements Serializable {
 	private int matchId;
 	private List<Answer> answers;
 
+	@Deprecated
+	public Round() {
+	}
+	
 	public Round(List<Answer> answers) {
 		this.answers = answers;
 	}

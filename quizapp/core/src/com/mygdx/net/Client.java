@@ -6,6 +6,8 @@ import javax.naming.ConfigurationException;
 
 import com.mygdx.game.IGame;
 
+import common.entities.Challenge;
+import common.entities.User;
 import common.net.NetUtils;
 import common.net.SocketWriteException;
 import common.net.requests.AnswerSubmitRequest;
@@ -167,9 +169,9 @@ public class Client {
 	 * @throws SocketWriteException
 	 * @throws IllegalArgumentException
 	 */
-	public void sendChallenge(String opponent) throws IllegalArgumentException,
+	public void sendChallenge(User to) throws IllegalArgumentException,
 			SocketWriteException {
-		net.send(serverSocket, new ChallengeSendRequest(opponent));
+		net.send(serverSocket, new ChallengeSendRequest(new Challenge(null, to)));
 	}
 
 	/**
@@ -182,9 +184,9 @@ public class Client {
 	 * @throws SocketWriteException
 	 * @throws IllegalArgumentException
 	 */
-	public void acceptChallenge(String opponent)
+	public void acceptChallenge(Challenge challenge)
 			throws IllegalArgumentException, SocketWriteException {
-		net.send(serverSocket, new ChallengeAcceptRequest(opponent));
+		net.send(serverSocket, new ChallengeAcceptRequest(challenge));
 	}
 
 	/**
@@ -195,9 +197,9 @@ public class Client {
 	 * @throws SocketWriteException
 	 * @throws IllegalArgumentException
 	 */
-	public void denyChallenge(String opponent) throws IllegalArgumentException,
+	public void denyChallenge(Challenge challenge) throws IllegalArgumentException,
 			SocketWriteException {
-		net.send(serverSocket, new ChallengeDenyRequest(opponent));
+		net.send(serverSocket, new ChallengeDenyRequest(challenge));
 	}
 
 	/**

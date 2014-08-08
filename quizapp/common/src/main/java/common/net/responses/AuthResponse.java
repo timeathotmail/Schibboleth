@@ -7,6 +7,7 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
+import common.entities.Challenge;
 import common.entities.Match;
 import common.entities.User;
 
@@ -19,6 +20,9 @@ import common.entities.User;
  */
 @JsonTypeInfo(use = JsonTypeInfo.Id.MINIMAL_CLASS, include = JsonTypeInfo.As.PROPERTY)
 public class AuthResponse implements Serializable {
+	
+	public static final AuthResponse Fail = new AuthResponse(false, 0, null, null, null);
+	
 	/**
 	 * Version number for serialization.
 	 */
@@ -33,6 +37,10 @@ public class AuthResponse implements Serializable {
 	private List<User> users = new ArrayList<User>();
 	
 	private List<Match> runningMatches;
+	
+	private List<Challenge> challenges;
+	
+	private int timeLimit;
 
 	/**
 	 * Constructor for JSON deserialization.
@@ -46,9 +54,11 @@ public class AuthResponse implements Serializable {
 	 * @param success true if the he registration and/or login was successful
 	 * @param users collection of other currently online users
 	 */
-	public AuthResponse(boolean success, Collection<User> users, List<Match> matches) {
+	public AuthResponse(boolean success, int timeLimit, Collection<User> users, List<Match> matches, List<Challenge> challenges) {
 		this.success = success;
+		this.timeLimit = timeLimit;
 		this.runningMatches = matches;
+		this.challenges = challenges;
 		
 		for(User user : users) {
 			this.users.add(user);
@@ -66,5 +76,13 @@ public class AuthResponse implements Serializable {
 
 	public List<Match> getRunningMatches() {
 		return runningMatches;
+	}
+	
+	public List<Challenge> getChallenges() {
+		return challenges;
+	}
+	
+	public int getTimeLimit() {
+		return timeLimit;
 	}
 }

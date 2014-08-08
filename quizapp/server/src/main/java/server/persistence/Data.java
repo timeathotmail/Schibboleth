@@ -181,6 +181,16 @@ public class Data implements Persistence {
 				+ "ON DELETE SET NULL)", getTable(Answer.class),
 				getTable(Round.class), getTable(Question.class)));
 
+		run.update(String.format(
+				"CREATE TABLE IF NOT EXISTS %s("
+						+ "id     INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,"
+						+ "fromId INT UNSIGNED, " + "toId   INT UNSIGNED, "
+						+ "FOREIGN KEY(fromId) REFERENCES %s(id) "
+						+ "ON DELETE SET NULL, "
+						+ "FOREIGN KEY(toId) REFERENCES %s(id) "
+						+ "ON DELETE SET NULL", getTable(Challenge.class),
+				getTable(User.class), getTable(User.class)));
+
 		run.update(String
 				.format("CREATE TABLE IF NOT EXISTS BAD_WORDS(word VARCHAR(100))"));
 
@@ -445,11 +455,31 @@ public class Data implements Persistence {
 		List<Match> running = new ArrayList<Match>();
 		for (Match m : matches) {
 			if (!m.isFinished()) {
+				// set users
+				m.setUser1(get(User.class, new HavingConstraint(
+						new EqualConstraint("id", m.getUserId1()))));
+
+				m.setUser2(get(User.class, new HavingConstraint(
+						new EqualConstraint("id", m.getUserId2()))));
+
 				running.add(m);
 			}
 		}
 
 		return running;
+	}
+
+	public void saveChallenge(Challenge challenge) throws SQLException {
+		insert(challenge);
+	}
+
+	public List<Challenge> getChallenges(User user) throws SQLException {
+		return getMany(Challenge.class, new HavingConstraint(new EqualConstraint("toId",
+				user.getId())));
+	}
+	
+	public void removeChallenge(Challenge challenge) throws SQLException {
+		remove(challenge);
 	}
 
 	// =====================================================================
@@ -549,7 +579,7 @@ public class Data implements Persistence {
 		}
 	}
 
-	private void remove(Object obj, Constraint... constraints)
+	private void remove(Object obj)
 			throws SQLException {
 		if (0 == run.update(String.format("DELETE FROM %s WHERE id=%d",
 				getTable(obj), getId(obj)))) {

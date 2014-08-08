@@ -33,6 +33,14 @@ public class Match implements Serializable {
 	 * First player's id.
 	 */
 	private int userId1;
+	public int getUserId1() {
+		return userId1;
+	}
+
+	public int getUserId2() {
+		return userId2;
+	}
+
 	/**
 	 * Second player's id.
 	 */

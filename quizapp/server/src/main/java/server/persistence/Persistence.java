@@ -116,4 +116,8 @@ public interface Persistence {
 	List<Match> getRunningMatches(User user) throws SQLException;
 	
 	List<String> getBadWords() throws SQLException;
+	
+	List<Challenge> getChallenges(User user) throws SQLException;
+	void saveChallenge(Challenge challenge) throws SQLException;
+	void removeChallenge(Challenge challenge) throws SQLException;
 }

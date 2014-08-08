@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
+import common.entities.Challenge;
 import common.entities.User;
 
 /**
@@ -17,11 +18,8 @@ public class ChallengeDeniedResponse implements Serializable {
 	 * Version number for serialization.
 	 */
 	private static final long serialVersionUID = 4552143065236969334L;
-	/**
-	 * The denying user.
-	 */
-	private User user;
-
+	private Challenge challenge;
+	
 	/**
 	 * Constructor for JSON deserialization.
 	 */
@@ -29,17 +27,13 @@ public class ChallengeDeniedResponse implements Serializable {
 	public ChallengeDeniedResponse() {
 	}
 
-	/**
-	 * Creates an instance.
-	 * @param user the denying user
-	 */
-	public ChallengeDeniedResponse(User user) {
-		this.user = user;
+	public ChallengeDeniedResponse(Challenge challenge) {
+		this.challenge = challenge;
 	}
-
+	
 	// === getters ===
 	
-	public User getUser() {
-		return user;
+	public Challenge getChallenge() {
+		return challenge;
 	}
 }

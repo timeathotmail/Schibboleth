@@ -62,7 +62,8 @@ public class ClientInbox implements Runnable {
 				{ // ============================================================
 					AuthResponse obj = net.fromJson(json, AuthResponse.class);
 					if (obj != null) {
-						game.onLogin(obj.isSuccess(), obj.getUsers());
+						game.onLogin(obj.isSuccess(), obj.getUsers(),
+								obj.getRunningMatches(), obj.getChallenges());
 						continue;
 					}
 				}
@@ -81,7 +82,7 @@ public class ClientInbox implements Runnable {
 					ChallengeDeniedResponse obj = net.fromJson(json,
 							ChallengeDeniedResponse.class);
 					if (obj != null) {
-						game.onChallengeDenied(obj.getUser());
+						game.onChallengeDenied(obj.getChallenge());
 						continue;
 					}
 				}
@@ -90,7 +91,7 @@ public class ClientInbox implements Runnable {
 					ChallengeReceivedResponse obj = net.fromJson(json,
 							ChallengeReceivedResponse.class);
 					if (obj != null) {
-						game.onChallengeReceived(obj.getUser());
+						game.onChallengeReceived(obj.getChallenge());
 						continue;
 					}
 				}

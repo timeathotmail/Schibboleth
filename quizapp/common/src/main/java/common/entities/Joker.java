@@ -8,6 +8,10 @@ public class Joker {
 	private int userId;
 	private Type type;
 	
+	@Deprecated
+	public Joker() {
+	}
+	
 	public Joker(int userId, Type type) {
 		super();
 		this.userId = userId;

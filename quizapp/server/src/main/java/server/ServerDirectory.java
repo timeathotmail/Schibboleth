@@ -31,8 +31,7 @@ public class ServerDirectory implements Runnable {
 	private final Map<Socket, User> socketToUser = new HashMap<Socket, User>();
 	private final Map<User, Socket> userToSocket = new HashMap<User, Socket>();
 	private final Map<String, User> nameToUser = new HashMap<String, User>();
-
-	private final List<Match> userMatches = new ArrayList<Match>();
+	private final Map<User, List<Match>> userToMatches = new HashMap<User, List<Match>>();
 
 	/**
 	 * Creates an instance.
@@ -73,7 +72,7 @@ public class ServerDirectory implements Runnable {
 			nameToUser.put(user.getName(), user);
 
 			List<Match> matches = Server.persistence.getRunningMatches(user);
-			userMatches.addAll(matches);
+			userToMatches.put(user, matches);
 			return matches;
 		}
 
@@ -92,18 +91,22 @@ public class ServerDirectory implements Runnable {
 				socketToUser.remove(client);
 				userToSocket.remove(user);
 				nameToUser.remove(user.getName());
-
-				// TODO save matches & remove from maps if opponent is offline
-				// as
-				// well
-				// persistence.saveMatch(match);
-				// removeMatch(match);
+				
+				for(Match m : userToMatches.get(user)) {
+					try {
+						Server.persistence.saveMatch(m);
+					} catch (SQLException e) {
+						logger.log(Level.SEVERE, "Couldn't save match", e);
+					}
+				}
+				
+				userToMatches.remove(user);
 			}
 		}
 	}
 
-	public synchronized void addMatch(Match match) {
-		userMatches.add(match);
+	public synchronized void addMatch(Socket client, Match match) {
+		userToMatches.get(client).add(match);
 	}
 
 	public synchronized void saveAnswer(Socket client, int matchId,
@@ -114,7 +117,7 @@ public class ServerDirectory implements Runnable {
 					"cannot save answer: no user mapped to socket");
 		}
 
-		Match match = getMatch(matchId);
+		Match match = getMatch(user, matchId);
 
 		if (match == null) {
 			throw new DirectoryException(
@@ -124,9 +127,9 @@ public class ServerDirectory implements Runnable {
 		match.addAnswer(user, answerIndex);
 	}
 
-	private Match getMatch(int id) {
+	private Match getMatch(User user, int id) {
 		Match match = null;
-		for (Match m : userMatches) {
+		for (Match m : userToMatches.get(user)) {
 			if (m.getId() == id) {
 				match = m;
 				break;
@@ -134,19 +137,6 @@ public class ServerDirectory implements Runnable {
 		}
 
 		return match;
-	}
-
-	public Socket getOpponentSocket(Socket client, int matchId) {
-		Match match = getMatch(matchId);
-
-		if (match == null) {
-			return null;
-		}
-
-		User user = getUser(client);
-		User opponent = match.getUser1();
-		return opponent != user ? userToSocket.get(opponent) : userToSocket
-				.get(match.getUser2());
 	}
 
 	// === getters ===
@@ -169,5 +159,23 @@ public class ServerDirectory implements Runnable {
 
 	public synchronized Socket getSocket(User user) {
 		return userToSocket.get(user);
+	}
+	
+	public Socket getOpponentSocket(Socket client, int matchId) {
+		User user = getUser(client);
+		
+		if (user == null) {
+			return null;
+		}
+		
+		Match match = getMatch(user, matchId);
+
+		if (match == null) {
+			return null;
+		}
+
+		User opponent = match.getUser1();
+		return opponent != user ? userToSocket.get(opponent) : userToSocket
+				.get(match.getUser2());
 	}
 }

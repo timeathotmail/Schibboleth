@@ -15,6 +15,10 @@ public class Answer implements Serializable {
 	private int answerIndex1;
 	private int answerIndex2;
 	
+	@Deprecated
+	public Answer() {
+	}
+	
 	public Answer(int questionId) {
 		this.questionId = questionId;
 	}

@@ -3,6 +3,7 @@ package common.net.requests;
 import java.io.Serializable;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import common.entities.Challenge;
 
 /**
  * Request to send a challenge to a client.
@@ -15,10 +16,8 @@ public class ChallengeSendRequest implements Serializable {
 	 * Version number for serialization.
 	 */
 	private static final long serialVersionUID = -6294339656210902905L;
-	/**
-	 * The opponents's nickname.
-	 */
-	private String opponent;
+
+	private Challenge challenge;
 	
 	/**
 	 * Constructor for JSON deserialization.
@@ -27,17 +26,13 @@ public class ChallengeSendRequest implements Serializable {
 	public ChallengeSendRequest() {
 	}
 
-	/**
-	 * Creates an instance.
-	 * @param opponent the opponents's nickname
-	 */
-	public ChallengeSendRequest(String opponent) {
-		this.opponent = opponent;
+	public ChallengeSendRequest(Challenge challenge) {
+		this.challenge = challenge;
 	}
 	
 	// === getters ===
 	
-	public String getOpponent() {
-		return opponent;
+	public Challenge getChallenge() {
+		return challenge;
 	}
 }
