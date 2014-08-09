@@ -64,8 +64,11 @@ public class Match implements Serializable {
 
 	/**
 	 * Sets the questions to be posed in the match.
-	 * @param questions list of questions
-	 * @param perRound number of questions per round
+	 * 
+	 * @param questions
+	 *            list of questions
+	 * @param perRound
+	 *            number of questions per round
 	 */
 	public void setQuestions(List<Question> questions, int perRound) {
 		List<Answer> answers = new ArrayList<Answer>();
@@ -77,11 +80,14 @@ public class Match implements Serializable {
 		rounds = new ArrayList<Round>();
 		rounds.add(new Round(answers));
 	}
-	
+
 	/**
 	 * Saves an answer of one of the players.
-	 * @param user the answering user
-	 * @param index the answer's index
+	 * 
+	 * @param user
+	 *            the answering user
+	 * @param index
+	 *            the answer's index
 	 */
 	public synchronized void addAnswer(User user, int index) {
 		for (Round r : rounds) {
@@ -92,14 +98,27 @@ public class Match implements Serializable {
 	}
 
 	// === getters & setters ===
-	
+
+	public synchronized Round getNextRound(User user) {
+		boolean isFirstPlayer = user.equals(user1);
+
+		for (Round r : rounds) {
+			if ((isFirstPlayer && !r.hasPlayed1())
+					|| (!isFirstPlayer && !r.hasPlayed2())) {
+				return r;
+			}
+		}
+		
+		return null;
+	}
+
 	/**
 	 * @return true if both players have played all rounds
 	 */
 	public synchronized boolean isFinished() {
 		return hasPlayed1() && hasPlayed2();
 	}
-	
+
 	/**
 	 * @return true if player one has played all rounds
 	 */
@@ -109,10 +128,10 @@ public class Match implements Serializable {
 				return false;
 			}
 		}
-		
+
 		return true;
 	}
-	
+
 	/**
 	 * @return true if player two has played all rounds
 	 */
@@ -122,36 +141,36 @@ public class Match implements Serializable {
 				return false;
 			}
 		}
-		
+
 		return true;
 	}
 
 	public synchronized int getPoints1() {
 		int points = 0;
-		
+
 		for (Round r : rounds) {
 			int w = r.getResult();
-			if(w > 0) {
+			if (w > 0) {
 				points++;
 			}
 		}
-		
+
 		return points;
 	}
 
 	public synchronized int getPoints2() {
 		int points = 0;
-		
+
 		for (Round r : rounds) {
 			int w = r.getResult();
-			if(w < 0) {
+			if (w < 0) {
 				points++;
 			}
 		}
-		
+
 		return points;
 	}
-	
+
 	public int getRowId() {
 		return rowid;
 	}
@@ -163,7 +182,7 @@ public class Match implements Serializable {
 			r.setMatchId(id);
 		}
 	}
-	
+
 	public int getUserId1() {
 		return userId1;
 	}
@@ -171,7 +190,6 @@ public class Match implements Serializable {
 	public int getUserId2() {
 		return userId2;
 	}
-	
 
 	public User getUser1() {
 		return user1;
@@ -206,8 +224,10 @@ public class Match implements Serializable {
 	}
 
 	// === special methods ===
-	
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
@@ -217,7 +237,9 @@ public class Match implements Serializable {
 				+ ", rounds=" + rounds + "]";
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
@@ -233,7 +255,9 @@ public class Match implements Serializable {
 		return result;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
