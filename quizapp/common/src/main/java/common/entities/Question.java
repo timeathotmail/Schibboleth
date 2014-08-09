@@ -18,10 +18,6 @@ public class Question {
 	 */
 	private int rowid;
 	/**
-	 * States in which app revision the question was introduced.
-	 */
-	private int revision;
-	/**
 	 * The question.
 	 */
 	private String text;
@@ -77,7 +73,7 @@ public class Question {
 	 */
 	public Question(String text, String answer1, String answer2,
 			String answer3, String answer4, int correctIndex,
-			Category category, int revision) {
+			Category category) {
 		this.text = text;
 		this.answer1 = answer1;
 		this.answer2 = answer2;
@@ -85,7 +81,6 @@ public class Question {
 		this.answer4 = answer4;
 		this.correctIndex = correctIndex;
 		this.category = category;
-		this.revision = revision;
 	}
 
 	// === getters & setters ===
@@ -154,25 +149,23 @@ public class Question {
 		this.correctIndex = correctIndex;
 	}
 
-	public int getRevision() {
-		return revision;
-	}
-
-	public void setRevision(int revision) {
-		this.revision = revision;
-	}
-
 	// === special methods ===
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
 	@Override
 	public String toString() {
-		return "Question [id=" + rowid + ", revision=" + revision + ", text="
+		return "Question [id=" + rowid + ", text="
 				+ text + ", answer1=" + answer1 + ", answer2=" + answer2
 				+ ", answer3=" + answer3 + ", answer4=" + answer4
 				+ ", correctIndex=" + correctIndex + ", category=" + category
 				+ "]";
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -185,11 +178,13 @@ public class Question {
 				+ ((category == null) ? 0 : category.hashCode());
 		result = prime * result + correctIndex;
 		result = prime * result + rowid;
-		result = prime * result + revision;
 		result = prime * result + ((text == null) ? 0 : text.hashCode());
 		return result;
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -224,8 +219,6 @@ public class Question {
 		if (correctIndex != other.correctIndex)
 			return false;
 		if (rowid != other.rowid)
-			return false;
-		if (revision != other.revision)
 			return false;
 		if (text == null) {
 			if (other.text != null)

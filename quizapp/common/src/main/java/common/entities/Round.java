@@ -3,24 +3,56 @@ package common.entities;
 import java.io.Serializable;
 import java.util.List;
 
+/**
+ * This class represents a round of a match.
+ * 
+ * @author Tim Wiechers
+ */
 public class Round implements Serializable {
 	/**
-	 * 
+	 * Version number for serialization.
 	 */
 	private static final long serialVersionUID = -1914320813276870786L;
+	/**
+	 * ID for unique identification.
+	 */
 	private int rowid;
+	/**
+	 * The rowid of the match the round is played in.
+	 */
 	private int matchId;
+	/**
+	 * List of questions & player answers.
+	 */
 	private List<Answer> answers;
 
+	/**
+	 * Constructor for JSON deserialization and persistence framework.
+	 */
 	@Deprecated
 	public Round() {
 	}
 
+	/**
+	 * Creates an instance.
+	 * 
+	 * @param answers
+	 *            list of questions & player answers
+	 */
 	public Round(List<Answer> answers) {
 		this.answers = answers;
 	}
 
-	public boolean addAnswer(boolean isFirstUser, int index) {
+	/**
+	 * Saves an answer of a player.
+	 * 
+	 * @param isFirstUser
+	 *            true if the first player answered
+	 * @param index
+	 *            the answer's index
+	 * @return
+	 */
+	public synchronized boolean addAnswer(boolean isFirstUser, int index) {
 		for (Answer a : answers) {
 			if (isFirstUser) {
 				if (a.getAnswerIndex1() == 0) {
@@ -38,11 +70,19 @@ public class Round implements Serializable {
 		return false;
 	}
 
-	public boolean isFinished() {
+	// === getters & setters ===
+
+	/**
+	 * @return true if both players finished this round
+	 */
+	public synchronized boolean isFinished() {
 		return hasPlayed1() && hasPlayed2();
 	}
-	
-	public boolean hasPlayed1() {
+
+	/**
+	 * @return true if player one finished this round
+	 */
+	public synchronized boolean hasPlayed1() {
 		for (Answer a : answers) {
 			if (!a.isAnswered1()) {
 				return false;
@@ -51,8 +91,11 @@ public class Round implements Serializable {
 
 		return true;
 	}
-	
-	public boolean hasPlayed2() {
+
+	/**
+	 * @return true if player two finished this round
+	 */
+	public synchronized boolean hasPlayed2() {
 		for (Answer a : answers) {
 			if (!a.isAnswered2()) {
 				return false;
@@ -62,7 +105,12 @@ public class Round implements Serializable {
 		return true;
 	}
 
-	public int getWinner() {
+	/**
+	 * Indicates the result of the round.
+	 * 
+	 * @return 1 if player one won, -1 of player two won, 0 in case of draw
+	 */
+	public int getResult() {
 		int p1 = 0;
 		int p2 = 0;
 
@@ -74,11 +122,11 @@ public class Round implements Serializable {
 				p2++;
 			}
 		}
-		
-		if(p1 == p2) {
+
+		if (p1 == p2) {
 			return 0;
 		}
-		
+
 		return p1 > p2 ? 1 : -1;
 	}
 
@@ -108,5 +156,59 @@ public class Round implements Serializable {
 
 	public void setAnswers(List<Answer> answers) {
 		this.answers = answers;
+	}
+
+	// === special methods ===
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return "Round [rowid=" + rowid + ", matchId=" + matchId + ", answers="
+				+ answers + "]";
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((answers == null) ? 0 : answers.hashCode());
+		result = prime * result + matchId;
+		result = prime * result + rowid;
+		return result;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Round other = (Round) obj;
+		if (answers == null) {
+			if (other.answers != null)
+				return false;
+		} else if (!answers.equals(other.answers))
+			return false;
+		if (matchId != other.matchId)
+			return false;
+		if (rowid != other.rowid)
+			return false;
+		return true;
 	}
 }

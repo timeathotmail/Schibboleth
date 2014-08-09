@@ -37,17 +37,23 @@ public class UserDataChangeRequest implements Serializable {
 
 	/**
 	 * Creates an instance.
-	 * @param username the user's name
-	 * @param password the user's password
-	 * @param register true if the user wants to register
+	 * 
+	 * @param username
+	 *            the user's name
+	 * @param password
+	 *            the user's password
+	 * @param register
+	 *            true if the user wants to register
 	 */
-	public UserDataChangeRequest(String newUsername, String newPassword, String newPasswordConfirm) {
+	public UserDataChangeRequest(String newUsername, String newPassword,
+			String newPasswordConfirm) {
 		this.newUsername = newUsername;
 		this.newPassword = newPassword;
 		this.newPasswordConfirm = newPasswordConfirm;
 	}
-	
+
 	// === getters ===
+
 	public String getNewUsername() {
 		return newUsername;
 	}

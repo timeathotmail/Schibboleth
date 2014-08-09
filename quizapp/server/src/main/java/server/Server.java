@@ -17,21 +17,42 @@ import common.utils.Config;
  * @author Tim Wiechers
  */
 public class Server {
-	public static final Persistence persistence;
-	public static final NetUtils net;
-	public static final ServerDirectory serverDir;
-	
+	/**
+	 * Time limit for questions.
+	 */
 	public static final int TIME_LIMIT;
+	/**
+	 * Number of questions per round.
+	 */
 	public static final int QUESTIONS_PER_ROUND;
+	/**
+	 * Number of rounds per match.
+	 */
 	public static final int ROUNDS_PER_MATCH;
 
+	/**
+	 * Global persistence object.
+	 */
+	public static final Persistence data;
+	/**
+	 * Global NetUtils object.
+	 */
+	public static final NetUtils net;
+	/**
+	 * Global ServerDirectory object.
+	 */
+	public static final ServerDirectory dir;
+
+	/**
+	 * Static constructor.
+	 */
 	static {
 		try {
 			net = NetUtils.getInstance();
-			persistence = Data.getInstance();
-			serverDir = new ServerDirectory(new ServerSocket(Config.get()
-					.getInt("PORT")));
-			
+			data = Data.getInstance();
+			dir = new ServerDirectory(new ServerSocket(Config.get().getInt(
+					"PORT")));
+
 			TIME_LIMIT = Config.get().getInt("TIME_LIMIT");
 			QUESTIONS_PER_ROUND = Config.get().getInt("QUESTIONS_PER_ROUND");
 			ROUNDS_PER_MATCH = Config.get().getInt("ROUNDS_PER_MATCH");
@@ -51,7 +72,7 @@ public class Server {
 	 *            unused
 	 */
 	public static void main(String[] args) {
-		new Thread(serverDir).start();
+		new Thread(dir).start();
 	}
 
 }

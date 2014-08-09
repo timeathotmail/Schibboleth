@@ -11,7 +11,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
  * @author Tim Wiechers
  */
 @JsonTypeInfo(use = JsonTypeInfo.Id.MINIMAL_CLASS, include = JsonTypeInfo.As.PROPERTY)
-public class MatchSearchStartRequest implements Serializable{
+public class MatchSearchStartRequest implements Serializable {
 	/**
 	 * Version number for serialization.
 	 */

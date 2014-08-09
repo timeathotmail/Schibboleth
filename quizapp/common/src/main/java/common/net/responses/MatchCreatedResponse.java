@@ -1,16 +1,13 @@
 package common.net.responses;
 
 import java.io.Serializable;
-import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 import common.entities.Match;
-import common.entities.User;
 
 /**
- * Response to notify a client that a match was created. Includes a list of IDs
- * of the questions that will be posed.
+ * Response to notify a client that a match was created.
  * 
  * @author Tim Wiechers
  */
@@ -21,7 +18,7 @@ public class MatchCreatedResponse implements Serializable {
 	 */
 	private static final long serialVersionUID = -8468892503273560460L;
 	/**
-	 * Match.
+	 * The created match.
 	 */
 	private Match match;
 
@@ -34,13 +31,16 @@ public class MatchCreatedResponse implements Serializable {
 
 	/**
 	 * Creates an instance.
+	 * 
+	 * @param match
+	 *            the created match
 	 */
 	public MatchCreatedResponse(Match match) {
 		this.match = match;
 	}
 
 	// === getters ===
-	
+
 	public Match getMatch() {
 		return match;
 	}

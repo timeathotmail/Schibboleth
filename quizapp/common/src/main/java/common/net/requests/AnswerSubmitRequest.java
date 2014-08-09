@@ -15,16 +15,19 @@ public class AnswerSubmitRequest implements Serializable {
 	 * Version number for serialization.
 	 */
 	private static final long serialVersionUID = -6889887916985945155L;
-	
-	private int matchId;
-	
+	/**
+	 * The rowId of the match.
+	 */
+	private int matchRowId;
 	/**
 	 * The answer's index.
 	 */
 	private int index;
-	
+	/**
+	 * Indicates whether the user selected an answer in the time limit.
+	 */
 	private boolean inTime;
-	
+
 	/**
 	 * Constructor for JSON deserialization.
 	 */
@@ -34,24 +37,30 @@ public class AnswerSubmitRequest implements Serializable {
 
 	/**
 	 * Creates an instance.
-	 * @param index the answer's index
+	 * 
+	 * @param matchRowId
+	 *            the rowId of the match
+	 * @param index
+	 *            index the answer's index
+	 * @param inTime
+	 *            true if the user selected an answer in the time limit
 	 */
-	public AnswerSubmitRequest(int matchId, int index, boolean inTime) {
-		this.matchId = matchId;
+	public AnswerSubmitRequest(int matchRowId, int index, boolean inTime) {
+		this.matchRowId = matchRowId;
 		this.index = index;
 		this.inTime = inTime;
 	}
 
 	// === getters ===
-	
+
 	public int getMatchId() {
-		return matchId;
+		return matchRowId;
 	}
-	
+
 	public int getIndex() {
 		return index;
 	}
-	
+
 	public boolean answeredInTime() {
 		return inTime;
 	}

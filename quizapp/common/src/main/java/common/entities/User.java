@@ -1,11 +1,17 @@
 package common.entities;
 
+import java.io.Serializable;
+
 /**
  * This class represents a registered user in the system.
  * 
  * @author Tim Wiechers
  */
-public class User {
+public class User implements Serializable {
+	/**
+	 * Version number for serialization.
+	 */
+	private static final long serialVersionUID = -8493063180883131770L;
 	/**
 	 * ID for unique identification.
 	 */
@@ -67,12 +73,22 @@ public class User {
 
 	// === special methods ===
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#toString()
+	 */
 	@Override
 	public String toString() {
-		return "User [rowid=" + rowid + ", isAdmin=" + isAdmin + ", name=" + name
-				+ "]";
+		return "User [rowid=" + rowid + ", isAdmin=" + isAdmin + ", name="
+				+ name + "]";
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#hashCode()
+	 */
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -83,6 +99,11 @@ public class User {
 		return result;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)

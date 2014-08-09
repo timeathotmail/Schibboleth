@@ -137,8 +137,8 @@ public class NetUtils {
 	 * @throws IllegalArgumentException
 	 *             if the socket or object is null
 	 */
-	public void send(Socket socket, Serializable obj) throws SocketWriteException,
-			IllegalArgumentException {
+	public void send(Socket socket, Serializable obj)
+			throws SocketWriteException, IllegalArgumentException {
 		send(socket, toJson(obj));
 	}
 

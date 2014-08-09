@@ -18,8 +18,7 @@ public class UserListChangedResponse implements Serializable {
 	 */
 	private static final long serialVersionUID = -2285567679731596648L;
 	/**
-	 * True if the user connected.
-	 * False if the user disconnected.
+	 * True if the user connected. False if the user disconnected.
 	 */
 	private boolean connected;
 	/**
@@ -36,8 +35,11 @@ public class UserListChangedResponse implements Serializable {
 
 	/**
 	 * Creates an instance.
-	 * @param connected true if the user connected
-	 * @param user the user
+	 * 
+	 * @param connected
+	 *            true if the user connected
+	 * @param user
+	 *            the user
 	 */
 	public UserListChangedResponse(boolean connected, User user) {
 		this.connected = connected;
