@@ -1,5 +1,7 @@
 package server.persistence;
 
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -190,4 +192,35 @@ public interface Persistence {
 	 *             if any database query fails
 	 */
 	void removeChallenge(Challenge challenge) throws SQLException;
+
+	/**
+	 * Exports all rows in the table of <code>clazz</code> to <code>out</code>
+	 * in CSV format.
+	 *
+	 * @param out
+	 *            the output stream
+	 * @param clazz
+	 *            entity class whose table should be exported
+	 * @throws DataSourceException
+	 *             thrown in case of problems with the data source
+	 * @author K. Hölscher, D. Lüdemann, R. Koschke, Tim Wiechers
+	 */
+	public <T> void exportTable(OutputStream out, Class<T> clazz)
+			throws SQLException;
+
+	/**
+	 * Reads CSV data from <code>input</code> and inserts them into the table of
+	 * <code>clazz</code>.
+	 *
+	 * @param input
+	 *            input stream with CSV data to be imported
+	 * @param clazz
+	 *            entity class to import the table of
+	 * @throws SQLException
+	 *             thrown in case of problems in adding the entries to the table
+	 *             or in reading the values from the input
+	 * @author K. Hölscher, D. Lüdemann, R. Koschke, Tim Wiechers
+	 */
+	public <T> int importTable(InputStream input, Class<T> clazz)
+			throws SQLException;
 }

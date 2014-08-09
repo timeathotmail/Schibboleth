@@ -44,7 +44,7 @@ public class Question {
 	/**
 	 * The question's category.
 	 */
-	private Category category;
+	private String category;
 
 	/**
 	 * Constructor for JSON deserialization and persistence framework.
@@ -80,7 +80,7 @@ public class Question {
 		this.answer3 = answer3;
 		this.answer4 = answer4;
 		this.correctIndex = correctIndex;
-		this.category = category;
+		this.category = category.toString();
 	}
 
 	// === getters & setters ===
@@ -134,10 +134,10 @@ public class Question {
 	}
 
 	public Category getCategory() {
-		return category;
+		return Category.valueOf(category);
 	}
 
-	public void setCategory(Category category) {
+	public void setCategory(String category) {
 		this.category = category;
 	}
 

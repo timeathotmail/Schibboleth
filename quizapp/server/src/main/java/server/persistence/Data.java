@@ -1,15 +1,23 @@
 package server.persistence;
 
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Formatter;
@@ -24,6 +32,8 @@ import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.handlers.BeanListHandler;
 
 import server.Server;
+import server.persistence.CSVReader.CorruptInput;
+import server.persistence.CSVReader.UnknownColumn;
 import server.persistence.constraints.*;
 import server.persistence.query.InsertQueryBuilder;
 import server.persistence.query.QueryBuilder;
@@ -136,8 +146,7 @@ public class Data implements Persistence {
 				+ "answer2      VARCHAR(30)  NOT NULL,"
 				+ "answer3      VARCHAR(30)  NOT NULL,"
 				+ "answer4      VARCHAR(30)  NOT NULL,"
-				+ "correctIndex TINYINT UNSIGNED,"
-				+ "revision     SMALLINT UNSIGNED NOT NULL)",
+				+ "correctIndex TINYINT UNSIGNED NOT NULL)",
 				getTable(Question.class)));
 
 		run.update(conn, String.format("CREATE TABLE IF NOT EXISTS %s("
@@ -651,9 +660,11 @@ public class Data implements Persistence {
 		}
 
 		for (Field f : obj.getClass().getDeclaredFields()) {
-			if (f.getName().equals("rowid")
-					|| (!f.getType().isPrimitive() && !f.getType().equals(
-							String.class))) {
+			if (f.getName().equals("rowid")) {
+				continue;
+			}
+			if (!f.getType().isPrimitive() && !f.getType().isEnum()
+					&& !f.getType().equals(String.class)) {
 				continue;
 			}
 
@@ -789,5 +800,314 @@ public class Data implements Persistence {
 	 */
 	private static String getTable(Object obj) {
 		return getTable(obj.getClass());
+	}
+
+	// =====================================================================
+	// Import / Export
+	// =====================================================================
+
+	/* (non-Javadoc)
+	 * @see server.persistence.Persistence#exportTable(java.io.OutputStream, java.lang.Class)
+	 */
+	@Override
+	public <T> void exportTable(OutputStream out, Class<T> clazz)
+			throws SQLException {
+		final String query = "SELECT rowid, * from " + getTable(clazz);
+
+		Statement stmt = conn.createStatement();
+		try {
+			ResultSet set = stmt.executeQuery(query);
+			try {
+				final PrintStream printer = new PrintStream(out);
+				final SimpleDateFormat df = new SimpleDateFormat(DATEFORMAT);
+				final int numberOfColumns = set.getMetaData().getColumnCount();
+				{ // print header row
+					ResultSetMetaData metaData = set.getMetaData();
+					for (int column = 1; column <= numberOfColumns; column++) {
+						printer.print(quote(metaData.getColumnLabel(column)));
+						if (column < numberOfColumns) {
+							printer.print(CSVReader.DEFAULT_SEPARATOR);
+						}
+					}
+					printer.println();
+				}
+				// print data rows
+				while (set.next()) {
+					for (int column = 1; column <= numberOfColumns; column++) {
+						Object value = set.getObject(column);
+						if (value != null) {
+							// null should appear as empty string
+							if (value instanceof Date) {
+								printer.print(quote(df.format((Date) value)));
+							} else {
+								printer.print(quote(value.toString()));
+							}
+						}
+						if (column < numberOfColumns) {
+							printer.print(CSVReader.DEFAULT_SEPARATOR);
+						}
+					}
+					printer.println();
+				}
+			} finally {
+				set.close();
+			}
+		} finally {
+			stmt.close();
+		}
+	}
+	
+	/* (non-Javadoc)
+	 * @see server.persistence.Persistence#importTable(java.io.InputStream, java.lang.Class)
+	 */
+	@Override
+	public <T> int importTable(InputStream input, Class<T> clazz)
+			throws SQLException {
+		final ColumnDescriptor[] columns = getColumns(getTable(clazz));
+		final String[] expectedColumns = toLabels(columns);
+		if (expectedColumns.length == 0) {
+			// Pathological case.
+			logger.info("table with no columns");
+			return 0;
+		}
+		try {
+			CSVReader csvReader = new CSVReader(input,
+					CSVReader.DEFAULT_SEPARATOR, CSVReader.DEFAULT_QUOTE);
+			if (!csvReader.hasColumns(expectedColumns)) {
+				throw new SQLException("Unexpected header:"
+						+ toString(expectedColumns));
+			}
+			// logger.debug("attempt to read " + csvReader.numberOfRows() +
+			// " data rows");
+			if (csvReader.numberOfRows() == 0) {
+				// That is not necessarily an error, although it may appear
+				// to be strange that somebody would want to upload an empty
+				// file. Nevertheless, we do not treat this as an error,
+				// because importTable might be called internally by restoring
+				// a backed up database state that has empty tables. Furthermore
+				// we do inform the user, how many entries were stored.
+				logger.info("CSV file is empty");
+				return 0;
+			}
+
+			try {
+				conn.setAutoCommit(false);
+				// construct SQL statement
+				StringBuilder fields = new StringBuilder("INSERT INTO "
+						+ getTable(clazz) + " (");
+				StringBuilder placeholders = new StringBuilder("VALUES (");
+				// append fields by "field1, field2, ..., fieldN"
+				// append placeholders by "?, ?, ..., ?"
+				// where field1 is a non-static field
+				// count the number of such fields in numberOfFields
+				for (int i = 0; i < expectedColumns.length; i++) {
+					fields.append(expectedColumns[i]);
+					fields.append(",");
+					placeholders.append("?,");
+				}
+				// fields = "INSERT INTO <table> (field1, field2, ..., fieldN,"
+				// placeholders = "VALUES (?, ?, ..., ?,"
+				// remove last commas
+				fields.deleteCharAt(fields.length() - 1);
+				placeholders.deleteCharAt(placeholders.length() - 1);
+				// close statement parts
+				fields.append(")");
+				placeholders.append(")");
+				// fields = "INSERT INTO <table> (field1, field2, ..., fieldN)"
+				// placeholders = "VALUES (?, ?, ..., ?)"
+				final DateFormat formatter = new SimpleDateFormat(DATEFORMAT);
+				// create prepared statement
+				final String query = fields.toString()
+						+ placeholders.toString();
+				// query =
+				// "INSERT INTO <table> (field1, field2, ..., fieldN) VALUES (?, ?, ..., ?)"
+				// The field names are read from an input file and, hence,
+				// represented
+				// potentially tainted values. Yet, the fields must correspond
+				// to the
+				// field names of <table>. Otherwise the SQL statement is
+				// invalid. Hence,
+				// if any of the fields were tainted, the query would fail.
+				// Furthermore,
+				// the values read from the input file are added via setX
+				// statements to this
+				// prepared statement with place holders. Consequently, the
+				// query is save.
+				PreparedStatement stmt = conn.prepareStatement(query);
+				try {
+					for (int row = 0; row < csvReader.numberOfRows(); row++) {
+						logger.info("processing line " + (row + 1));
+						// collect values
+						for (int col = 0; col < expectedColumns.length; col++) {
+							String value;
+							try {
+								value = csvReader
+										.get(expectedColumns[col], row);
+							} catch (UnknownColumn e) {
+								throw new SQLException("Unexpected Column '"
+										+ expectedColumns[col] + "' "
+										+ "in line " + (row + 2) + ": "
+										+ e.getLocalizedMessage());
+							}
+							if (value.isEmpty()) {
+								stmt.setNull(col + 1, columns[col].type);
+							} else if (columns[col].type == java.sql.Types.DATE) {
+								Date date;
+								try {
+									date = formatter.parse(value);
+									java.sql.Date sqlDate = new java.sql.Date(
+											date.getTime());
+									stmt.setDate(col + 1, sqlDate);
+								} catch (ParseException e) {
+									throw new SQLException(
+											"Unexpected DateFormat" + " '"
+													+ value + "' in line "
+													+ (row + 2) + "; expected "
+													+ DATEFORMAT + ": "
+													+ e.getLocalizedMessage());
+								}
+							} else {
+								stmt.setString(col + 1, value);
+							}
+						}
+						// return value of execute() can be safely ignored (see
+						// API documentation)
+						try {
+							stmt.execute();
+						} catch (SQLException e) {
+							throw new SQLException("in line " + (row + 2)
+									+ ": " + e.getLocalizedMessage());
+						}
+					}
+				} finally {
+					stmt.close();
+				}
+				conn.commit();
+				logger.info("inserts are committed");
+			} catch (RuntimeException e) {
+				// This exception handler is subsumed by the following on
+				// Exception.
+				// It is there to please findbugs, which otherwise complains.
+				logger.info("inserts are rolled back");
+				conn.rollback();
+				throw e;
+			} catch (Exception e) {
+				logger.info("inserts are rolled back");
+				conn.rollback();
+				throw e;
+			} finally {
+				conn.close();
+			}
+			return csvReader.numberOfRows();
+		} catch (CorruptInput e) {
+			throw new SQLException(e.getLocalizedMessage());
+		} catch (Exception e) {
+			throw new SQLException(e.getLocalizedMessage());
+		}
+	}
+	
+	/**
+	 * The format for imported/exported dates.
+	 */
+	private static final String DATEFORMAT = "dd.MM.yyyy";
+
+	/**
+	 * Quotes every quote in string and surrounds the whole string by quotes.
+	 *
+	 * @param string
+	 *            input string
+	 * @return "string"
+	 * @author K. Hölscher, D. Lüdemann, R. Koschke
+	 */
+	private String quote(String string) {
+		return CSVReader.DEFAULT_QUOTE
+				+ string.replace(CSVReader.DEFAULT_QUOTE,
+						CSVReader.DEFAULT_QUOTE + CSVReader.DEFAULT_QUOTE)
+				+ CSVReader.DEFAULT_QUOTE;
+	}
+
+	/**
+	 * A descriptor of a table column.
+	 * @author K. Hölscher, D. Lüdemann, R. Koschke
+	 */
+	private static class ColumnDescriptor {
+		public String label; // label of a column
+		public int type; // one of java.sql.Types
+	}
+
+	/**
+	 * Retrieves the column information from <code>table</code>.
+	 *
+	 * @param table
+	 *            the name of the table whose columns need to be known
+	 * @return descriptors for each table column
+	 * @throws DataSourceException
+	 *             thrown in case of problems with the data source
+	 * @author K. Hölscher, D. Lüdemann, R. Koschke
+	 */
+	private ColumnDescriptor[] getColumns(String table) throws SQLException {
+		final String query = "SELECT * from " + table;
+
+		logger.info("getColumns " + query);
+		Statement stmt = conn.createStatement();
+		try {
+			ResultSet set = stmt.executeQuery(query);
+			try {
+				final int numberOfColumns = set.getMetaData().getColumnCount();
+				ColumnDescriptor[] result = new ColumnDescriptor[numberOfColumns];
+				{ // get columns
+					ResultSetMetaData metaData = set.getMetaData();
+					for (int column = 1; column <= numberOfColumns; column++) {
+						result[column - 1] = new ColumnDescriptor();
+						result[column - 1].type = metaData
+								.getColumnType(column);
+						result[column - 1].label = metaData
+								.getColumnLabel(column);
+					}
+				}
+				return result;
+			} finally {
+				set.close();
+			}
+		} finally {
+			stmt.close();
+		}
+	}
+
+	/**
+	 * Reduces <code>columns</code> to the list of table contained therein.
+	 *
+	 * @param columns
+	 *            columns whose labels are to be gathered
+	 * @return only the labels in columns
+	 * @author K. Hölscher, D. Lüdemann, R. Koschke
+	 */
+	private static String[] toLabels(ColumnDescriptor[] columns) {
+		String[] result = new String[columns.length];
+		for (int i = 0; i < columns.length; i++) {
+			result[i] = columns[i].label;
+		}
+		return result;
+	}
+
+	
+
+	/**
+	 * Returns a concatenation of the strings in columns separated by
+	 * CSVReader.DEFAULT_SEPARATOR.
+	 *
+	 * @param columns
+	 *            the strings to be concatenated
+	 * @return concatenation of the strings in columns separated by
+	 *         CSVReader.DEFAULT_SEPARATOR
+	 * @author K. Hölscher, D. Lüdemann, R. Koschke
+	 */
+	private static String toString(String[] columns) {
+		StringBuilder s = new StringBuilder();
+		for (int i = 0; i < columns.length; i++) {
+			s.append(columns[i]);
+			s.append(CSVReader.DEFAULT_SEPARATOR);
+		}
+		return s.toString();
 	}
 }

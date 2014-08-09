@@ -42,7 +42,7 @@ public abstract class QueryBuilder {
 		hasValues = true;
 
 		// formatting
-		if (value.getClass().equals(String.class)) {
+		if (value.getClass().equals(String.class) || value.getClass().isEnum()) {
 			values.append(String.format("'%s'", value));
 		} else if (value.getClass().equals(Boolean.class)) {
 			values.append(((Boolean) value).booleanValue() ? 1 : 0);
