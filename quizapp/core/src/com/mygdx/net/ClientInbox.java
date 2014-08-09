@@ -129,10 +129,10 @@ public class ClientInbox implements Runnable {
 				}
 
 				{ // ============================================================
-					OpponentLeftResponse obj = net.fromJson(json,
-							OpponentLeftResponse.class);
+					UserSearchResponse obj = net.fromJson(json,
+							UserSearchResponse.class);
 					if (obj != null) {
-						QuizGame.getInstance().onOpponentLeft();
+						QuizGame.getInstance().onUserSearchResult(obj.getUser());
 						continue;
 					}
 				}

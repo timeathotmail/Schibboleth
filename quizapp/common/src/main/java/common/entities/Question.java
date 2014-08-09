@@ -16,11 +16,7 @@ public class Question {
 	/**
 	 * ID for unique identification.
 	 */
-	private int id;
-	/**
-	 * States in which app revision the question was introduced.
-	 */
-	private int revision;
+	private int rowid;
 	/**
 	 * The question.
 	 */
@@ -77,7 +73,7 @@ public class Question {
 	 */
 	public Question(String text, String answer1, String answer2,
 			String answer3, String answer4, int correctIndex,
-			Category category, int revision) {
+			Category category) {
 		this.text = text;
 		this.answer1 = answer1;
 		this.answer2 = answer2;
@@ -85,17 +81,16 @@ public class Question {
 		this.answer4 = answer4;
 		this.correctIndex = correctIndex;
 		this.category = category;
-		this.revision = revision;
 	}
 
 	// === getters & setters ===
 
-	public int getId() {
-		return id;
+	public int getRowId() {
+		return rowid;
 	}
 
-	public void setId(int id) {
-		this.id = id;
+	public void setRowId(int id) {
+		this.rowid = id;
 	}
 
 	public String getText() {
@@ -154,25 +149,23 @@ public class Question {
 		this.correctIndex = correctIndex;
 	}
 
-	public int getRevision() {
-		return revision;
-	}
-
-	public void setRevision(int revision) {
-		this.revision = revision;
-	}
-
 	// === special methods ===
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
 	@Override
 	public String toString() {
-		return "Question [id=" + id + ", revision=" + revision + ", text="
+		return "Question [id=" + rowid + ", text="
 				+ text + ", answer1=" + answer1 + ", answer2=" + answer2
 				+ ", answer3=" + answer3 + ", answer4=" + answer4
 				+ ", correctIndex=" + correctIndex + ", category=" + category
 				+ "]";
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -184,12 +177,14 @@ public class Question {
 		result = prime * result
 				+ ((category == null) ? 0 : category.hashCode());
 		result = prime * result + correctIndex;
-		result = prime * result + id;
-		result = prime * result + revision;
+		result = prime * result + rowid;
 		result = prime * result + ((text == null) ? 0 : text.hashCode());
 		return result;
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -223,9 +218,7 @@ public class Question {
 			return false;
 		if (correctIndex != other.correctIndex)
 			return false;
-		if (id != other.id)
-			return false;
-		if (revision != other.revision)
+		if (rowid != other.rowid)
 			return false;
 		if (text == null) {
 			if (other.text != null)

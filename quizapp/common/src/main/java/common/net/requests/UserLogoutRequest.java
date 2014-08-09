@@ -5,8 +5,7 @@ import java.io.Serializable;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 /**
- * Request to signalize the server that the user disconnected and the respective
- * socket can be closed.
+ * Request to signalize the server that the user disconnected.
  * 
  * @author Tim Wiechers
  */

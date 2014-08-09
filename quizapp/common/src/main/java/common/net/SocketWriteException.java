@@ -13,15 +13,19 @@ public class SocketWriteException extends Exception {
 
 	/**
 	 * Creates an instance.
-	 * @param string error message
+	 * 
+	 * @param string
+	 *            error message
 	 */
 	public SocketWriteException(String string) {
 		super(string);
 	}
-	
+
 	/**
 	 * Creates an instance.
-	 * @param e cause
+	 * 
+	 * @param e
+	 *            cause
 	 */
 	public SocketWriteException(Throwable e) {
 		super(e);

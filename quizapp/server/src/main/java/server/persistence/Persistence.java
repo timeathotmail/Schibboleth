@@ -20,6 +20,8 @@ public interface Persistence {
 	 * @param password
 	 *            user's password
 	 * @return the user on success, null else
+	 * @throws SQLException
+	 *             if any database query fails
 	 */
 	User loginUser(String username, String password) throws SQLException;
 
@@ -31,19 +33,48 @@ public interface Persistence {
 	 * @param password
 	 *            user's password
 	 * @return the user on success, null else
+	 * @throws SQLException
+	 *             if any database query fails
+	 * @throws IllegalArgumentException
+	 *             if username and/or passwords don't meet standards
 	 */
 	User registerUser(String username, String password) throws SQLException,
 			IllegalArgumentException;
 
+	/**
+	 * Changes the user credentials.
+	 * 
+	 * @param user
+	 *            the user to change credentials of
+	 * @param username
+	 *            desired username
+	 * @param password
+	 *            desired password
+	 * @param confirmation
+	 *            password confirmation
+	 * @throws SQLException
+	 *             if any database query fails
+	 * @throws IllegalArgumentException
+	 *             if username and/or passwords don't meet standards or password
+	 *             and confirmation are not equal.
+	 */
 	void changeUserCredentials(User user, String username, String password,
 			String confirmation) throws SQLException, IllegalArgumentException;
+
+	/**
+	 * @return a list of banned expressions not to be used in usernames
+	 * @throws SQLException
+	 *             if any database query fails
+	 */
+	List<String> getBadWords() throws SQLException;
 
 	/**
 	 * Updates a user's data based on his ID.
 	 * 
 	 * @param user
 	 *            user to update
-	 * @return true on success
+	 * @throws SQLException
+	 *             if any database query fails
 	 */
 	void updateUser(User user) throws SQLException;
 
@@ -52,7 +83,8 @@ public interface Persistence {
 	 * 
 	 * @param user
 	 *            to remove
-	 * @return true on success
+	 * @throws SQLException
+	 *             if any database query fails
 	 */
 	void removeUser(User user) throws SQLException;
 
@@ -62,11 +94,15 @@ public interface Persistence {
 	 * @param username
 	 *            user's name
 	 * @return the user on success, null else
+	 * @throws SQLException
+	 *             if any database query fails
 	 */
 	User getUser(String username) throws SQLException;
 
 	/**
 	 * @return a list of all users in the database
+	 * @throws SQLException
+	 *             if any database query fails
 	 */
 	List<User> getUsers() throws SQLException;
 
@@ -75,7 +111,8 @@ public interface Persistence {
 	 * 
 	 * @param question
 	 *            question to add
-	 * @return true on success
+	 * @throws SQLException
+	 *             if any database query fails
 	 */
 	void addQuestion(Question question) throws SQLException;
 
@@ -84,7 +121,8 @@ public interface Persistence {
 	 * 
 	 * @param question
 	 *            question to update
-	 * @return true on success
+	 * @throws SQLException
+	 *             if any database query fails
 	 */
 	void updateQuestion(Question question) throws SQLException;
 
@@ -93,12 +131,15 @@ public interface Persistence {
 	 * 
 	 * @param question
 	 *            question to remove
-	 * @return true on success
+	 * @throws SQLException
+	 *             if any database query fails
 	 */
 	void removeQuestion(Question question) throws SQLException;
 
 	/**
 	 * @return a list of all questions in the database
+	 * @throws SQLException
+	 *             if any database query fails
 	 */
 	List<Question> getQuestions() throws SQLException;
 
@@ -107,15 +148,46 @@ public interface Persistence {
 	 * 
 	 * @param match
 	 *            match to save
-	 * @return true on success
+	 * @throws SQLException
+	 *             if any database query fails
 	 */
 	void saveMatch(Match match) throws SQLException;
-	
+
+	/**
+	 * @param user
+	 *            the user to fetch matches of
+	 * @return the running matches of a user
+	 * @throws SQLException
+	 *             if any database query fails
+	 */
 	List<Match> getRunningMatches(User user) throws SQLException;
-	
-	List<String> getBadWords() throws SQLException;
-	
+
+	/**
+	 * @param user
+	 *            the user to fetch challenges of
+	 * @return the unanswered challenges of a user
+	 * @throws SQLException
+	 *             if any database query fails
+	 */
 	List<Challenge> getChallenges(User user) throws SQLException;
+
+	/**
+	 * Adds a challenge to the database.
+	 * 
+	 * @param challenge
+	 *            the challenge to insert
+	 * @throws SQLException
+	 *             if any database query fails
+	 */
 	void saveChallenge(Challenge challenge) throws SQLException;
+
+	/**
+	 * Removes a challenge from the database.
+	 * 
+	 * @param challenge
+	 *            the challenge to remove
+	 * @throws SQLException
+	 *             if any database query fails
+	 */
 	void removeChallenge(Challenge challenge) throws SQLException;
 }

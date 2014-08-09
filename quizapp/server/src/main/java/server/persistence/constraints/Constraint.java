@@ -1,31 +1,21 @@
 package server.persistence.constraints;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-
+/**
+ * Base class for query constraints.
+ * 
+ * @author Tim Wiechers
+ */
 public abstract class Constraint {
 	public abstract String toString();
 
-	public enum AppendAt {
-		FRONT, BACK
-	}
-
-	public static Constraint[] append(Constraint[] arr, Constraint add,
-			AppendAt at) {
-		ArrayList<Constraint> temp = new ArrayList<Constraint>(
-				Arrays.asList(arr));
-
-		if (at == AppendAt.FRONT) {
-			temp.add(0, add);
-		} else {
-			temp.add(add);
-		}
-
-		return temp.toArray(new Constraint[arr.length + 1]);
-	}
-	
-	public static <T extends Constraint> String toString(
-			T... constraints) {
+	/**
+	 * Creates a String from multiple constraints.
+	 * 
+	 * @param constraints
+	 *            the constraints to create a String for
+	 * @return the constraint String
+	 */
+	public static <T extends Constraint> String toString(T... constraints) {
 		if (constraints.length == 0)
 			return "";
 

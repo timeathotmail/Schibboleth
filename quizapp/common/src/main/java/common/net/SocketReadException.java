@@ -17,8 +17,11 @@ public class SocketReadException extends Exception {
 
 	/**
 	 * Creates an instance.
-	 * @param socketClosed true if the socket was closed
-	 * @param string error message
+	 * 
+	 * @param socketClosed
+	 *            true if the socket was closed
+	 * @param string
+	 *            error message
 	 */
 	public SocketReadException(boolean socketClosed, String string) {
 		super(string);
@@ -27,8 +30,11 @@ public class SocketReadException extends Exception {
 
 	/**
 	 * Creates an instance.
-	 * @param socketClosed true if the socket was closed
-	 * @param e cause
+	 * 
+	 * @param socketClosed
+	 *            true if the socket was closed
+	 * @param e
+	 *            cause
 	 */
 	public SocketReadException(boolean socketClosed, Throwable e) {
 		super(e);

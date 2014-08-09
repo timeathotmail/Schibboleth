@@ -5,7 +5,6 @@ import java.io.Serializable;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 import common.entities.Challenge;
-import common.entities.User;
 
 /**
  * Response to notify a client that a challenge of hers/his was denied.
@@ -18,8 +17,11 @@ public class ChallengeDeniedResponse implements Serializable {
 	 * Version number for serialization.
 	 */
 	private static final long serialVersionUID = 4552143065236969334L;
+	/**
+	 * The denied challenge.
+	 */
 	private Challenge challenge;
-	
+
 	/**
 	 * Constructor for JSON deserialization.
 	 */
@@ -27,12 +29,18 @@ public class ChallengeDeniedResponse implements Serializable {
 	public ChallengeDeniedResponse() {
 	}
 
+	/**
+	 * Creates an instance.
+	 * 
+	 * @param challenge
+	 *            the denied challenge
+	 */
 	public ChallengeDeniedResponse(Challenge challenge) {
 		this.challenge = challenge;
 	}
-	
+
 	// === getters ===
-	
+
 	public Challenge getChallenge() {
 		return challenge;
 	}

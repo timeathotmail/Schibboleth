@@ -1,15 +1,21 @@
 package common.entities;
 
+import java.io.Serializable;
+
 /**
  * This class represents a registered user in the system.
  * 
  * @author Tim Wiechers
  */
-public class User {
+public class User implements Serializable {
+	/**
+	 * Version number for serialization.
+	 */
+	private static final long serialVersionUID = -8493063180883131770L;
 	/**
 	 * ID for unique identification.
 	 */
-	private int id;
+	private int rowid;
 	/**
 	 * True if admin.
 	 */
@@ -41,12 +47,12 @@ public class User {
 
 	// === getters & setters ===
 
-	public int getId() {
-		return id;
+	public int getRowId() {
+		return rowid;
 	}
 
-	public void setId(int id) {
-		this.id = id;
+	public void setRowId(int id) {
+		this.rowid = id;
 	}
 
 	public String getName() {
@@ -67,22 +73,37 @@ public class User {
 
 	// === special methods ===
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#toString()
+	 */
 	@Override
 	public String toString() {
-		return "User [id=" + id + ", isAdmin=" + isAdmin + ", name=" + name
-				+ "]";
+		return "User [rowid=" + rowid + ", isAdmin=" + isAdmin + ", name="
+				+ name + "]";
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#hashCode()
+	 */
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + id;
+		result = prime * result + rowid;
 		result = prime * result + (isAdmin ? 1231 : 1237);
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		return result;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -92,7 +113,7 @@ public class User {
 		if (getClass() != obj.getClass())
 			return false;
 		User other = (User) obj;
-		if (id != other.id)
+		if (rowid != other.rowid)
 			return false;
 		if (isAdmin != other.isAdmin)
 			return false;

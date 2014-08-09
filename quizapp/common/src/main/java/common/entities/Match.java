@@ -7,20 +7,20 @@ import java.util.List;
 import common.entities.annotations.*;
 
 /**
- * This class represents a finished match between two users.
+ * This class represents a (running) match between two users.
  * 
  * @author Tim Wiechers
  */
 @TableAlias(table = "MATCH__")
 public class Match implements Serializable {
 	/**
-	 * 
+	 * Version number for serialization.
 	 */
 	private static final long serialVersionUID = -8635993418414020408L;
 	/**
 	 * ID for unique identification.
 	 */
-	private int id;
+	private int rowid;
 	/**
 	 * First player.
 	 */
@@ -33,19 +33,13 @@ public class Match implements Serializable {
 	 * First player's id.
 	 */
 	private int userId1;
-	public int getUserId1() {
-		return userId1;
-	}
-
-	public int getUserId2() {
-		return userId2;
-	}
-
 	/**
 	 * Second player's id.
 	 */
 	private int userId2;
-
+	/**
+	 * List of rounds to be played in this match.
+	 */
 	private List<Round> rounds;
 
 	/**
@@ -68,7 +62,28 @@ public class Match implements Serializable {
 		setUser2(user2);
 	}
 
-	public void addAnswer(User user, int index) {
+	/**
+	 * Sets the questions to be posed in the match.
+	 * @param questions list of questions
+	 * @param perRound number of questions per round
+	 */
+	public void setQuestions(List<Question> questions, int perRound) {
+		List<Answer> answers = new ArrayList<Answer>();
+		for (int i = 0; i < questions.size();) {
+			for (int j = 0; j < perRound; j++, i++) {
+				answers.add(new Answer(questions.get(i).getRowId()));
+			}
+		}
+		rounds = new ArrayList<Round>();
+		rounds.add(new Round(answers));
+	}
+	
+	/**
+	 * Saves an answer of one of the players.
+	 * @param user the answering user
+	 * @param index the answer's index
+	 */
+	public synchronized void addAnswer(User user, int index) {
 		for (Round r : rounds) {
 			if (r.addAnswer(user == user1, index)) {
 				break;
@@ -76,22 +91,19 @@ public class Match implements Serializable {
 		}
 	}
 
-	public boolean isFinished() {
+	// === getters & setters ===
+	
+	/**
+	 * @return true if both players have played all rounds
+	 */
+	public synchronized boolean isFinished() {
 		return hasPlayed1() && hasPlayed2();
 	}
 	
-	public void setQuestions(List<Question> questions, int perRound) {
-		List<Answer> answers = new ArrayList<Answer>();
-		for (int i = 0; i < questions.size();) {
-			for (int j = 0; j < perRound; j++, i++) {
-				answers.add(new Answer(questions.get(i).getId()));
-			}
-		}
-		rounds = new ArrayList<Round>();
-		rounds.add(new Round(answers));
-	}
-	
-	public boolean hasPlayed1() {
+	/**
+	 * @return true if player one has played all rounds
+	 */
+	public synchronized boolean hasPlayed1() {
 		for (Round r : rounds) {
 			if (!r.hasPlayed1()) {
 				return false;
@@ -101,7 +113,10 @@ public class Match implements Serializable {
 		return true;
 	}
 	
-	public boolean hasPlayed2() {
+	/**
+	 * @return true if player two has played all rounds
+	 */
+	public synchronized boolean hasPlayed2() {
 		for (Round r : rounds) {
 			if (!r.hasPlayed2()) {
 				return false;
@@ -111,19 +126,52 @@ public class Match implements Serializable {
 		return true;
 	}
 
-	// === getters & setters ===
-
-	public int getId() {
-		return id;
+	public synchronized int getPoints1() {
+		int points = 0;
+		
+		for (Round r : rounds) {
+			int w = r.getResult();
+			if(w > 0) {
+				points++;
+			}
+		}
+		
+		return points;
 	}
 
-	public void setId(int id) {
-		this.id = id;
+	public synchronized int getPoints2() {
+		int points = 0;
+		
+		for (Round r : rounds) {
+			int w = r.getResult();
+			if(w < 0) {
+				points++;
+			}
+		}
+		
+		return points;
+	}
+	
+	public int getRowId() {
+		return rowid;
+	}
+
+	public void setRowId(int id) {
+		this.rowid = id;
 
 		for (Round r : rounds) {
 			r.setMatchId(id);
 		}
 	}
+	
+	public int getUserId1() {
+		return userId1;
+	}
+
+	public int getUserId2() {
+		return userId2;
+	}
+	
 
 	public User getUser1() {
 		return user1;
@@ -133,7 +181,7 @@ public class Match implements Serializable {
 		this.user1 = user1;
 
 		if (user1 != null) {
-			this.userId1 = user1.getId();
+			this.userId1 = user1.getRowId();
 		}
 	}
 
@@ -145,34 +193,8 @@ public class Match implements Serializable {
 		this.user2 = user2;
 
 		if (user2 != null) {
-			this.userId2 = user2.getId();
+			this.userId2 = user2.getRowId();
 		}
-	}
-
-	public int getPoints1() {
-		int points = 0;
-		
-		for (Round r : rounds) {
-			int w = r.getWinner();
-			if(w > 0) {
-				points++;
-			}
-		}
-		
-		return points;
-	}
-
-	public int getPoints2() {
-		int points = 0;
-		
-		for (Round r : rounds) {
-			int w = r.getWinner();
-			if(w < 0) {
-				points++;
-			}
-		}
-		
-		return points;
 	}
 
 	public List<Round> getRounds() {
@@ -181,6 +203,70 @@ public class Match implements Serializable {
 
 	public void setRounds(List<Round> rounds) {
 		this.rounds = rounds;
+	}
+
+	// === special methods ===
+	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return "Match [rowid=" + rowid + ", user1=" + user1 + ", user2="
+				+ user2 + ", userId1=" + userId1 + ", userId2=" + userId2
+				+ ", rounds=" + rounds + "]";
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((rounds == null) ? 0 : rounds.hashCode());
+		result = prime * result + rowid;
+		result = prime * result + ((user1 == null) ? 0 : user1.hashCode());
+		result = prime * result + ((user2 == null) ? 0 : user2.hashCode());
+		result = prime * result + userId1;
+		result = prime * result + userId2;
+		return result;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Match other = (Match) obj;
+		if (rounds == null) {
+			if (other.rounds != null)
+				return false;
+		} else if (!rounds.equals(other.rounds))
+			return false;
+		if (rowid != other.rowid)
+			return false;
+		if (user1 == null) {
+			if (other.user1 != null)
+				return false;
+		} else if (!user1.equals(other.user1))
+			return false;
+		if (user2 == null) {
+			if (other.user2 != null)
+				return false;
+		} else if (!user2.equals(other.user2))
+			return false;
+		if (userId1 != other.userId1)
+			return false;
+		if (userId2 != other.userId2)
+			return false;
+		return true;
 	}
 
 	// === special methods ===

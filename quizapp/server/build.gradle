@@ -9,7 +9,6 @@ repositories {
 
 dependencies {
     compile 'junit:junit:4.11'
-    compile 'mysql:mysql-connector-java:5.1.31'
     compile 'org.xerial:sqlite-jdbc:3.7.15-M1'
     compile 'commons-dbutils:commons-dbutils:1.5'
 }

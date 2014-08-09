@@ -16,9 +16,11 @@ public class ChallengeAcceptRequest implements Serializable {
 	 * Version number for serialization.
 	 */
 	private static final long serialVersionUID = 7851926725938339285L;
-
+	/**
+	 * The challenge to accept.
+	 */
 	private Challenge challenge;
-	
+
 	/**
 	 * Constructor for JSON deserialization.
 	 */
@@ -26,12 +28,18 @@ public class ChallengeAcceptRequest implements Serializable {
 	public ChallengeAcceptRequest() {
 	}
 
+	/**
+	 * Creates an instance.
+	 * 
+	 * @param challenge
+	 *            the challenge to accept
+	 */
 	public ChallengeAcceptRequest(Challenge challenge) {
 		this.challenge = challenge;
 	}
-	
+
 	// === getters ===
-	
+
 	public Challenge getChallenge() {
 		return challenge;
 	}
