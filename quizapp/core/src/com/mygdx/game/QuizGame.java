@@ -30,7 +30,14 @@ public class QuizGame extends Game implements IGame{
 		
 	/**makes Game to a singletone*/
 	private static QuizGame INSTANCE;
-
+	
+	/*saves users online*/
+	private List<User> users;
+	/*saves challenges */
+	private List<Challenge> challenges;
+	/*saves matches*/
+	private List<Match> matches;
+	
 	/*default screen resolution*/
 	public static int SCREEN_WIDTH = 480;
 	public static int SCREEN_HEIGHT = 800;
@@ -40,7 +47,11 @@ public class QuizGame extends Game implements IGame{
 	 */
 
 	private QuizGame() {
-		Logger logger = Logger.getLogger("QuizGame");		
+		Logger logger = Logger.getLogger("QuizGame");
+		users = new ArrayList<User>();
+		challenges = new ArrayList<Challenge>();
+		matches = new ArrayList<Match>();
+		
 		try {
 			Config cfg = Config.get();
 			Client.getInstance(this, cfg.get("IP"), cfg.getInt("PORT"));
@@ -98,6 +109,7 @@ public class QuizGame extends Game implements IGame{
 	public void logout() {
 		try {
 			Client.getInstance().logout();
+			ScreenManager.getInstance().show(ScreenSelector.LOGIN);
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 		} catch (SocketWriteException e) {
@@ -114,7 +126,13 @@ public class QuizGame extends Game implements IGame{
 	 */
 	@Override
 	public void searchMatch() {
-		// TODO Auto-generated method stub
+		try {
+			Client.getInstance().searchMatch();
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+		} catch (SocketWriteException e) {
+			e.printStackTrace();
+		}
 
 	}
 
@@ -125,7 +143,13 @@ public class QuizGame extends Game implements IGame{
 	 */
 	@Override
 	public void cancelSearch() {
-		// TODO Auto-generated method stub
+		try {
+			Client.getInstance().cancelSearch();
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+		} catch (SocketWriteException e) {
+			e.printStackTrace();
+		}
 
 	}
 
@@ -136,21 +160,29 @@ public class QuizGame extends Game implements IGame{
 	 * @see com.mygdx.game.IGame#sendChallenge(common.entities.User)
 	 */
 	@Override
-	public void sendChallenge(User user) {
-		// TODO Auto-generated method stub
-
+	public void sendChallenge(User user) {		
+		try {
+			Client.getInstance().sendChallenge(user);
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+		} catch (SocketWriteException e) {
+			e.printStackTrace();
+		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.mygdx.game.IGame#displayChallenges()
+	/**
+	 * displays a list of accepted challenges
+	 * @return
 	 */
-	@Override
-	public void displayChallenges() {
-		// TODO Auto-generated method stub
+
+	public List<Challenge> displayChallenges() {
+		return challenges;
 
 	}
+	/**
+	 * displays a list of users online
+	 * @param 
+	 */
 
 	/*
 	 * (non-Javadoc)
@@ -158,8 +190,14 @@ public class QuizGame extends Game implements IGame{
 	 * @see com.mygdx.game.IGame#acceptChallenge(common.entities.User)
 	 */
 	@Override
-	public void acceptChallenge(User user) {
-		// TODO Auto-generated method stub
+	public void acceptChallenge(Challenge challenge) {
+		try {
+			Client.getInstance().acceptChallenge(challenge);
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+		} catch (SocketWriteException e) {
+			e.printStackTrace();
+		}
 
 	}
 
@@ -169,8 +207,14 @@ public class QuizGame extends Game implements IGame{
 	 * @see com.mygdx.game.IGame#denyChallenge(common.entities.User)
 	 */
 	@Override
-	public void denyChallenge(User user) {
-		// TODO Auto-generated method stub
+	public void denyChallenge(Challenge challenge) {
+		try {
+			Client.getInstance().denyChallenge(challenge);
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+		} catch (SocketWriteException e) {
+			e.printStackTrace();
+		}
 
 	}
 
@@ -189,10 +233,14 @@ public class QuizGame extends Game implements IGame{
 	 * (non-Javadoc)
 	 * 
 	 * @see com.mygdx.game.IGame#onLogin(boolean, java.util.Collection)
+	 * i Zeitlimit
 	 */
 	@Override
-	public void onLogin(boolean success, int i, Collection<User> users, List<Match> list, List<Challenge> list2) {
+	public void onLogin(boolean success, int i, List<User> users, List<Match> list, List<Challenge> list2) {
 		if (success) {
+			this.users = users;
+			this.challenges = list2;
+			this.matches = list;
 			ScreenManager.getInstance().show(ScreenSelector.MAIN_MENU);
 		} else {
 			ScreenManager.getInstance().show(ScreenSelector.LOGIN);
@@ -205,10 +253,8 @@ public class QuizGame extends Game implements IGame{
 	 * @see com.mygdx.game.IGame#onConnectionLost()
 	 */
 	@Override
-	public void onConnectionLost() {
-		//TODO dialog with no connection
+	public void onConnectionLost() {		
 		ScreenManager.getInstance().show(ScreenSelector.LOGIN);
-
 	}
 
 	/*
@@ -220,9 +266,9 @@ public class QuizGame extends Game implements IGame{
 	@Override
 	public void onUserListChanged(boolean connected, User user) {
 		if (connected) {
-			//TODO add user
+			users.add(user);			
 		} else {
-			// TODO remove user from list
+			users.remove(user);			
 		}
 	}
 
@@ -233,7 +279,7 @@ public class QuizGame extends Game implements IGame{
 	 */
 	@Override
 	public void onMatchStarted(Match match) {
-		// TODO Auto-generated method stub
+		matches.add(match);
 
 	}
 
@@ -244,7 +290,13 @@ public class QuizGame extends Game implements IGame{
 	 */
 	@Override
 	public void onChallengeDenied(Challenge challenge) {
-		// TODO Auto-generated method stub
+		int i = 0;
+		while(i < challenges.size()){
+			if(challenges.get(i) == challenge){
+				challenges.remove(challenge);
+			}
+			i++;
+		}
 
 	}
 
@@ -255,7 +307,7 @@ public class QuizGame extends Game implements IGame{
 	 */
 	@Override
 	public void onChallengeReceived(Challenge challenge) {
-		// TODO Auto-generated method stub
+		challenges.add(challenge);
 
 	}
 
@@ -266,7 +318,7 @@ public class QuizGame extends Game implements IGame{
 	 */
 	@Override
 	public void onOpponentLeft() {
-		// TODO Auto-generated method stub
+		
 
 	}
 

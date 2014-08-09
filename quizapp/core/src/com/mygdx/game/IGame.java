@@ -50,24 +50,20 @@ public interface IGame {
 	 * Send a challenge to another user.
 	 * @param user challenged user
 	 */
-	void sendChallenge(User user);
+	void sendChallenge(User user);	
 	
-	/**
-	 * Display received challenges.
-	 */
-	void displayChallenges();
 	
 	/**
 	 * Accept a challenge of another user.
 	 * @param user challenger
 	 */
-	void acceptChallenge(User user);
+	void acceptChallenge(Challenge challenge);
 	
 	/**
 	 * Deny and remove a received challenge.
 	 * @param user challenger
 	 */
-	void denyChallenge(User user);
+	void denyChallenge(Challenge challenge);
 	
 	/**
 	 * Display the settings.
@@ -95,7 +91,7 @@ public interface IGame {
 	 * @param list
 	 * @param list2
 	 */
-	void onLogin(boolean success, int i, Collection<User> users,
+	void onLogin(boolean success, int i, List<User> users,
 			List<Match> list, List<Challenge> list2);
 	
 	/**

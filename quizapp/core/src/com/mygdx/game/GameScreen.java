@@ -106,6 +106,9 @@ public class GameScreen implements Screen {
 		
 		
 		lblError = new Label("", skin);
+		lblQuestion = new Label(QuizGame.getInstance()., skin);
+		
+		btnAnswer1 = new TextButton( "", skin);
 		
 		btnBack = new TextButton("Cancel", skin);
 		
@@ -117,7 +120,7 @@ public class GameScreen implements Screen {
 		});
 		
 		table = new Table();
-		setTable();
+		setTable(true);
 		
 		table.setPosition(Gdx.graphics.getWidth() / 2,
 				Gdx.graphics.getHeight() / 2);
@@ -129,10 +132,13 @@ public class GameScreen implements Screen {
 	}
 
 	
-	private void setTable(){
-		table.clear();
-		
-		table.add();
+	private void setTable(boolean timeout){
+		if(timeout){
+			table.clear();
+			table.add()
+			
+			table.add();
+		}
 	}
 	
 	/**
