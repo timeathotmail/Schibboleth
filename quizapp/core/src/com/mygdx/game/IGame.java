@@ -90,9 +90,13 @@ public interface IGame {
 	 * Called on login response. 
 	 * Enter main menu on success or display error message.
 	 * @param success login was successful
+	 * @param i	
 	 * @param users the active user list
+	 * @param list
+	 * @param list2
 	 */
-	void onLogin(boolean success, Collection<User> users);
+	void onLogin(boolean success, int i, Collection<User> users,
+			List<Match> list, List<Challenge> list2);
 	
 	/**
 	 * Called on server connection loss. 
@@ -115,14 +119,14 @@ public interface IGame {
 	 * Notify the user that the challenge was denied.
 	 * @param user denying user
 	 */
-	void onChallengeDenied(User user);
+	void onChallengeDenied(Challenge challenge);
 	
 	/**
 	 * Called on received challenge.
 	 * Notify the user that a challenge was received.
-	 * @param user
+	 * @param challenge
 	 */
-	void onChallengeReceived(User user);
+	void onChallengeReceived(Challenge challenge);
 	
 	/**
 	 * Called if the opponent left the game.
@@ -147,4 +151,10 @@ public interface IGame {
 	 * Called when the search for match was cancelled before a match could be found.
 	 */
 	void onSearchCancelled();
+
+
+	
+
+
+	
 }

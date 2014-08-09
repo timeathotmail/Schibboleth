@@ -191,11 +191,11 @@ public class QuizGame extends Game implements IGame{
 	 * @see com.mygdx.game.IGame#onLogin(boolean, java.util.Collection)
 	 */
 	@Override
-	public void onLogin(boolean success, Collection<User> users) {
+	public void onLogin(boolean success, int i, Collection<User> users, List<Match> list, List<Challenge> list2) {
 		if (success) {
 			ScreenManager.getInstance().show(ScreenSelector.MAIN_MENU);
 		} else {
-			ScreenManager.getInstance().show(ScreenSelector.MAIN_MENU);
+			ScreenManager.getInstance().show(ScreenSelector.LOGIN);
 		}
 	}
 
@@ -206,8 +206,8 @@ public class QuizGame extends Game implements IGame{
 	 */
 	@Override
 	public void onConnectionLost() {
-		
-		// TODO Auto-generated method stub
+		//TODO dialog with no connection
+		ScreenManager.getInstance().show(ScreenSelector.LOGIN);
 
 	}
 
@@ -220,7 +220,7 @@ public class QuizGame extends Game implements IGame{
 	@Override
 	public void onUserListChanged(boolean connected, User user) {
 		if (connected) {
-			// TODO add user to list
+			//TODO add user
 		} else {
 			// TODO remove user from list
 		}
@@ -243,7 +243,7 @@ public class QuizGame extends Game implements IGame{
 	 * @see com.mygdx.game.IGame#onChallengeDenied(common.entities.User)
 	 */
 	@Override
-	public void onChallengeDenied(User user) {
+	public void onChallengeDenied(Challenge challenge) {
 		// TODO Auto-generated method stub
 
 	}
@@ -254,7 +254,7 @@ public class QuizGame extends Game implements IGame{
 	 * @see com.mygdx.game.IGame#onChallengeReceived(common.entities.User)
 	 */
 	@Override
-	public void onChallengeReceived(User user) {
+	public void onChallengeReceived(Challenge challenge) {
 		// TODO Auto-generated method stub
 
 	}
@@ -301,6 +301,10 @@ public class QuizGame extends Game implements IGame{
 	public void onSearchCancelled() {
 		// TODO Auto-generated method stub
 
+	}
+	
+	public void onUserSearchResult(User user){
+		//TODO
 	}
 	
 	/*
