@@ -310,17 +310,7 @@ public class QuizGame extends Game implements IGame{
 		challenges.add(challenge);
 
 	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.mygdx.game.IGame#onOpponentLeft()
-	 */
-	@Override
-	public void onOpponentLeft() {
-		
-
-	}
+	
 
 	/*
 	 * (non-Javadoc)
@@ -329,7 +319,13 @@ public class QuizGame extends Game implements IGame{
 	 */
 	@Override
 	public void onOpponentAnswered(int matchId, int opponentAnswer, boolean inTime) {
-		// TODO Auto-generated method stub
+		try {
+			Client.getInstance().submitAnswer(matchId, opponentAnswer, inTime);
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+		} catch (SocketWriteException e) {
+			e.printStackTrace();
+		}
 
 	}
 
@@ -351,12 +347,12 @@ public class QuizGame extends Game implements IGame{
 	 */
 	@Override
 	public void onSearchCancelled() {
-		// TODO Auto-generated method stub
+		ScreenManager.getInstance().show(ScreenSelector.MAIN_MENU);
 
 	}
 	
 	public void onUserSearchResult(User user){
-		//TODO
+		Client.getInstance().searchUser(user.getName());
 	}
 	
 	/*
