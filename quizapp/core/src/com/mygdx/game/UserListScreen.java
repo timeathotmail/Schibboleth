@@ -15,12 +15,15 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.List;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.mygdx.net.Client;
+
 import common.entities.User;
 
 /**
@@ -41,6 +44,8 @@ public class UserListScreen extends SuperScreen implements Screen {
 	private Table table;
 	private Label lblUsers, lblError;
 	private TextButton btnBack;
+	private List userList;
+	private ScrollPane scroll;
 
 	/* (non-Javadoc)
 	 * @see com.badlogic.gdx.Screen#render(float)
@@ -84,6 +89,9 @@ public class UserListScreen extends SuperScreen implements Screen {
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, 800, 480);
 		
+		userList = new List(skin);
+		scroll = new ScrollPane(userList, skin);
+		
 		lblUsers = new Label("Users online", skin);
 		lblError = new Label("", skin);
 		
@@ -104,7 +112,6 @@ public class UserListScreen extends SuperScreen implements Screen {
 				Gdx.graphics.getHeight() / 2);
 
 		stage.addActor(table);
-		//TODO add scroll pane
 		//TODO add users
 		//TODO dialog mit accept/deny challenge. if accept setScreen(Game)
 		//TODO GameScreen
@@ -116,9 +123,9 @@ public class UserListScreen extends SuperScreen implements Screen {
 		table.row();
 		table.add(btnBack).width(150).height(30).align(Align.right).padBottom(5);
 		table.row();
+		table.add(userList);
 		
-		//TODO add and display users
-		//TODO scroll pane , accept deny challenge
+		//TODO accept deny challenge
 	}
 
 	/**

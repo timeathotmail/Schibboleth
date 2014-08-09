@@ -12,6 +12,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.List;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -20,6 +22,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.mygdx.net.Client;
 
+import common.entities.Challenge;
 import common.net.SocketWriteException;
 
 /**
@@ -38,6 +41,8 @@ public class ChallengeScreen extends SuperScreen implements Screen {
 	private Table table;
 	private Label lblChallenges, lblError;
 	private TextButton btnBack;
+	private List list;
+	private ScrollPane scroll;
 
 	/* (non-Javadoc)
 	 * @see com.badlogic.gdx.Screen#render(float)
@@ -81,6 +86,11 @@ public class ChallengeScreen extends SuperScreen implements Screen {
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, 800, 480);
 		
+		//adding a list and a scroll pane
+		list = new List(skin);
+		scroll = new ScrollPane(list, skin);
+		list.setItems(castUsers(QuizGame.getInstance().displayChallenges()));
+		
 		lblChallenges = new Label("Active challenges", skin);
 		lblError = new Label("", skin);
 		
@@ -108,8 +118,21 @@ public class ChallengeScreen extends SuperScreen implements Screen {
 		table.row();
 		table.add(btnBack).width(150).height(30).align(Align.right).padBottom(5);
 		table.row();
+		table.add(list);
+		
 		
 		//TODO add and display challenges
+	}
+	
+	private String[] castUsers(List<Challenge> challenges){
+		int n = challenges.size();
+		String[] tmpChalls = new String[n];
+		int i = 0;
+		for(Challenge challenges: challenge){
+			/*name of challenge wish I to have (Yoda) */
+			tmpChalls[i] = QuizGame.getInstance().displayChallenges().get(i).displayName();			
+			i++;
+		}
 	}
 
 	/**
