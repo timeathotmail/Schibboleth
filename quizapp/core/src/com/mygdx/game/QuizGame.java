@@ -70,7 +70,7 @@ public class QuizGame extends Game implements IGame{
 		SCREEN_HEIGHT = Gdx.graphics.getHeight();
 		
 		ScreenManager.getInstance().initialize(this);
-		ScreenManager.getInstance().show(ScreenSelector.LOGIN);		
+		ScreenManager.getInstance().show(ScreenSelector.GAME);		
 	}
 
 
@@ -182,51 +182,6 @@ public class QuizGame extends Game implements IGame{
 	@Override
 	public void displaySettings() {
 		ScreenManager.getInstance().show(ScreenSelector.OPTIONS);
-
-	}
-
-	
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.mygdx.game.IGame#displayQuestion()
-	 */
-	@Override
-	public void displayQuestion() {
-		// TODO Auto-generated method stub
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.mygdx.game.IGame#submitAnswer(int, boolean)
-	 */
-	@Override
-	public void submitAnswer(int answer, boolean correct) {
-		// TODO Auto-generated method stub
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.mygdx.game.IGame#leaveMatch()
-	 */
-	@Override
-	public void leaveMatch() {
-		// TODO Auto-generated method stub
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.mygdx.game.IGame#endMatch()
-	 */
-	@Override
-	public void endMatch() {
-		// TODO Auto-generated method stub
 
 	}
 
@@ -359,9 +314,4 @@ public class QuizGame extends Game implements IGame{
 		ScreenManager.getInstance().dispose();
 	}
 
-	@Override
-	public void displayStatistics() {
-		// TODO Auto-generated method stub
-		
-	}
 }

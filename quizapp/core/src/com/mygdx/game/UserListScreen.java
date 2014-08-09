@@ -95,6 +95,8 @@ public class UserListScreen implements Screen {
 				}
 		});
 		
+		//TODO add dialog
+		
 		table = new Table();
 		setTable();
 		

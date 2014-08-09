@@ -5,6 +5,7 @@ import java.net.Socket;
 import javax.naming.ConfigurationException;
 
 import com.mygdx.game.IGame;
+import com.mygdx.game.QuizGame;
 
 import common.entities.Challenge;
 import common.entities.User;
@@ -53,14 +54,16 @@ public class Client {
 			throw new NoConnectionException(e);
 		}
 
-		new Thread(new ClientInbox(game, net, serverSocket)).start();
+		new Thread(new ClientInbox(net, serverSocket)).start();
 	}
 	
-	/* sets a new Instance and returns it*/
+	/** sets a new Instance and returns it
+	 * @author halfelv 
+	 */
 	public static Client getInstance(IGame game, String ip, int port){
 		if(INSTANCE == null){
 			try {
-				INSTANCE = new Client(game, ip, port);
+				INSTANCE = new Client(QuizGame.getInstance(), ip, port);
 			} catch (ConfigurationException e) {
 				e.printStackTrace();
 			} catch (NoConnectionException e) {
@@ -72,6 +75,7 @@ public class Client {
 
 	/**
 	 * If an Instance is null, throws {@link RuntimeException}
+	 * @author halfelv
 	 * @return an Instance for a Client.
 	 */
 	public static Client getInstance(){

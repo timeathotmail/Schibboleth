@@ -3,6 +3,7 @@ package com.mygdx.net;
 import java.net.Socket;
 
 import com.mygdx.game.IGame;
+import com.mygdx.game.QuizGame;
 
 import common.net.SocketReadException;
 import common.net.NetUtils;
@@ -18,11 +19,7 @@ public class ClientInbox implements Runnable {
 	 * Server socket.
 	 */
 	private final Socket serverSocket;
-	/**
-	 * Client's game instance.
-	 */
-	private final IGame game;
-
+	
 	private final NetUtils net;
 
 	/**
@@ -33,8 +30,7 @@ public class ClientInbox implements Runnable {
 	 * @param serverSocket
 	 *            server socket
 	 */
-	public ClientInbox(IGame game, NetUtils net, Socket serverSocket) {
-		this.game = game;
+	public ClientInbox(NetUtils net, Socket serverSocket) {		
 		this.net = net;
 		this.serverSocket = serverSocket;
 	}
@@ -53,7 +49,7 @@ public class ClientInbox implements Runnable {
 					if (!e.isSocketClosed()) {
 						throw e;
 					} else {
-						game.onError("Missed server message");
+						QuizGame.getInstance().onError("Missed server message");
 						continue;
 					}
 				}
@@ -62,7 +58,7 @@ public class ClientInbox implements Runnable {
 				{ // ============================================================
 					AuthResponse obj = net.fromJson(json, AuthResponse.class);
 					if (obj != null) {
-						game.onLogin(obj.isSuccess(), obj.getTimeLimit(), obj.getUsers(),
+						QuizGame.getInstance().onLogin(obj.isSuccess(), obj.getTimeLimit(), obj.getUsers(),
 								obj.getRunningMatches(), obj.getChallenges());
 						continue;
 					}
@@ -72,7 +68,7 @@ public class ClientInbox implements Runnable {
 					UserListChangedResponse obj = net.fromJson(json,
 							UserListChangedResponse.class);
 					if (obj != null) {
-						game.onUserListChanged(obj.hasConnected(),
+						QuizGame.getInstance().onUserListChanged(obj.hasConnected(),
 								obj.getUser());
 						continue;
 					}
@@ -82,7 +78,7 @@ public class ClientInbox implements Runnable {
 					ChallengeDeniedResponse obj = net.fromJson(json,
 							ChallengeDeniedResponse.class);
 					if (obj != null) {
-						game.onChallengeDenied(obj.getChallenge());
+						QuizGame.getInstance().onChallengeDenied(obj.getChallenge());
 						continue;
 					}
 				}
@@ -91,7 +87,7 @@ public class ClientInbox implements Runnable {
 					ChallengeReceivedResponse obj = net.fromJson(json,
 							ChallengeReceivedResponse.class);
 					if (obj != null) {
-						game.onChallengeReceived(obj.getChallenge());
+						QuizGame.getInstance().onChallengeReceived(obj.getChallenge());
 						continue;
 					}
 				}
@@ -99,7 +95,7 @@ public class ClientInbox implements Runnable {
 				{ // ============================================================
 					ErrorResponse obj = net.fromJson(json, ErrorResponse.class);
 					if (obj != null) {
-						game.onError(obj.getMessage());
+						QuizGame.getInstance().onError(obj.getMessage());
 						continue;
 					}
 				}
@@ -108,7 +104,7 @@ public class ClientInbox implements Runnable {
 					MatchCreatedResponse obj = net.fromJson(json,
 							MatchCreatedResponse.class);
 					if (obj != null) {
-						game.onMatchStarted(obj.getMatch());
+						QuizGame.getInstance().onMatchStarted(obj.getMatch());
 						continue;
 					}
 				}
@@ -117,7 +113,7 @@ public class ClientInbox implements Runnable {
 					MatchSearchCancelledResponse obj = net.fromJson(json,
 							MatchSearchCancelledResponse.class);
 					if (obj != null) {
-						game.onSearchCancelled();
+						QuizGame.getInstance().onSearchCancelled();
 						continue;
 					}
 				}
@@ -126,7 +122,7 @@ public class ClientInbox implements Runnable {
 					OpponentAnswerResponse obj = net.fromJson(json,
 							OpponentAnswerResponse.class);
 					if (obj != null) {
-						game.onOpponentAnswered(obj.getMatchId(),
+						QuizGame.getInstance().onOpponentAnswered(obj.getMatchId(),
 								obj.getIndex(), obj.answeredInTime());
 						continue;
 					}
@@ -136,13 +132,13 @@ public class ClientInbox implements Runnable {
 					OpponentLeftResponse obj = net.fromJson(json,
 							OpponentLeftResponse.class);
 					if (obj != null) {
-						game.onOpponentLeft();
+						QuizGame.getInstance().onOpponentLeft();
 						continue;
 					}
 				}
 			}
 		} catch (SocketReadException e) {
-			game.onConnectionLost();
+			QuizGame.getInstance().onConnectionLost();
 		}
 	}
 }

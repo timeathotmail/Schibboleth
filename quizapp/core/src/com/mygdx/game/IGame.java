@@ -74,39 +74,13 @@ public interface IGame {
 	 */
 	void displaySettings();
 	
-	/**
-	 * Display the active user's stats.
-	 */
-	void displayStatistics();
+
 	
 	/*==========================================================
 	 * In-match interaction
 	 *==========================================================*/
 	
-	/**
-	 * Display question and answers.
-	 */
-	void displayQuestion();
 	
-	/**
-	 * Choosing an answer for a question in-game. 
-	 * Send the choice to the server.
-	 * Highlight the chosen answer.
-	 * @param answer index of the answer
-	 */
-	void submitAnswer(int answer, boolean correct);
-	
-	/**
-	 * Leave the current match.
-	 * Inform the server.
-	 * Enter the main menu.
-	 */
-	void leaveMatch();
-	
-	/**
-	 * Confirm the result and enter the main menu.
-	 */
-	void endMatch();
 	
 	/*==========================================================
 	 * Server notifications
