@@ -27,7 +27,7 @@ import com.mygdx.net.Client;
 import common.entities.User;
 import common.net.SocketWriteException;
 
-public class MainScreen implements Screen {
+public class MainScreen extends SuperScreen implements Screen {
 
 	private Stage stage;
 	private Skin skin;

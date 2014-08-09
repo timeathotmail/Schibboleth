@@ -27,7 +27,7 @@ import com.mygdx.net.Client;
  * @author halfelv
  *
  */
-public class GameScreen implements Screen {
+public class GameScreen extends SuperScreen implements Screen {
 	
 	private Stage stage;
 	private Skin skin;
@@ -106,16 +106,41 @@ public class GameScreen implements Screen {
 		
 		
 		lblError = new Label("", skin);
-		lblQuestion = new Label(QuizGame.getInstance()., skin);
+		lblQuestion = new Label("" , skin); //TODO Frage holen
 		
 		btnAnswer1 = new TextButton( "", skin);
+		btnAnswer2 = new TextButton( "", skin);
+		btnAnswer3 = new TextButton( "", skin);
+		btnAnswer4 = new TextButton( "", skin);
+		
+		btnAnswer1.addListener(new ClickListener() {
+			public void clicked(InputEvent event, float x, float y) {
+				//TODO Antwort holen von der fragen von dem aktuellen Match
+				}
+		});
+		btnAnswer2.addListener(new ClickListener() {
+			public void clicked(InputEvent event, float x, float y) {
+				
+				}
+		});
+		btnAnswer3.addListener(new ClickListener() {
+			public void clicked(InputEvent event, float x, float y) {
+				
+				}
+		});
+		btnAnswer4.addListener(new ClickListener() {
+			public void clicked(InputEvent event, float x, float y) {
+				
+				
+				}
+		});
 		
 		btnBack = new TextButton("Cancel", skin);
 		
 		btnBack.addListener(new ClickListener() {
 			public void clicked(InputEvent event, float x, float y) {
 				//cancelSearch();
-				ScreenManager.getInstance().show(ScreenSelector.MAIN_MENU);
+				ScreenManager.getInstance().show(ScreenSelector.CHALLENGES);
 				}
 		});
 		
@@ -135,7 +160,7 @@ public class GameScreen implements Screen {
 	private void setTable(boolean timeout){
 		if(timeout){
 			table.clear();
-			table.add()
+			table.add();
 			
 			table.add();
 		}

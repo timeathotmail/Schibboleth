@@ -29,7 +29,7 @@ import common.entities.User;
  * @author halfelv
  *
  */
-public class UserListScreen implements Screen {
+public class UserListScreen extends SuperScreen implements Screen {
 	private Stage stage;
 	private Skin skin;
 	

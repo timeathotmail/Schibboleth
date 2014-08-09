@@ -26,7 +26,7 @@ import common.net.SocketWriteException;
  * @author halfelv
  *
  */
-public class ChallengeScreen implements Screen {
+public class ChallengeScreen extends SuperScreen implements Screen {
 	private Stage stage;
 	private Skin skin;
 	

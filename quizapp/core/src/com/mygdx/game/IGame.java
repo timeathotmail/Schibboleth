@@ -123,12 +123,7 @@ public interface IGame {
 	 * @param challenge
 	 */
 	void onChallengeReceived(Challenge challenge);
-	
-	/**
-	 * Called if the opponent left the game.
-	 * End match.
-	 */
-	void onOpponentLeft();
+
 	
 	/**
 	 * Called when opponent answered or the countdown expired.

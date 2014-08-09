@@ -29,7 +29,7 @@ import common.net.SocketWriteException;
  * @author halfelv
  *
  */
-class OptionsScreen implements Screen {
+class OptionsScreen extends SuperScreen implements Screen {
 
 	//private final QuizGame game;
 	private Stage stage;

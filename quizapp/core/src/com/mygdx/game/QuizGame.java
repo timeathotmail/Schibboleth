@@ -175,7 +175,7 @@ public class QuizGame extends Game implements IGame{
 	 * @return
 	 */
 
-	public List<Challenge> displayChallenges() {
+	List<Challenge> displayChallenges() {
 		return challenges;
 
 	}
@@ -183,7 +183,33 @@ public class QuizGame extends Game implements IGame{
 	 * displays a list of users online
 	 * @param 
 	 */
-
+	List<User> displayUsersOnline(){
+		return users;
+	}
+	/**
+	 * 
+	 * @return a list of matches
+	 */
+	List<Match> displayMatches(){
+		return matches;
+	}
+	
+	/**
+	 * returns a match by id 
+	 */
+	Match getMatch(int id){
+		if(id < 0){
+			throw new IllegalArgumentException("Parameter is null");
+		}
+		int i =0;
+		while(i < matches.size()){
+			if(matches.get(i).getRowId() == id){
+				return matches.get(i);
+			}
+			i++;
+		}
+		return null;
+	}
 	/*
 	 * (non-Javadoc)
 	 * 

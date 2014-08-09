@@ -25,7 +25,7 @@ import com.mygdx.net.Client;
 
 import common.net.SocketWriteException;
 
-public class LoginScreen implements Screen {
+public class LoginScreen extends SuperScreen implements Screen {
 
 	//private final QuizGame game;
 	private Stage stage;
