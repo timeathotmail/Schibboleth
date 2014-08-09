@@ -20,6 +20,7 @@ import common.net.requests.MatchSearchStartRequest;
 import common.net.requests.UserAuthRequest;
 import common.net.requests.UserDataChangeRequest;
 import common.net.requests.UserLogoutRequest;
+import common.net.requests.UserSearchRequest;
 
 /**
  * Class used to connect and send requests to the server.
@@ -33,8 +34,8 @@ public class Client {
 	private Socket serverSocket;
 
 	private final NetUtils net;
-	
-	/*a singletone */
+
+	/* a singletone */
 	private static Client INSTANCE;
 
 	/**
@@ -56,35 +57,40 @@ public class Client {
 
 		new Thread(new ClientInbox(net, serverSocket)).start();
 	}
-	
-	/** sets a new Instance and returns it
-	 * @author halfelv 
+
+	/**
+	 * sets a new Instance and returns it
+	 * 
+	 * @author halfelv
 	 */
-	public static Client getInstance(IGame game, String ip, int port){
-		if(INSTANCE == null){
+	public static Client getInstance(IGame game, String ip, int port) {
+		if (INSTANCE == null) {
 			try {
 				INSTANCE = new Client(QuizGame.getInstance(), ip, port);
 			} catch (ConfigurationException e) {
 				e.printStackTrace();
 			} catch (NoConnectionException e) {
 				e.printStackTrace();
-			} 
+			}
 		}
 		return INSTANCE;
 	}
 
 	/**
 	 * If an Instance is null, throws {@link RuntimeException}
+	 * 
 	 * @author halfelv
 	 * @return an Instance for a Client.
 	 */
-	public static Client getInstance(){
-		if(INSTANCE == null){
-			throw new RuntimeException("Client may not be initialized. "
-								+ "Please call Client.getInstance(IGame game, String ip, int port)");
-			}
+	public static Client getInstance() {
+		if (INSTANCE == null) {
+			throw new RuntimeException(
+					"Client may not be initialized. "
+							+ "Please call Client.getInstance(IGame game, String ip, int port)");
+		}
 		return INSTANCE;
 	}
+
 	/**
 	 * Requests a user registration.
 	 * 
@@ -175,7 +181,8 @@ public class Client {
 	 */
 	public void sendChallenge(User to) throws IllegalArgumentException,
 			SocketWriteException {
-		net.send(serverSocket, new ChallengeSendRequest(new Challenge(null, to)));
+		net.send(serverSocket,
+				new ChallengeSendRequest(new Challenge(null, to)));
 	}
 
 	/**
@@ -201,8 +208,8 @@ public class Client {
 	 * @throws SocketWriteException
 	 * @throws IllegalArgumentException
 	 */
-	public void denyChallenge(Challenge challenge) throws IllegalArgumentException,
-			SocketWriteException {
+	public void denyChallenge(Challenge challenge)
+			throws IllegalArgumentException, SocketWriteException {
 		net.send(serverSocket, new ChallengeDenyRequest(challenge));
 	}
 
@@ -217,5 +224,18 @@ public class Client {
 	public void submitAnswer(int matchId, int answer, boolean inTime)
 			throws IllegalArgumentException, SocketWriteException {
 		net.send(serverSocket, new AnswerSubmitRequest(matchId, answer, inTime));
+	}
+
+	/**
+	 * Initiiates the search for a user.
+	 * 
+	 * @param username
+	 *            username to search for
+	 * @throws IllegalArgumentException
+	 * @throws SocketWriteException
+	 */
+	public void searchUser(String username) throws IllegalArgumentException,
+			SocketWriteException {
+		net.send(serverSocket, new UserSearchRequest(username));
 	}
 }
