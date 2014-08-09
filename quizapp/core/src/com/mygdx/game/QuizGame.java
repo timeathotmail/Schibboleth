@@ -352,7 +352,13 @@ public class QuizGame extends Game implements IGame{
 	}
 	
 	public void onUserSearchResult(User user){
-		Client.getInstance().searchUser(user.getName());
+		try {
+			Client.getInstance().searchUser(user.getName());
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+		} catch (SocketWriteException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	/*
