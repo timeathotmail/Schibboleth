@@ -9,7 +9,7 @@ public class Answer implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = -1141900858713375550L;
-	private int id;
+	private int rowid;
 	private int roundId;
 	private int questionId;
 	private Question question;
@@ -37,12 +37,12 @@ public class Answer implements Serializable {
 		return answerIndex2 > 0;
 	}
 	
-	public int getId() {
-		return id;
+	public int getRowId() {
+		return rowid;
 	}
 
-	public void setId(int id) {
-		this.id = id;
+	public void setRowId(int id) {
+		this.rowid = id;
 	}
 
 	public int getQuestionId() {
@@ -69,7 +69,7 @@ public class Answer implements Serializable {
 		this.question = question;
 		
 		if(question != null) {
-			this.questionId = question.getId();
+			this.questionId = question.getRowId();
 		}
 	}
 

@@ -9,7 +9,7 @@ public class Challenge implements Serializable {
 	 */
 	private static final long serialVersionUID = 2628023559403665091L;
 
-	private int id;
+	private int rowid;
 	private User from;
 	private int fromId;
 	private User to;
@@ -30,7 +30,7 @@ public class Challenge implements Serializable {
 
 	public void setFrom(User from) {
 		if(from != null) {
-			this.fromId = from.getId();
+			this.fromId = from.getRowId();
 		}
 		
 		this.from = from;
@@ -50,7 +50,7 @@ public class Challenge implements Serializable {
 
 	public void setTo(User to) {
 		if(to != null) {
-			this.toId = to.getId();
+			this.toId = to.getRowId();
 		}
 		
 		this.to = to;
@@ -64,11 +64,11 @@ public class Challenge implements Serializable {
 		this.toId = toId;
 	}
 
-	public int getId() {
-		return id;
+	public int getRowId() {
+		return rowid;
 	}
 
-	public void setId(int id) {
-		this.id = id;
+	public void setRowId(int id) {
+		this.rowid = id;
 	}
 }

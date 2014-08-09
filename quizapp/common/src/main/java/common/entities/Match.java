@@ -20,7 +20,7 @@ public class Match implements Serializable {
 	/**
 	 * ID for unique identification.
 	 */
-	private int id;
+	private int rowid;
 	/**
 	 * First player.
 	 */
@@ -84,7 +84,7 @@ public class Match implements Serializable {
 		List<Answer> answers = new ArrayList<Answer>();
 		for (int i = 0; i < questions.size();) {
 			for (int j = 0; j < perRound; j++, i++) {
-				answers.add(new Answer(questions.get(i).getId()));
+				answers.add(new Answer(questions.get(i).getRowId()));
 			}
 		}
 		rounds = new ArrayList<Round>();
@@ -113,12 +113,12 @@ public class Match implements Serializable {
 
 	// === getters & setters ===
 
-	public int getId() {
-		return id;
+	public int getRowId() {
+		return rowid;
 	}
 
-	public void setId(int id) {
-		this.id = id;
+	public void setRowId(int id) {
+		this.rowid = id;
 
 		for (Round r : rounds) {
 			r.setMatchId(id);
@@ -133,7 +133,7 @@ public class Match implements Serializable {
 		this.user1 = user1;
 
 		if (user1 != null) {
-			this.userId1 = user1.getId();
+			this.userId1 = user1.getRowId();
 		}
 	}
 
@@ -145,7 +145,7 @@ public class Match implements Serializable {
 		this.user2 = user2;
 
 		if (user2 != null) {
-			this.userId2 = user2.getId();
+			this.userId2 = user2.getRowId();
 		}
 	}
 

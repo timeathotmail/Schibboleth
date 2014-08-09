@@ -1,7 +1,6 @@
 package server.persistence;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -10,19 +9,18 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.Formatter;
+import java.util.logging.Handler;
 import java.util.logging.Level;
+import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
 import javax.naming.ConfigurationException;
-import javax.sql.DataSource;
-
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.handlers.BeanListHandler;
-
-import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
 
 import server.Server;
 import server.persistence.constraints.*;
@@ -48,41 +46,18 @@ public class Data implements Persistence {
 	 * 
 	 */
 	private static Config cfg;
-	/**
-	 * JDBC driver class.
-	 */
-	private static String JDBC_DRIVER;
-	/**
-	 * Database location.
-	 */
-	private static String DB_URL;
-	/**
-	 * Database name.
-	 */
-	private static String DB_NAME;
-	/**
-	 * MySQL user.
-	 */
-	private static String MYSQL_USER;
-	/**
-	 * MySQL password.
-	 */
-	private static String MYSQL_PASS;
+
+	private static String DB_FILE;
 	/**
 	 * Singleton instance
 	 */
 	private static Data instance;
-	/**
-	 * 
-	 */
-	private final MysqlDataSource dataSource = new MysqlDataSource();
 
 	/**
 	 * 
 	 */
-	private final QueryRunner run;
-	//private final QueryRunner run = new QueryRunner();
-	//private final Connection conn;
+	private final QueryRunner run = new QueryRunner();
+	private final Connection conn;
 
 	// =====================================================================
 	// Init database connection
@@ -95,13 +70,21 @@ public class Data implements Persistence {
 	public static Data getInstance() throws SQLException {
 		if (instance == null) {
 
+			logger.setUseParentHandlers(false);
+			Handler conHdlr = new ConsoleHandler();
+			conHdlr.setFormatter(new Formatter() {
+				public String format(LogRecord record) {
+					return record.getLevel() + ": "
+							+ record.getSourceClassName() + "."
+							+ record.getSourceMethodName() + ": "
+							+ record.getMessage() + "\n";
+				}
+			});
+			logger.addHandler(conHdlr);
+
 			try {
 				cfg = Config.get();
-				JDBC_DRIVER = cfg.get("JDBC_DRIVER");
-				DB_URL = cfg.get("DB_URL");
-				DB_NAME = cfg.get("DB_NAME");
-				MYSQL_USER = cfg.get("MYSQL_USER");
-				MYSQL_PASS = cfg.get("MYSQL_PASS");
+				DB_FILE = cfg.get("DB_FILE");
 			} catch (ConfigurationException e) {
 				throw new SQLException("Server is misconfigured!", e);
 			}
@@ -119,20 +102,12 @@ public class Data implements Persistence {
 	 */
 	private Data() throws SQLException {
 		try {
-			/*
 			Class.forName("org.sqlite.JDBC");
-			conn = DriverManager.getConnection("jdbc:sqlite:testdb.db");
-			checkDatabaseStructure();*/
-			
-			Class.forName(JDBC_DRIVER);
-			dataSource.setUser(MYSQL_USER);
-			dataSource.setPassword(MYSQL_PASS);
-			dataSource.setUrl(DB_URL);
-			run = new QueryRunner(dataSource);
+			conn = DriverManager.getConnection("jdbc:sqlite:" + DB_FILE);
 			checkDatabaseStructure();
 
 		} catch (ClassNotFoundException e) {
-			throw new SQLException("Couldn't register JDBC driver!", e);
+			throw new SQLException("Couldn't register sqlite JDBC driver!", e);
 		}
 	}
 
@@ -145,18 +120,12 @@ public class Data implements Persistence {
 	private void checkDatabaseStructure() throws SQLException {
 		logger.info("checking database structure...");
 
-		run.update("DROP DATABASE " + DB_NAME);
-		run.update("CREATE DATABASE IF NOT EXISTS " + DB_NAME);
-		dataSource.setUrl(DB_URL + DB_NAME);
-
-		run.update(String.format("CREATE TABLE IF NOT EXISTS %s("
-				+ "id   INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,"
-				+ "isAdmin BOOLEAN  NOT NULL," // FIXME immer false
+		run.update(conn, String.format("CREATE TABLE IF NOT EXISTS %s("
+				+ "name VARCHAR(30)  NOT NULL UNIQUE, "
 				+ "password VARCHAR (30) NOT NULL, "
-				+ "name VARCHAR(30)  NOT NULL UNIQUE)", getTable(User.class)));
+				+ "isAdmin BOOLEAN  NOT NULL)", getTable(User.class)));
 
-		run.update(String.format("CREATE TABLE IF NOT EXISTS %s("
-				+ "id           INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,"
+		run.update(conn, String.format("CREATE TABLE IF NOT EXISTS %s("
 				+ "category     VARCHAR(50)  NOT NULL,"
 				+ "text         VARCHAR(200) NOT NULL,"
 				+ "answer1      VARCHAR(30)  NOT NULL,"
@@ -167,61 +136,41 @@ public class Data implements Persistence {
 				+ "revision     SMALLINT UNSIGNED NOT NULL)",
 				getTable(Question.class)));
 
-		run.update(String.format("CREATE TABLE IF NOT EXISTS %s("
-				+ "id      INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,"
+		run.update(conn, String.format("CREATE TABLE IF NOT EXISTS %s("
 				+ "user1   INT UNSIGNED," + "user2   INT UNSIGNED,"
-				+ "FOREIGN KEY(user1) REFERENCES %s(id) "
+				+ "FOREIGN KEY(user1) REFERENCES %s(rowid) "
 				+ "ON DELETE SET NULL,"
-				+ "FOREIGN KEY(user2) REFERENCES %s(id) "
+				+ "FOREIGN KEY(user2) REFERENCES %s(rowid) "
 				+ "ON DELETE SET NULL)", getTable(Match.class),
 				getTable(User.class), getTable(User.class)));
 
-		run.update(String.format("CREATE TABLE IF NOT EXISTS %s("
-				+ "id      INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,"
+		run.update(conn, String.format("CREATE TABLE IF NOT EXISTS %s("
 				+ "matchId INT UNSIGNED ,"
-				+ "FOREIGN KEY(matchId) REFERENCES %s(id) "
+				+ "FOREIGN KEY(matchId) REFERENCES %s(rowid) "
 				+ "ON DELETE SET NULL" + ")", getTable(Round.class),
 				getTable(Match.class)));
 
-		run.update(String.format("CREATE TABLE IF NOT EXISTS %s("
-				+ "id      INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,"
-				+ "roundId INT UNSIGNED ,"
-				+ "questionId INT UNSIGNED ,"
+		run.update(conn, String.format("CREATE TABLE IF NOT EXISTS %s("
+				+ "roundId INT UNSIGNED ," + "questionId INT UNSIGNED ,"
 				+ "answerIndex1 TINYINT UNSIGNED, "
-				+ "answerIndex2 TINYINT UNSIGNED, " // TODO check if 1-4
-				+ "FOREIGN KEY(roundId) REFERENCES %s(id) "
+				+ "answerIndex2 TINYINT UNSIGNED, "
+				+ "FOREIGN KEY(roundId) REFERENCES %s(rowid) "
 				+ "ON DELETE SET NULL, "
-				+ "FOREIGN KEY(questionId) REFERENCES %s(id) "
+				+ "FOREIGN KEY(questionId) REFERENCES %s(rowid) "
 				+ "ON DELETE SET NULL)", getTable(Answer.class),
 				getTable(Round.class), getTable(Question.class)));
 
-		run.update(String.format(
-				"CREATE TABLE IF NOT EXISTS %s("
-						+ "id     INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,"
-						+ "fromId INT UNSIGNED, " + "toId   INT UNSIGNED, "
-						+ "FOREIGN KEY(fromId) REFERENCES %s(id) "
-						+ "ON DELETE SET NULL, "
-						+ "FOREIGN KEY(toId) REFERENCES %s(id) "
-						+ "ON DELETE SET NULL", getTable(Challenge.class),
+		run.update(conn, String.format("CREATE TABLE IF NOT EXISTS %s("
+				+ "fromId INT UNSIGNED, " + "toId   INT UNSIGNED, "
+				+ "FOREIGN KEY(fromId) REFERENCES %s(rowid) "
+				+ "ON DELETE SET NULL, "
+				+ "FOREIGN KEY(toId) REFERENCES %s(rowid) "
+				+ "ON DELETE SET NULL)", getTable(Challenge.class),
 				getTable(User.class), getTable(User.class)));
 
-		run.update(String
-				.format("CREATE TABLE IF NOT EXISTS BAD_WORDS(word VARCHAR(100))"));
-
-		/*
-		 * TODO in sqlite run.update("DROP TRIGGER IF EXISTS matchval");
-		 * run.update(String.format("CREATE TRIGGER matchval " +
-		 * "BEFORE INSERT ON %s FOR EACH ROW BEGIN " +
-		 * "IF NEW.user1 = NEW.user2 " + "THEN SIGNAL SQLSTATE '45000' " +
-		 * "SET MESSAGE_TEXT = 'Cannot add or " +
-		 * "update match: same users'; END IF; END;", getTable(Match.class)));
-		 * 
-		 * run.update("DROP TRIGGER IF EXISTS matchcleaner");
-		 * run.update(String.format("CREATE TRIGGER matchcleaner " +
-		 * "AFTER DELETE ON %s FOR EACH ROW BEGIN " +
-		 * "DELETE FROM %s WHERE user1 IS NULL AND user2 IS NULL; " + "END;",
-		 * getTable(User.class), getTable(Match.class)));
-		 */
+		run.update(
+				conn,
+				String.format("CREATE TABLE IF NOT EXISTS BAD_WORDS(word VARCHAR(100))"));
 	}
 
 	// =====================================================================
@@ -237,14 +186,14 @@ public class Data implements Persistence {
 			throw new IllegalArgumentException("empty password");
 		}
 
-		return get(User.class, new HavingConstraint(new EqualConstraint("name",
+		return get(User.class, new WhereConstraint(new EqualConstraint("name",
 				username, "password", password)));
 	}
 
 	@Override
 	public User registerUser(String username, String password)
 			throws SQLException, IllegalArgumentException {
-		logger.info(username + " wants to register.");
+
 		if (username == null || username.isEmpty()) {
 			throw new IllegalArgumentException("empty username");
 		}
@@ -323,7 +272,7 @@ public class Data implements Persistence {
 			throw new IllegalArgumentException("empty username");
 		}
 
-		return get(User.class, new HavingConstraint(new EqualConstraint("name",
+		return get(User.class, new WhereConstraint(new EqualConstraint("name",
 				username)));
 	}
 
@@ -334,13 +283,11 @@ public class Data implements Persistence {
 
 	@Override
 	public List<String> getBadWords() throws SQLException {
-		Connection conn = null;
 		Statement stmt = null;
 		ResultSet res = null;
 		List<String> words = new ArrayList<String>();
 
 		try {
-			conn = dataSource.getConnection();
 			stmt = conn.createStatement();
 			res = stmt.executeQuery("SELECT word FROM BAD_WORDS");
 
@@ -350,9 +297,6 @@ public class Data implements Persistence {
 		} catch (SQLException e) {
 			throw e;
 		} finally {
-			if (conn != null) {
-				conn.close();
-			}
 			if (stmt != null) {
 				stmt.close();
 			}
@@ -409,7 +353,7 @@ public class Data implements Persistence {
 			throw new IllegalArgumentException("null match");
 		}
 
-		if (match.getId() == 0) { // insert new match
+		if (match.getRowId() == 0) { // insert new match
 			// setting random questions for match
 			List<Question> questions = new ArrayList<Question>();
 
@@ -418,10 +362,10 @@ public class Data implements Persistence {
 					Arrays.asList(Category.values()));
 			Collections.shuffle(categories);
 
-			// 
+			//
 			for (int i = 0; i < Server.ROUNDS_PER_MATCH; i++) {
 				questions.addAll(getMany(Question.class,
-						new HavingConstraint(new EqualConstraint("category",
+						new WhereConstraint(new EqualConstraint("category",
 								categories.get(i % categories.size()))),
 						new OrderByConstraint(null, "RAND()"),
 						new LimitedConstraint(Server.QUESTIONS_PER_ROUND, 0)));
@@ -449,23 +393,23 @@ public class Data implements Persistence {
 	@Override
 	public List<Match> getRunningMatches(User user) throws SQLException {
 		// get all user's matches
-		List<Match> matches = getMany(Match.class, new HavingConstraint(
-				new EqualConstraint("user1", user.getId())));
+		List<Match> matches = getMany(Match.class, new WhereConstraint(
+				new EqualConstraint("user1", user.getRowId())));
 
-		matches.addAll(getMany(Match.class, new HavingConstraint(
-				new EqualConstraint("user2", user.getId()))));
+		matches.addAll(getMany(Match.class, new WhereConstraint(
+				new EqualConstraint("user2", user.getRowId()))));
 
 		for (Match m : matches) {
 			// set rounds
-			List<Round> rounds = getMany(Round.class, new HavingConstraint(
-					new EqualConstraint("matchId", m.getId())));
+			List<Round> rounds = getMany(Round.class, new WhereConstraint(
+					new EqualConstraint("matchId", m.getRowId())));
 
 			for (Round r : rounds) {
 				// set answers
 				List<Answer> answers = getMany(
 						Answer.class,
-						new HavingConstraint(new EqualConstraint("roundId", r
-								.getId())));
+						new WhereConstraint(new EqualConstraint("roundId", r
+								.getRowId())));
 
 				r.setAnswers(answers);
 			}
@@ -478,10 +422,10 @@ public class Data implements Persistence {
 		for (Match m : matches) {
 			if (!m.isFinished()) {
 				// set users
-				m.setUser1(get(User.class, new HavingConstraint(
+				m.setUser1(get(User.class, new WhereConstraint(
 						new EqualConstraint("id", m.getUserId1()))));
 
-				m.setUser2(get(User.class, new HavingConstraint(
+				m.setUser2(get(User.class, new WhereConstraint(
 						new EqualConstraint("id", m.getUserId2()))));
 
 				running.add(m);
@@ -496,8 +440,8 @@ public class Data implements Persistence {
 	}
 
 	public List<Challenge> getChallenges(User user) throws SQLException {
-		return getMany(Challenge.class, new HavingConstraint(
-				new EqualConstraint("toId", user.getId())));
+		return getMany(Challenge.class, new WhereConstraint(
+				new EqualConstraint("toId", user.getRowId())));
 	}
 
 	public void removeChallenge(Challenge challenge) throws SQLException {
@@ -516,11 +460,9 @@ public class Data implements Persistence {
 			String sql = qb.getQuery();
 			logger.info(sql);
 
-			Connection conn = null;
 			PreparedStatement stmt = null;
 			ResultSet generatedKeys = null;
 			try {
-				conn = dataSource.getConnection();
 				stmt = conn.prepareStatement(sql,
 						Statement.RETURN_GENERATED_KEYS);
 				stmt.executeUpdate();
@@ -528,12 +470,18 @@ public class Data implements Persistence {
 				generatedKeys = stmt.getGeneratedKeys();
 				if (generatedKeys.next()) {
 					int insertId = generatedKeys.getInt(1);
-					obj.getClass().getDeclaredMethod("setId", int.class)
+					obj.getClass().getDeclaredMethod("setRowId", int.class)
 							.invoke(obj, insertId);
 					logger.info(obj + " inserted with id " + insertId);
 				}
-			} catch (SQLException e) {
-				throw e;
+			} catch (SQLException ex) {
+				for (Throwable e : ex) {
+					if (e instanceof SQLException) {
+						logger.log(Level.SEVERE,
+								"Throwing SQLException: " + e.getMessage());
+					}
+				}
+				throw ex;
 			} catch (Exception e) {
 				throw new SQLException("Object's insert id couldn't be set!", e);
 			} finally {
@@ -543,10 +491,6 @@ public class Data implements Persistence {
 
 				if (stmt != null) {
 					stmt.close();
-				}
-
-				if (conn != null) {
-					conn.close();
 				}
 			}
 		}
@@ -560,7 +504,9 @@ public class Data implements Persistence {
 		if (qb.hasValues()) {
 			String sql = qb.getQuery();
 			logger.info(sql);
-			run.update(sql);
+			if (0 == run.update(conn, sql)) {
+				logger.info("no row updated");
+			}
 		}
 	}
 
@@ -572,16 +518,23 @@ public class Data implements Persistence {
 		}
 
 		for (Field f : obj.getClass().getDeclaredFields()) {
-			f.setAccessible(true);
-
-			if (!f.getType().isPrimitive() && !f.getType().equals(String.class)) {
+			if (f.getName().equals("rowid")
+					|| (!f.getType().isPrimitive() && !f.getType().equals(
+							String.class))) {
 				continue;
 			}
+
+			f.setAccessible(true);
 
 			qb.appendField(f.getName());
 
 			try {
-				qb.appendValue(f.get(obj));
+				if (!f.getType().equals(boolean.class)) {
+					qb.appendValue(f.get(obj));
+				} else {
+					qb.appendValue(f.getBoolean(obj) ? 1 : 0);
+				}
+
 			} catch (Exception e) {
 				logger.log(Level.SEVERE,
 						"couldn't get value of field " + f.getName(), e);
@@ -591,8 +544,10 @@ public class Data implements Persistence {
 	}
 
 	private void remove(Object obj) throws SQLException {
-		if (0 == run.update(String.format("DELETE FROM %s WHERE id=%d",
-				getTable(obj), getId(obj)))) {
+		String sql = String.format("DELETE FROM %s WHERE rowid=%d",
+				getTable(obj), getId(obj));
+		logger.info(sql);
+		if (0 == run.update(conn, sql)) {
 			throw new SQLException("no row updated");
 		}
 	}
@@ -612,9 +567,10 @@ public class Data implements Persistence {
 
 	private <T> List<T> getMany(Class<T> clazz, Constraint... constraints)
 			throws SQLException {
-		return run.query(String.format("SELECT * FROM %s %s", getTable(clazz),
-				Constraint.toString(constraints)),
-				new BeanListHandler<T>(clazz));
+		String sql = String.format("SELECT rowid, * FROM %s %s",
+				getTable(clazz), Constraint.toString(constraints));
+		logger.info(sql);
+		return run.query(conn, sql, new BeanListHandler<T>(clazz));
 	}
 
 	// =====================================================================
@@ -623,11 +579,11 @@ public class Data implements Persistence {
 
 	private Field getIdField(Object obj) throws SQLException {
 		try {
-			Field idField = obj.getClass().getDeclaredField("id");
+			Field idField = obj.getClass().getDeclaredField("rowid");
 			idField.setAccessible(true);
 			return idField;
 		} catch (Exception e) {
-			throw new SQLException("couldn't get object id", e);
+			throw new SQLException("couldn't get object rowid", e);
 		}
 	}
 
@@ -635,7 +591,7 @@ public class Data implements Persistence {
 		try {
 			return getIdField(obj).getInt(obj);
 		} catch (Exception e) {
-			throw new SQLException("couldn't get object id", e);
+			throw new SQLException("couldn't get object rowid", e);
 		}
 	}
 

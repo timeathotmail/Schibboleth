@@ -16,7 +16,7 @@ public class Question {
 	/**
 	 * ID for unique identification.
 	 */
-	private int id;
+	private int rowid;
 	/**
 	 * States in which app revision the question was introduced.
 	 */
@@ -90,12 +90,12 @@ public class Question {
 
 	// === getters & setters ===
 
-	public int getId() {
-		return id;
+	public int getRowId() {
+		return rowid;
 	}
 
-	public void setId(int id) {
-		this.id = id;
+	public void setRowId(int id) {
+		this.rowid = id;
 	}
 
 	public String getText() {
@@ -166,7 +166,7 @@ public class Question {
 
 	@Override
 	public String toString() {
-		return "Question [id=" + id + ", revision=" + revision + ", text="
+		return "Question [id=" + rowid + ", revision=" + revision + ", text="
 				+ text + ", answer1=" + answer1 + ", answer2=" + answer2
 				+ ", answer3=" + answer3 + ", answer4=" + answer4
 				+ ", correctIndex=" + correctIndex + ", category=" + category
@@ -184,7 +184,7 @@ public class Question {
 		result = prime * result
 				+ ((category == null) ? 0 : category.hashCode());
 		result = prime * result + correctIndex;
-		result = prime * result + id;
+		result = prime * result + rowid;
 		result = prime * result + revision;
 		result = prime * result + ((text == null) ? 0 : text.hashCode());
 		return result;
@@ -223,7 +223,7 @@ public class Question {
 			return false;
 		if (correctIndex != other.correctIndex)
 			return false;
-		if (id != other.id)
+		if (rowid != other.rowid)
 			return false;
 		if (revision != other.revision)
 			return false;

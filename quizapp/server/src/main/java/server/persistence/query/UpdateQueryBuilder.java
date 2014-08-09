@@ -18,7 +18,7 @@ public class UpdateQueryBuilder extends QueryBuilder {
 	@Override
 	public String getQuery() {
 		values.deleteCharAt(values.length() - 1);
-		values.append(" WHERE id=" + id);
+		values.append(" WHERE rowid=" + id);
 		return updateString + values.toString();
 	}
 }

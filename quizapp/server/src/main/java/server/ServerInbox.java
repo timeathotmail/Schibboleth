@@ -240,7 +240,7 @@ public class ServerInbox implements Runnable {
 			Server.serverDir.addMatch(client, match);
 
 			Socket opponent = Server.serverDir.getOpponentSocket(client,
-					match.getId());
+					match.getRowId());
 			if (opponent != null) { // opponent is online
 				Server.net.send(opponent, new MatchCreatedResponse(match));
 				Server.serverDir.addMatch(opponent, match);

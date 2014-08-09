@@ -130,7 +130,7 @@ public class ServerDirectory implements Runnable {
 	private Match getMatch(User user, int id) {
 		Match match = null;
 		for (Match m : userToMatches.get(user)) {
-			if (m.getId() == id) {
+			if (m.getRowId() == id) {
 				match = m;
 				break;
 			}

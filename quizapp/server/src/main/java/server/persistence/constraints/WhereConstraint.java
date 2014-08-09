@@ -1,16 +1,16 @@
 package server.persistence.constraints;
 
-public class HavingConstraint extends Constraint {
+public class WhereConstraint extends Constraint {
 	private final OperatorConstraint[] constraints;
 	
 	
-	public HavingConstraint(OperatorConstraint ... constraints) {
+	public WhereConstraint(OperatorConstraint ... constraints) {
 		this.constraints = constraints;
 	}
 	
 	@Override
 	public String toString() {
-		StringBuilder sb = new StringBuilder(" HAVING ");
+		StringBuilder sb = new StringBuilder(" WHERE ");
 		
 		for(OperatorConstraint c : constraints) {
 			sb.append(c);

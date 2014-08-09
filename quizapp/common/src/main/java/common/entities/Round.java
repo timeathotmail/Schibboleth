@@ -8,7 +8,7 @@ public class Round implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = -1914320813276870786L;
-	private int id;
+	private int rowid;
 	private int matchId;
 	private List<Answer> answers;
 
@@ -82,12 +82,12 @@ public class Round implements Serializable {
 		return p1 > p2 ? 1 : -1;
 	}
 
-	public int getId() {
-		return id;
+	public int getRowId() {
+		return rowid;
 	}
 
-	public void setId(int id) {
-		this.id = id;
+	public void setRowId(int id) {
+		this.rowid = id;
 
 		for (Answer a : answers) {
 			a.setRoundId(id);
