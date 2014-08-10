@@ -131,7 +131,6 @@ public class SelectMatchScreen extends SuperScreen implements Screen {
 		table.add(lblMatches).pad(10);
 		table.row();
 		table.add(btnBack).width(150).height(30).align(Align.right).padBottom(5);
-		table.add();
 		table.row();
 		table.add(list);
 		
