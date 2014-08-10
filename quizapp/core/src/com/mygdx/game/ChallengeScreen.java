@@ -3,6 +3,8 @@
  */
 package com.mygdx.game;
 
+import java.util.ArrayList;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
@@ -18,6 +20,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.mygdx.net.Client;
@@ -89,7 +92,7 @@ public class ChallengeScreen extends SuperScreen implements Screen {
 		//adding a list and a scroll pane
 		list = new List(skin);
 		scroll = new ScrollPane(list, skin);
-		list.setItems(castUsers(QuizGame.getInstance().displayChallenges()));
+		list.setItems(castChallenges(QuizGame.getInstance().displayChallenges()));
 		
 		lblChallenges = new Label("Active challenges", skin);
 		lblError = new Label("", skin);
@@ -117,6 +120,7 @@ public class ChallengeScreen extends SuperScreen implements Screen {
 		table.add(lblChallenges).pad(10);
 		table.row();
 		table.add(btnBack).width(150).height(30).align(Align.right).padBottom(5);
+		table.add();
 		table.row();
 		table.add(list);
 		
@@ -124,15 +128,16 @@ public class ChallengeScreen extends SuperScreen implements Screen {
 		//TODO add and display challenges
 	}
 	
-	private String[] castUsers(List<Challenge> challenges){
-		int n = challenges.size();
+	private String[] castChallenges(java.util.List<Challenge> list2){
+		int n = list2.size();
 		String[] tmpChalls = new String[n];
 		int i = 0;
-		for(Challenge challenges: challenge){
+		for(Challenge challenge: list2){
 			/*name of challenge wish I to have (Yoda) */
 			tmpChalls[i] = QuizGame.getInstance().displayChallenges().get(i).displayName();			
 			i++;
 		}
+		return tmpChalls;
 	}
 
 	/**

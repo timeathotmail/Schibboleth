@@ -20,6 +20,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.mygdx.net.Client;
@@ -43,9 +45,11 @@ public class UserListScreen extends SuperScreen implements Screen {
 		
 	private Table table;
 	private Label lblUsers, lblError;
-	private TextButton btnBack;
+	private TextButton btnBack, btnSumbitSearch;
 	private List userList;
 	private ScrollPane scroll;
+
+	private TextField searchField;
 
 	/* (non-Javadoc)
 	 * @see com.badlogic.gdx.Screen#render(float)
@@ -95,6 +99,33 @@ public class UserListScreen extends SuperScreen implements Screen {
 		lblUsers = new Label("Users online", skin);
 		lblError = new Label("", skin);
 		
+		searchField = new TextField("search", skin);
+		btnSumbitSearch = new TextButton("Submit", skin);
+		
+		userList = new List(skin);
+		scroll = new ScrollPane(userList, skin);
+		
+		btnSumbitSearch.addListener(new ClickListener(){
+			public void clicked(InputEvent e, float x, float y){
+				userList.setItems(searchUser(QuizGame.getInstance().displayUsersOnline(), searchField.getText()));
+				
+			}
+		});
+		
+		TextFieldListener enterListener = new TextFieldListener() {
+			@Override
+			public void keyTyped(TextField textField, char key) {
+				if (key == '\r' || key == '\n') {
+					userList.setItems(searchUser(QuizGame.getInstance().displayUsersOnline(), searchField.getText()));
+				}
+			}
+		};
+
+		searchField.setTextFieldListener(enterListener);
+		
+		
+		userList.setItems(castUsers(QuizGame.getInstance().displayUsersOnline()));
+		
 		btnBack = new TextButton("Cancel", skin);
 		
 		btnBack.addListener(new ClickListener() {
@@ -121,13 +152,50 @@ public class UserListScreen extends SuperScreen implements Screen {
 	private void setTable(){
 		table.add(lblUsers).pad(10);
 		table.row();
-		table.add(btnBack).width(150).height(30).align(Align.right).padBottom(5);
+		table.add(btnBack).width(50).height(30).align(Align.right).padBottom(5).padLeft(5);
+		table.add(searchField).width(50).height(30).align(Align.center).padBottom(5).padLeft(5);
+		table.add(btnSumbitSearch).width(50).height(30).align(Align.left).padBottom(5);;
 		table.row();
 		table.add(userList);
 		
 		//TODO accept deny challenge
 	}
+	
+	/**
+	 * casts users to a String Array. This Method is used to show users listed on monitor
+	 * @param users
+	 * @return
+	 */
+	private String[] castUsers(java.util.List<User> users){
+		int n = users.size();
+		String[] tmpUsers = new String[n];
+		int i = 0;
+		for(User user: users){
+			/*name of challenge wish I to have (Yoda) */
+			tmpUsers[i] = QuizGame.getInstance().displayUsersOnline().get(i).getName();			
+			i++;
+		}
+		return tmpUsers;
+	}
 
+	/**
+	 * search method for a search field
+	 * @param users		a list of users online, to get from QuizGame
+	 * @param username	a username to find
+	 * @returns	a searched username if found
+	 */
+	private String[] searchUser(java.util.List<User> users, String username){
+		String[] tmp = new String[1];
+		tmp[0] = ""; //empty by default
+		int i = 0;
+		while(i < users.size()){
+			if(users.get(i).getName().equalsIgnoreCase(username)){
+				tmp[0] = users.get(i).getName(); //if found, wird shown		
+			}
+			i++;
+		}
+		return tmp;
+	}
 	/**
 	 * Displays an error message
 	 * @param msg
