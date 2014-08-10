@@ -138,7 +138,6 @@ public class ChallengeScreen extends SuperScreen implements Screen {
 		Challenge[] tmpChalls = new Challenge[n];
 		int i = 0;
 		for(Challenge challenge: list2){
-			/*name of challenge wish I to have (Yoda) */
 			tmpChalls[i] = list2.get(i);			
 			i++;
 		}

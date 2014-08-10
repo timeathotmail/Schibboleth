@@ -71,6 +71,7 @@ public class GameScreen extends SuperScreen implements Screen {
 			//TODO show new question, mark old question as passed or failed
 		}
 		
+		batch.setProjectionMatrix(camera.combined);
 		batch.begin();
 		
 		//TODO draw game question field and buttons, also time and statistics
@@ -101,8 +102,7 @@ public class GameScreen extends SuperScreen implements Screen {
 		//TODO set dialog with challenge
 		
 		camera = new OrthographicCamera();
-		camera.setToOrtho(false, 800, 480);
-		batch.setProjectionMatrix(camera.combined);
+		camera.setToOrtho(false, 800, 480);		
 		
 		lblError = new Label("", skin);
 		lblQuestion = new Label("" , skin); //TODO Frage holen
