@@ -116,15 +116,14 @@ public class UserListScreen extends SuperScreen implements Screen {
 			@Override
 			public void keyTyped(TextField textField, char key) {
 				if (key == '\r' || key == '\n') {
-					userList.setItems(searchUser(QuizGame.getInstance().displayUsersOnline(), searchField.getText()));
+					if(searchField.getText() != null){
+						userList.setItems(searchUser(QuizGame.getInstance().displayUsersOnline(), searchField.getText()));
+					}
 				}
 			}
 		};
 
-		searchField.setTextFieldListener(enterListener);
-		
-		
-		userList.setItems(castUsers(QuizGame.getInstance().displayUsersOnline()));
+		searchField.setTextFieldListener(enterListener);		
 		
 		btnBack = new TextButton("Cancel", skin);
 		
@@ -132,6 +131,13 @@ public class UserListScreen extends SuperScreen implements Screen {
 			public void clicked(InputEvent event, float x, float y) {
 				ScreenManager.getInstance().show(ScreenSelector.MAIN_MENU);
 				}
+		});
+		
+		userList.setItems(castUsers(QuizGame.getInstance().displayUsersOnline()));
+		userList.addListener(new ClickListener(){
+			public void clicked(InputEvent e, float x, float y){
+				QuizGame.getInstance().sendChallenge((User) userList.getSelected());
+			}
 		});
 		
 		//TODO add dialog
@@ -143,7 +149,6 @@ public class UserListScreen extends SuperScreen implements Screen {
 				Gdx.graphics.getHeight() / 2);
 
 		stage.addActor(table);
-		//TODO add users
 		//TODO dialog mit accept/deny challenge. if accept setScreen(Game)
 		//TODO GameScreen
 
@@ -166,13 +171,13 @@ public class UserListScreen extends SuperScreen implements Screen {
 	 * @param users
 	 * @return
 	 */
-	private String[] castUsers(java.util.List<User> users){
+	private User[] castUsers(java.util.List<User> users){
 		int n = users.size();
-		String[] tmpUsers = new String[n];
+		User[] tmpUsers = new User[n];
 		int i = 0;
 		for(User user: users){
 			/*name of challenge wish I to have (Yoda) */
-			tmpUsers[i] = QuizGame.getInstance().displayUsersOnline().get(i).getName();			
+			tmpUsers[i] = QuizGame.getInstance().displayUsersOnline().get(i);			
 			i++;
 		}
 		return tmpUsers;
@@ -184,13 +189,15 @@ public class UserListScreen extends SuperScreen implements Screen {
 	 * @param username	a username to find
 	 * @returns	a searched username if found
 	 */
-	private String[] searchUser(java.util.List<User> users, String username){
-		String[] tmp = new String[1];
-		tmp[0] = ""; //empty by default
+	private User[] searchUser(java.util.List<User> users, String username){
+		User[] tmp = new User[1];
+		if(username == null){
+			return null;
+		}
 		int i = 0;
 		while(i < users.size()){
 			if(users.get(i).getName().equalsIgnoreCase(username)){
-				tmp[0] = users.get(i).getName(); //if found, wird shown		
+				tmp[0] = users.get(i); //if found, wird shown		
 			}
 			i++;
 		}
