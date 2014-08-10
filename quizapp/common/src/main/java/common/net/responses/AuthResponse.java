@@ -1,10 +1,9 @@
 package common.net.responses;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 import common.entities.Challenge;
@@ -18,6 +17,7 @@ import common.entities.User;
  * @author Tim Wiechers
  */
 @JsonTypeInfo(use = JsonTypeInfo.Id.MINIMAL_CLASS, include = JsonTypeInfo.As.PROPERTY)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class AuthResponse implements Serializable {
 	/**
 	 * Version number for serialization.
@@ -26,12 +26,8 @@ public class AuthResponse implements Serializable {
 	/**
 	 * Failed AuthResponse.
 	 */
-	public static final AuthResponse Fail = new AuthResponse(false, 0, null,
+	public static final AuthResponse Fail = new AuthResponse(0, null,
 			null, null);
-	/**
-	 * True if the he registration and/or login was successful.
-	 */
-	private boolean success;
 	/**
 	 * List of other currently online users.
 	 */
@@ -59,8 +55,6 @@ public class AuthResponse implements Serializable {
 	/**
 	 * Creates an instance.
 	 * 
-	 * @param success
-	 *            true if the he registration and/or login was successful
 	 * @param timeLimit
 	 *            the time limit for answering questions
 	 * @param users
@@ -70,9 +64,8 @@ public class AuthResponse implements Serializable {
 	 * @param challenges
 	 *            list of unanswered challenges of the user
 	 */
-	public AuthResponse(boolean success, int timeLimit, List<User> users,
+	public AuthResponse(int timeLimit, List<User> users,
 			List<Match> matches, List<Challenge> challenges) {
-		this.success = success;
 		this.timeLimit = timeLimit;
 		this.runningMatches = matches;
 		this.challenges = challenges;
@@ -81,7 +74,7 @@ public class AuthResponse implements Serializable {
 
 	// === getters ===
 	public boolean isSuccess() {
-		return success;
+		return users != null;
 	}
 
 	public List<User> getUsers() {

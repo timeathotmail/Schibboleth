@@ -46,7 +46,7 @@ public class UserListScreen extends SuperScreen implements Screen {
 	private Table table;
 	private Label lblUsers, lblError;
 	private TextButton btnBack, btnSumbitSearch;
-	private List userList;
+	private List<User> userList;
 	private ScrollPane scroll;
 
 	private TextField searchField;
@@ -81,6 +81,7 @@ public class UserListScreen extends SuperScreen implements Screen {
 	 */
 	@Override
 	public void show() {
+		Gdx.app.log("UserListScreen", "show");
 		stage = new Stage();
 		Gdx.input.setInputProcessor(stage);
 		skin = new Skin(Gdx.files.internal("uiskin.json"));
@@ -132,8 +133,8 @@ public class UserListScreen extends SuperScreen implements Screen {
 				ScreenManager.getInstance().show(ScreenSelector.MAIN_MENU);
 				}
 		});
-		
-		userList.setItems(castUsers(QuizGame.getInstance().displayUsersOnline()));
+		java.util.List<User> tmp = QuizGame.getInstance().displayUsersOnline();
+		userList.setItems(tmp.toArray(new User[tmp.size()]));
 		userList.addListener(new ClickListener(){
 			public void clicked(InputEvent e, float x, float y){
 				QuizGame.getInstance().sendChallenge((User) userList.getSelected());
@@ -163,23 +164,6 @@ public class UserListScreen extends SuperScreen implements Screen {
 		table.row();
 		table.add(userList);	
 		
-	}
-	
-	/**
-	 * casts users to a String Array. This Method is used to show users listed on monitor
-	 * @param users
-	 * @return
-	 */
-	private User[] castUsers(java.util.List<User> users){
-		int n = users.size();
-		User[] tmpUsers = new User[n];
-		int i = 0;
-		for(User user: users){
-			/*name of challenge wish I to have (Yoda) */
-			tmpUsers[i] = users.get(i);	
-			i++;
-		}
-		return tmpUsers;
 	}
 
 	/**

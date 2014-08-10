@@ -68,7 +68,7 @@ public class ClientInbox implements Runnable {
 					UserListChangedResponse obj = net.fromJson(json,
 							UserListChangedResponse.class);
 					if (obj != null) {
-						QuizGame.getInstance().onUserListChanged(obj.hasConnected(),
+						QuizGame.getInstance().onUserListChanged(obj.isConnected(),
 								obj.getUser());
 						continue;
 					}

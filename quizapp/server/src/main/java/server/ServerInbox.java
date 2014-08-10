@@ -149,7 +149,7 @@ public class ServerInbox implements Runnable {
 			}
 
 			// send user the list of other users
-			Server.net.send(client, new AuthResponse(true, Server.TIME_LIMIT,
+			Server.net.send(client, new AuthResponse(Server.TIME_LIMIT,
 					Server.dir.getUsers(), Server.data.getRunningMatches(user),
 					Server.data.getChallenges(user)));
 			// inform other users about the new client

@@ -292,9 +292,11 @@ public class QuizGame extends Game implements IGame{
 	@Override
 	public void onUserListChanged(boolean connected, User user) {
 		if (connected) {
-			users.add(user);			
+			users.add(user);	
+			Gdx.app.log("QuizGame", "new user "+user);
 		} else {
-			users.remove(user);			
+			users.remove(user);	
+			Gdx.app.log("QuizGame", user+" left");
 		}
 	}
 

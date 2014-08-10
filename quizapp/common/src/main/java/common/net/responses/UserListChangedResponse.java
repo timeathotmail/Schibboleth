@@ -47,7 +47,7 @@ public class UserListChangedResponse implements Serializable {
 	}
 
 	// === getters ===
-	public boolean hasConnected() {
+	public boolean isConnected() {
 		return connected;
 	}
 
