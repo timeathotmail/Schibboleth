@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -231,12 +232,12 @@ public class ServerDirectory implements Runnable {
 				.get(match.getUser2());
 	}
 
-	public synchronized Collection<User> getUsers() {
-		return socketToUser.values();
+	public synchronized List<User> getUsers() {
+		return new ArrayList<User>(socketToUser.values());
 	}
 
-	public synchronized Collection<Socket> getSockets() {
-		return socketToUser.keySet();
+	public synchronized List<Socket> getSockets() {
+		return new ArrayList<Socket>(socketToUser.keySet());
 	}
 
 	public synchronized User getUser(Socket client) {

@@ -70,17 +70,13 @@ public class AuthResponse implements Serializable {
 	 * @param challenges
 	 *            list of unanswered challenges of the user
 	 */
-	public AuthResponse(boolean success, int timeLimit, Collection<User> users,
+	public AuthResponse(boolean success, int timeLimit, List<User> users,
 			List<Match> matches, List<Challenge> challenges) {
 		this.success = success;
 		this.timeLimit = timeLimit;
 		this.runningMatches = matches;
 		this.challenges = challenges;
-
-		this.users = new ArrayList<User>();
-		for (User user : users) {
-			this.users.add(user);
-		}
+		this.users = users;
 	}
 
 	// === getters ===

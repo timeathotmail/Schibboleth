@@ -663,6 +663,9 @@ public class Data implements Persistence {
 			if (f.getName().equals("rowid")) {
 				continue;
 			}
+			if (f.getName().equals("serialVersionUID")) {
+				continue;
+			}
 			if (!f.getType().isPrimitive() && !f.getType().isEnum()
 					&& !f.getType().equals(String.class)) {
 				continue;

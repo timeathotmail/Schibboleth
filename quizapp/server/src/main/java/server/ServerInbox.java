@@ -5,6 +5,8 @@ import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.mysql.fabric.xmlrpc.Client;
+
 import common.entities.*;
 import common.net.SocketReadException;
 import common.net.SocketWriteException;
@@ -103,10 +105,12 @@ public class ServerInbox implements Runnable {
 	 * @throws IllegalArgumentException
 	 *             if {@link #client} is null
 	 */
-	private static synchronized void process(MatchSearchCancelRequest req)
+	private synchronized void process(MatchSearchCancelRequest req)
 			throws IllegalArgumentException, SocketWriteException {
-		Server.net.send(waitingClient, new MatchSearchCancelledResponse());
-		waitingClient = null;
+		if (client.equals(waitingClient)) {
+			Server.net.send(waitingClient, new MatchSearchCancelledResponse());
+			waitingClient = null;
+		}
 	}
 
 	// =====================================================================

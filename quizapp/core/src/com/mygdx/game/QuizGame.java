@@ -81,7 +81,7 @@ public class QuizGame extends Game implements IGame{
 		SCREEN_HEIGHT = Gdx.graphics.getHeight();
 		
 		ScreenManager.getInstance().initialize(this);
-		ScreenManager.getInstance().show(ScreenSelector.GAME);		
+		ScreenManager.getInstance().show(ScreenSelector.LOGIN);		
 	}
 
 
