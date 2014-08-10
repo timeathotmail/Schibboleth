@@ -93,9 +93,6 @@ public class UserListScreen extends SuperScreen implements Screen {
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, 800, 480);
 		
-		userList = new List(skin);
-		scroll = new ScrollPane(userList, skin);
-		
 		lblUsers = new Label("Users online", skin);
 		lblError = new Label("", skin);
 		
