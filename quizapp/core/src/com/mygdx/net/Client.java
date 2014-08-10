@@ -66,7 +66,7 @@ public class Client {
 	public static Client getInstance(IGame game, String ip, int port) {
 		if (INSTANCE == null) {
 			try {
-				INSTANCE = new Client(QuizGame.getInstance(), ip, port);
+				INSTANCE = new Client(game, ip, port);
 			} catch (ConfigurationException e) {
 				e.printStackTrace();
 			} catch (NoConnectionException e) {

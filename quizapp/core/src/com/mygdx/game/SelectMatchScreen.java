@@ -99,6 +99,13 @@ public class SelectMatchScreen extends SuperScreen implements Screen {
 		scroll = new ScrollPane(list, skin);
 		list.setItems(castMatches(QuizGame.getInstance().displayMatches()));
 		
+		list.addListener(new ClickListener(){
+			public void clicked(InputEvent e, float x, float y){
+				QuizGame.getInstance().onMatchStarted((Match) list.getSelected());
+			}
+		});
+		
+		
 		lblMatches = new Label("Active challenges", skin);
 		lblError = new Label("", skin);
 		

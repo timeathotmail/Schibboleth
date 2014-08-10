@@ -92,9 +92,8 @@ public class GameScreen extends SuperScreen implements Screen {
 	 * @see com.badlogic.gdx.Screen#show()
 	 */
 	@Override
-	public void show() {
-		
-		batch.setProjectionMatrix(camera.combined);stage = new Stage();
+	public void show() {		
+		stage = new Stage();
 		Gdx.input.setInputProcessor(stage);
 		skin = new Skin(Gdx.files.internal("uiskin.json"));
 		batch = new SpriteBatch();
@@ -103,7 +102,7 @@ public class GameScreen extends SuperScreen implements Screen {
 		
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, 800, 480);
-		
+		batch.setProjectionMatrix(camera.combined);
 		
 		lblError = new Label("", skin);
 		lblQuestion = new Label("" , skin); //TODO Frage holen
