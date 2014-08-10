@@ -40,7 +40,7 @@ public class MainScreen extends SuperScreen implements Screen {
 	private Table table;
 	private TextButton btnPlay, btnOptions, btnLogout;
 	private ButtonGroup btnGroup;
-	private TextButton btnNewMatch, btnSelectChallenge, btnBack;
+	private TextButton btnNewMatch, btnSelectChallenge, btnSelectMatch, btnBack;
 	private Label lblWelcome;
 	private Label lblError;
 
@@ -86,6 +86,7 @@ public class MainScreen extends SuperScreen implements Screen {
 	    		btnLogout = new TextButton("Logout", skin);
 	    		btnNewMatch = new TextButton("New Match", skin);
 	    		btnSelectChallenge = new TextButton("Select challenge", skin);
+	    		btnSelectMatch = new TextButton("Select Match", skin);
 	    		btnBack = new TextButton("Back", skin);
 	    		
 	    		/*buttongroup*/
@@ -140,6 +141,12 @@ public class MainScreen extends SuperScreen implements Screen {
 	    				}
 	    		});
 	    		
+	    		btnSelectMatch.addListener(new ClickListener() {
+	    			public void clicked(InputEvent event, float x, float y) {
+	    				ScreenManager.getInstance().show(ScreenSelector.MATCHES);
+	    				}
+	    		});
+	    		
 	    		table = new Table();
 	    		switchView(true);
 	         }
@@ -174,6 +181,8 @@ public class MainScreen extends SuperScreen implements Screen {
 			
 		} else{
 			table.add(btnNewMatch).width(200).height(50).align(Align.left).padBottom(5);
+			table.row();
+			table.add(btnSelectMatch).width(200).height(50).align(Align.left).padBottom(5);
 			table.row();
 			table.add(btnSelectChallenge).width(200).height(50).align(Align.left).padBottom(5);
 			table.row();

@@ -3,7 +3,7 @@
  */
 package com.mygdx.game;
 
-import java.util.Collection;
+import java.util.ArrayList;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -14,27 +14,25 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.List;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
-import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.mygdx.net.Client;
 
-import common.entities.User;
+import common.entities.Match;
 
 /**
- * Implements a Screen that shows a user online list.
- * You can choose user by tipping him in the list 
+ * Displays actual matches
  * @author halfelv
  *
  */
-public class UserListScreen extends SuperScreen implements Screen {
+public class SelectMatchScreen extends SuperScreen implements Screen {
 	private Stage stage;
 	private Skin skin;
 	
@@ -44,13 +42,16 @@ public class UserListScreen extends SuperScreen implements Screen {
 	private OrthographicCamera camera;
 		
 	private Table table;
-	private Label lblUsers, lblError;
-	private TextButton btnBack, btnSumbitSearch;
-	private List userList;
+	private Label lblMatches, lblError;
+	private TextButton btnBack;
+	private List list;
 	private ScrollPane scroll;
-
-	private TextField searchField;
-
+	
+	SelectMatchScreen()
+	{
+		
+	}
+	
 	/* (non-Javadoc)
 	 * @see com.badlogic.gdx.Screen#render(float)
 	 */
@@ -72,7 +73,7 @@ public class UserListScreen extends SuperScreen implements Screen {
 	 */
 	@Override
 	public void resize(int width, int height) {
-		
+		// TODO Auto-generated method stub
 
 	}
 
@@ -93,37 +94,13 @@ public class UserListScreen extends SuperScreen implements Screen {
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, 800, 480);
 		
-		userList = new List(skin);
-		scroll = new ScrollPane(userList, skin);
+		//adding a list and a scroll pane
+		list = new List(skin);
+		scroll = new ScrollPane(list, skin);
+		list.setItems(castMatches(QuizGame.getInstance().displayMatches()));
 		
-		lblUsers = new Label("Users online", skin);
+		lblMatches = new Label("Active challenges", skin);
 		lblError = new Label("", skin);
-		
-		searchField = new TextField("search", skin);
-		btnSumbitSearch = new TextButton("Submit", skin);
-		
-		userList = new List(skin);
-		scroll = new ScrollPane(userList, skin);
-		
-		btnSumbitSearch.addListener(new ClickListener(){
-			public void clicked(InputEvent e, float x, float y){
-				userList.setItems(searchUser(QuizGame.getInstance().displayUsersOnline(), searchField.getText()));
-				
-			}
-		});
-		
-		TextFieldListener enterListener = new TextFieldListener() {
-			@Override
-			public void keyTyped(TextField textField, char key) {
-				if (key == '\r' || key == '\n') {
-					if(searchField.getText() != null){
-						userList.setItems(searchUser(QuizGame.getInstance().displayUsersOnline(), searchField.getText()));
-					}
-				}
-			}
-		};
-
-		searchField.setTextFieldListener(enterListener);		
 		
 		btnBack = new TextButton("Cancel", skin);
 		
@@ -133,15 +110,6 @@ public class UserListScreen extends SuperScreen implements Screen {
 				}
 		});
 		
-		userList.setItems(castUsers(QuizGame.getInstance().displayUsersOnline()));
-		userList.addListener(new ClickListener(){
-			public void clicked(InputEvent e, float x, float y){
-				QuizGame.getInstance().sendChallenge((User) userList.getSelected());
-			}
-		});
-		
-		//TODO add dialog
-		
 		table = new Table();
 		setTable();
 		
@@ -149,59 +117,33 @@ public class UserListScreen extends SuperScreen implements Screen {
 				Gdx.graphics.getHeight() / 2);
 
 		stage.addActor(table);
-		//TODO dialog mit accept/deny challenge. if accept setScreen(Game)
-		//TODO GameScreen
 
 	}
 	
 	private void setTable(){
-		table.add(lblUsers).pad(10);
+		table.add(lblMatches).pad(10);
 		table.row();
-		table.add(btnBack).width(50).height(30).align(Align.right).padBottom(5).padLeft(5);
-		table.add(searchField).width(50).height(30).align(Align.center).padBottom(5).padLeft(5);
-		table.add(btnSumbitSearch).width(50).height(30).align(Align.left).padBottom(5);;
+		table.add(btnBack).width(150).height(30).align(Align.right).padBottom(5);
+		table.add();
 		table.row();
-		table.add(userList);	
+		table.add(list);
 		
+		
+		//TODO add and display challenges
 	}
 	
-	/**
-	 * casts users to a String Array. This Method is used to show users listed on monitor
-	 * @param users
-	 * @return
-	 */
-	private User[] castUsers(java.util.List<User> users){
-		int n = users.size();
-		User[] tmpUsers = new User[n];
+	private Match[] castMatches(java.util.List<Match> list2){
+		int n = list2.size();
+		Match[] tmpMatches = new Match[n];
 		int i = 0;
-		for(User user: users){
+		for(Match match: list2){
 			/*name of challenge wish I to have (Yoda) */
-			tmpUsers[i] = users.get(i);	
+			tmpMatches[i] = list2.get(i);			
 			i++;
 		}
-		return tmpUsers;
+		return tmpMatches;
 	}
 
-	/**
-	 * search method for a search field
-	 * @param users		a list of users online, to get from QuizGame
-	 * @param username	a username to find
-	 * @returns	a searched username if found
-	 */
-	private User[] searchUser(java.util.List<User> users, String username){
-		User[] tmp = new User[1];
-		if(username == null){
-			return null;
-		}
-		int i = 0;
-		while(i < users.size()){
-			if(users.get(i).getName().equalsIgnoreCase(username)){
-				tmp[0] = users.get(i); //if found, wird shown		
-			}
-			i++;
-		}
-		return tmp;
-	}
 	/**
 	 * Displays an error message
 	 * @param msg
@@ -210,18 +152,6 @@ public class UserListScreen extends SuperScreen implements Screen {
 		lblError.setText(msg);
 	}
 	
-	private Collection<User> dispayUsers(){
-		
-		//return Client.getInstance().getUsersOnline();
-		return null;
-	}
-	/**
-	 * Display the user list.
-	 */
-	private void displayUserList(){
-		//Client.getInstance().
-	}
-
 	/* (non-Javadoc)
 	 * @see com.badlogic.gdx.Screen#hide()
 	 */
@@ -259,5 +189,8 @@ public class UserListScreen extends SuperScreen implements Screen {
 		logo.dispose();
 		batch.dispose();
 	}
+
+
+	
 
 }

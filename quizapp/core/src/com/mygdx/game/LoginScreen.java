@@ -266,16 +266,7 @@ public class LoginScreen extends SuperScreen implements Screen {
 		if(username.length() < 6){
 			showErrorMsg("Username is too short");
 			return false;
-		}
-		//is illegal, f.example swearword
-		/*int i = 0;
-		while(i < bannedExpressions.size()){
-			if(username.contains(bannedExpressions.get(i))){
-				loginScreen.showErrorMsg("Username contains banned expressions");
-				return false;
-			}
-			i++;
-		}*/
+		}		
 		//is not a numeric or letter
 		if(!username.matches("[A-Za-z_0-9]*")){
 			showErrorMsg("Username contains illegal characters");

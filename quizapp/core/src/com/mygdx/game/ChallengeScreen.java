@@ -46,6 +46,11 @@ public class ChallengeScreen extends SuperScreen implements Screen {
 	private TextButton btnBack;
 	private List list;
 	private ScrollPane scroll;
+	
+	ChallengeScreen()
+	{
+		
+	}
 
 	/* (non-Javadoc)
 	 * @see com.badlogic.gdx.Screen#render(float)
@@ -128,13 +133,13 @@ public class ChallengeScreen extends SuperScreen implements Screen {
 		//TODO add and display challenges
 	}
 	
-	private String[] castChallenges(java.util.List<Challenge> list2){
+	private Challenge[] castChallenges(java.util.List<Challenge> list2){
 		int n = list2.size();
-		String[] tmpChalls = new String[n];
+		Challenge[] tmpChalls = new Challenge[n];
 		int i = 0;
 		for(Challenge challenge: list2){
 			/*name of challenge wish I to have (Yoda) */
-			tmpChalls[i] = QuizGame.getInstance().displayChallenges().get(i).displayName();			
+			tmpChalls[i] = list2.get(i);			
 			i++;
 		}
 		return tmpChalls;
@@ -152,26 +157,14 @@ public class ChallengeScreen extends SuperScreen implements Screen {
 	 * ask the server to show available matches
 	 */
 	private void showChallenges(){
-		try {
-			Client.getInstance().searchMatch();
-		} catch (IllegalArgumentException e) {
-			e.printStackTrace();
-		} catch (SocketWriteException e) {
-			e.printStackTrace();
-		}
+		QuizGame.getInstance().searchMatch();
 	}
 	
 	/**
 	 * Cancel search and go back to main menu
 	 */
 	private void cancelSearch(){
-		try {
-			Client.getInstance().cancelSearch();
-		} catch (IllegalArgumentException e) {
-			e.printStackTrace();
-		} catch (SocketWriteException e) {
-			e.printStackTrace();
-		}
+		QuizGame.getInstance().cancelSearch();
 	}
 	/* (non-Javadoc)
 	 * @see com.badlogic.gdx.Screen#hide()

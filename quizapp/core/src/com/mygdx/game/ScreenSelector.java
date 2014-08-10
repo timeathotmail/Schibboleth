@@ -49,6 +49,13 @@ public enum ScreenSelector {
              return new ChallengeScreen();
         }
     },
+    
+    MATCHES {
+        @Override
+        protected com.badlogic.gdx.Screen getScreenInstance() {
+             return new SelectMatchScreen();
+        }
+    },
  
     OPTIONS {
         @Override
